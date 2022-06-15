@@ -23,6 +23,7 @@
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
       }
-    ]
+    ],
+    "require-jsdoc": 0
   }
 }

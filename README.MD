@@ -1,9 +1,11 @@
-Pure Typescript project
+# Pure Typescript project
 
-Scss
-TypeScript
-Normalize.css
-Git
-Webpack
-Eslint
-Prettier
+- JavaScript
+- TypeScript
+- Git
+- Scss
+- Babel
+- Webpack
+- Eslint
+- Prettier
+- Normalize.css
