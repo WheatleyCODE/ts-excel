@@ -1,37 +1,60 @@
 {
   "name": "tsexcel",
   "version": "1.0.0",
-  "description": "typescript, javascript, ts, js, excel",
+  "description": "tsexcel",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "cross-env NODE_ENV=development webpack --mode development",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "watch": "cross-env NODE_ENV=development webpack --mode development --watch",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development --open"
   },
+  "keywords": [
+    "js",
+    "ts",
+    "javascript",
+    "typescript",
+    "excel"
+  ],
+  "eslintIgnore": ["webpack.config.js"],
+  "browserslist": "> 0.25%, not dead",
+  "author": "Dmitry Bazhaev <qb.wheatley@gmail.com>",
+  "license": "ISC",
   "prettier": {
     "semi": true,
     "trailingComma": "none",
     "singleQuote": true,
     "printWidth": 100
   },
-  "keywords": [
-    "typescript",
-    "javascript",
-    "ts",
-    "js",
-    "excel"
-  ],
-  "author": "Dmitry Bazhaev <qb.wheatley@gmail.com>",
-  "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
+    "babel-loader": "^8.2.5",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.1",
+    "css-minimizer-webpack-plugin": "^4.0.0",
     "eslint": "^7.19.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "node-sass": "^7.0.1",
     "prettier": "^2.7.0",
+    "sass": "^1.52.3",
+    "sass-loader": "^13.0.0",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.3",
     "typescript": "^4.7.3",
     "webpack": "^5.73.0",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.2"
   },
   "dependencies": {
     "normalize.css": "^8.0.1"

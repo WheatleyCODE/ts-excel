@@ -1,0 +1,19 @@
+@import '~normalize.css';
+@import './roboto.css';
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+// Test styles
+$colorRed: rgb(255, 202, 202);
+
+body {
+  background-color: $colorRed;
+}
+
+.root {
+  width: 500px;
+  height: 500px;
+  background-color: rgb(186, 186, 186);
+}
