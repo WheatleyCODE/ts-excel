@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@t": ["types"],
+      "@utils": ["utils"],
+      "@html": ["html"],
+      "@core": ["core"],
+      "@styles": ["styles"],
+      "@components": ["components"],
+      "@helpers": ["helpers"],
+      "@redux": ["redux"],
+
+      "@t/*": ["types/*"],
+      "@utils/*": ["utils/*"],
+      "@html/*": ["html/*"],
+      "@core/*": ["core/*"],
+      "@styles/*": ["styles/*"],
+      "@components/*": ["components/*"],
+      "@helpers/*": ["helpers/*"],
+      "@redux/*": ["redux/*"],
+    }
+  }
+}

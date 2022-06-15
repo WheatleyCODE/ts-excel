@@ -1,0 +1,39 @@
+{
+  "name": "tsexcel",
+  "version": "1.0.0",
+  "description": "typescript, javascript, ts, js, excel",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "none",
+    "singleQuote": true,
+    "printWidth": 100
+  },
+  "keywords": [
+    "typescript",
+    "javascript",
+    "ts",
+    "js",
+    "excel"
+  ],
+  "author": "Dmitry Bazhaev <qb.wheatley@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^7.19.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.7.0",
+    "typescript": "^4.7.3",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1"
+  }
+}
