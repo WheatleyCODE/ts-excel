@@ -49,8 +49,18 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts', '.json'],
     alias: {
-      '@modules': path.resolve(__dirname, 'src/modules'),
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, 'src'),
+      '@assets': path.resolve(__dirname, 'src/assets'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@core': path.resolve(__dirname, 'src/core'),
+      '@helpers': path.resolve(__dirname, 'src/helpers'),
+      '@html': path.resolve(__dirname, 'src/html'),
+      '@http': path.resolve(__dirname, 'src/http'),
+      '@redux': path.resolve(__dirname, 'src/redux'),
+      '@styles': path.resolve(__dirname, 'src/styles'),
+      '@types': path.resolve(__dirname, 'src/types'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@wquery': path.resolve(__dirname, 'src/wquery')
     }
   },
   optimization: {

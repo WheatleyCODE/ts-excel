@@ -2,23 +2,38 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "@t": ["types"],
-      "@utils": ["utils"],
-      "@html": ["html"],
-      "@core": ["core"],
-      "@styles": ["styles"],
-      "@components": ["components"],
-      "@helpers": ["helpers"],
-      "@redux": ["redux"],
+      "@assets": ["assets"],
+      "@assets/*": ["assets/*"],
 
-      "@t/*": ["types/*"],
-      "@utils/*": ["utils/*"],
-      "@html/*": ["html/*"],
-      "@core/*": ["core/*"],
-      "@styles/*": ["styles/*"],
+      "@components": ["components"],
       "@components/*": ["components/*"],
+
+      "@core": ["core"],
+      "@core/*": ["core/*"],
+
+      "@helpers": ["helpers"],
       "@helpers/*": ["helpers/*"],
+
+      "@html": ["html"],
+      "@html/*": ["html/*"],
+
+      "@http": ["http"],
+      "@http/*": ["http/*"],
+
+      "@redux": ["redux"],
       "@redux/*": ["redux/*"],
+
+      "@styles": ["styles"],
+      "@styles/*": ["styles/*"],
+
+      "@types": ["types"],
+      "@types/*": ["types/*"],
+
+      "@utils": ["utils"],
+      "@utils/*": ["utils/*"],
+
+      "@wquery": ["wquery"],
+      "@wquery/*": ["wquery/*"],
     }
   }
 }
