@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keyword" content="javascript, typescript, js, ts, excel">
+  <meta name="description" content="Google sheets on pure typescript"> 
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+  <link rel="icon" href="./assets/icon.ico">
+  <title>Excel TS</title>
+</head>
+<body>
+  <div id="root" class="root">
+    <div class="excel">
+      <div class="excel__header excel-header">
+        
+        <div class="excel-header__left-panel h-left-panel">
+          <div class="h-left-panel__logo">
+          </div>
+          <div class="h-left-panel__group h-group">
+            <input value="Новая таблица" class="h-group__input">
+            <div class="h-group__menubars menubars">
+              <button class="menubars__button">Файл</button>
+              <button class="menubars__button">Правка</button>
+              <button class="menubars__button">Вид</button>
+              <button class="menubars__button">Вставка</button>
+              <button class="menubars__button">Формат</button>
+              <button class="menubars__button">Данные</button>
+              <button class="menubars__button">Инструменты</button>
+              <button class="menubars__button">Расширения</button>
+              <button class="menubars__button">Справка</button>
+            </div>
+          </div>
+        </div>
+        <div class="excel-header__right-panel h-right-panel">
+          <button class="h-right-panel__button">Выйти</button>
+          <button class="h-right-panel__button">Войти</button>
+          <button class="h-right-panel__share-button">
+            <i class="material-icons">
+              add_link
+            </i>
+            Общий доступ</button>
+          <div class="h-right-panel__user-avatar">
+            <i class="material-icons icon">
+              account_circle
+            </i>
+          </div>
+        </div>
+      </div>
+      <div class="excel__toolbar excel-toolbar">
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            undo
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            redo
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            print
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_paint
+          </i>
+        </div>
+
+        <div class="excel-toolbar__wall"></div>
+
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            currency_ruble
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            percent
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            chevron_left
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            chevron_right
+          </i>
+        </div>
+
+        <div class="excel-toolbar__wall"></div>
+
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_bold
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_italic
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            strikethrough_s
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_underlined
+          </i>
+        </div>
+
+        <div class="excel-toolbar__wall"></div>
+
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_color_text
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_color_fill
+          </i>
+        </div>
+
+        <div class="excel-toolbar__wall"></div>
+
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            border_all
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_align_left
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_align_center
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            format_align_right
+          </i>
+        </div>
+
+        <div class="excel-toolbar__wall"></div>
+
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            align_vertical_bottom
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            align_vertical_center
+          </i>
+        </div>
+        <div class="excel-toolbar__button">
+          <i class="material-icons">
+            align_vertical_top
+          </i>
+        </div>
+      </div>
+
+      <div class="excel__formula excel-formula">
+        <div class="excel-formula__current-cell"></div>
+        <div class="excel-formula__formula-icon">
+          <i class="material-icons">
+            functions
+          </i>
+        </div>
+        <div contenteditable spellcheck="false" class="excel-formula__formula-input"></div>
+      </div>
+      <div class="excel__table excel-table">
+        <div class="excel-table__row row">
+          <div class="row__info"></div>
+          <div class="row__data data">
+            <div class="data__column">
+              A
+            </div>
+            <div class="data__column">
+              B
+            </div>
+            <div class="data__column">
+              C
+            </div>
+            <div class="data__column">
+              D
+            </div>
+          </div>
+        </div>
+
+        <div class="excel-table__row row">
+          <div class="row__info">
+            1
+          </div>
+          <div class="row__data data">
+            <div contenteditable class="data__cell selected">A1</div>
+            <div contenteditable class="data__cell">B1</div>
+            <div contenteditable class="data__cell">C1</div>
+            <div contenteditable class="data__cell">D1</div>
+          </div>
+        </div>
+
+        <div class="excel-table__row row">
+          <div class="row__info">
+            2
+          </div>
+          <div class="row__data data">
+            <div contenteditable class="data__cell">A2</div>
+            <div contenteditable class="data__cell">B2</div>
+            <div contenteditable class="data__cell">C3</div>
+            <div contenteditable class="data__cell">D4</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

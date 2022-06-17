@@ -1,19 +1,34 @@
 @import '~normalize.css';
 @import './fonts.scss';
+@import './variables';
+@import './mixins';
+@import './header.scss';
+@import './formula.scss';
+@import './toolbar.scss';
+@import './table.scss';
+@import './dashboard.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: $colorBlack;
+}
+
+button {
+  background-color: $colorWhite;
+  border: 1px solid $colorLightGrey;
+}
 
 body {
   font-family: 'Roboto', sans-serif;
+  font-size: 13px;
 }
 
-// Test styles
-$colorRed: rgb(255, 202, 202);
-
-body {
-  background-color: $colorRed;
-}
-
-.root {
-  width: 500px;
-  height: 500px;
-  background-color: rgb(186, 186, 186);
+.excel {
+  position: relative;
+  max-width: 100vw;
+  max-height: 100vh;
+  height: 100vh;
+  width: 100vw;
 }
