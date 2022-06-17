@@ -1,3 +1,1 @@
-export interface WQuery {
-  title: string;
-}
+export * from './components';
