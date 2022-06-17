@@ -4,6 +4,7 @@
 - TypeScript
 - Git
 - Scss
+- BEM
 - Babel
 - Webpack
 - Eslint

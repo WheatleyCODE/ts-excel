@@ -1,0 +1,34 @@
+@import './variables';
+@import './mixins';
+
+.excel-toolbar {
+  display: flex;
+  width: 100%;
+  margin-top: 7px;
+  padding: 2px 15px;
+  padding-left: 25px;
+  border-top: 1px solid $colorLightGrey;
+  border-bottom: 1px solid $colorLightGrey;
+
+  &__button {
+    @include toolbarButton;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    color: $colorBlack2;
+
+    i {
+      font-size: 22px;
+    }
+  }
+
+  &__wall {
+    margin: auto 10px;
+    margin-left: 7px;
+    width: 1px;
+    height: 20px;
+    background-color: $colorLightGrey;
+  }
+}
