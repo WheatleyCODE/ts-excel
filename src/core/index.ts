@@ -1,2 +1,2 @@
-export { DomListener } from './DomListener';
-export { ExcelComponent } from './ExcelComponent';
+export * from './DomListener';
+export * from './ExcelComponent';
