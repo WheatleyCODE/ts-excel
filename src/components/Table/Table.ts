@@ -1,9 +1,10 @@
 import { ExcelComponent } from '@core';
+import { WQuery } from '@wquery';
 
 export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];
 
-  constructor($el: Element) {
+  constructor($el: WQuery) {
     super($el);
   }
 

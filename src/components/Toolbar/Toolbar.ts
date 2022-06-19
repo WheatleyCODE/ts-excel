@@ -1,9 +1,10 @@
 import { ExcelComponent } from '@core';
+import { WQuery } from '@wquery';
 
 export class Toolbar extends ExcelComponent {
   static classNames = ['excel__toolbar', 'excel-toolbar'];
 
-  constructor($el: Element) {
+  constructor($el: WQuery) {
     super($el);
   }
 

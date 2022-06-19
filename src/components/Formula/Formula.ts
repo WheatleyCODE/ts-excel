@@ -1,9 +1,10 @@
 import { ExcelComponent } from '@core';
+import { WQuery } from '@wquery';
 
 export class Formula extends ExcelComponent {
   static classNames = ['excel__formula', 'excel-formula'];
 
-  constructor($el: Element) {
+  constructor($el: WQuery) {
     super($el);
   }
 
