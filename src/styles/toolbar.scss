@@ -22,6 +22,12 @@
     i {
       font-size: 22px;
     }
+
+    &:active {
+      i {
+        color: $colorGreen;
+      }
+    }
   }
 
   &__wall {
