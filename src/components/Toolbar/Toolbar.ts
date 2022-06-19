@@ -5,7 +5,10 @@ export class Toolbar extends ExcelComponent {
   static classNames = ['excel__toolbar', 'excel-toolbar'];
 
   constructor($el: WQuery) {
-    super($el);
+    super($el, {
+      name: 'Table',
+      listeners: []
+    });
   }
 
   toHTML() {

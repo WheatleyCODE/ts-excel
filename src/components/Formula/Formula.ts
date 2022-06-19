@@ -5,7 +5,18 @@ export class Formula extends ExcelComponent {
   static classNames = ['excel__formula', 'excel-formula'];
 
   constructor($el: WQuery) {
-    super($el);
+    super($el, {
+      name: 'Formula',
+      listeners: ['input', 'click']
+    });
+  }
+
+  onInput() {
+    console.log('hello');
+  }
+
+  onClick() {
+    console.log('click');
   }
 
   toHTML() {

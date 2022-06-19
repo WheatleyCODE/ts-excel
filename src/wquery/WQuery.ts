@@ -1,5 +1,8 @@
+import { IWQueryListeners } from '@types';
+
 export class WQuery {
   private $nativeElement: Element;
+  private listeners: IWQueryListeners = {};
 
   constructor(selector: string | Element) {
     if (typeof selector === 'string') {
@@ -30,6 +33,15 @@ export class WQuery {
 
     this.$nativeElement.append(node);
     return this;
+  }
+
+  on(eventType: string, callback: () => void) {
+    this.listeners[eventType] = callback;
+    this.$nativeElement.addEventListener(eventType, callback);
+  }
+
+  off(eventType: string) {
+    this.$nativeElement.removeEventListener(eventType, this.listeners[eventType]);
   }
 
   getNativeElement(): Element {

@@ -7,6 +7,15 @@ export class IComponent extends ExcelComponent {
   }
 }
 
+export interface IComOptions {
+  name: string;
+  listeners: string[];
+}
+
+export interface IWQueryListeners {
+  [name: string]: () => void;
+}
+
 export interface IOptions {
   components: typeof IComponent[];
 }

@@ -5,7 +5,10 @@ export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];
 
   constructor($el: WQuery) {
-    super($el);
+    super($el, {
+      name: 'Table',
+      listeners: []
+    });
   }
 
   toHTML() {

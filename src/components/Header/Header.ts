@@ -5,7 +5,10 @@ export class Header extends ExcelComponent {
   static classNames = ['excel__header', 'excel-header'];
 
   constructor($el: WQuery) {
-    super($el);
+    super($el, {
+      name: 'Header',
+      listeners: []
+    });
   }
 
   toHTML() {

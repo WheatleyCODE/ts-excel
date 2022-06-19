@@ -4,6 +4,7 @@ import { IComponent, IOptions } from '@types';
 export class Excel {
   private $el: WQuery;
   private components: typeof IComponent[];
+  private componentsIntants: IComponent[] = [];
 
   constructor(private rootSelector: string, private options: IOptions) {
     this.$el = $(rootSelector);
@@ -13,12 +14,14 @@ export class Excel {
   getRoot(): WQuery {
     const $root = $.create('div', 'excel');
 
-    this.components.forEach((Component) => {
+    this.componentsIntants = this.components.map((Component) => {
       const $el = $.create('div', Component.classNames);
       const component = new Component($el);
 
       $el.html(component.toHTML());
       $root.append($el);
+
+      return component;
     });
 
     return $root;
@@ -26,6 +29,7 @@ export class Excel {
 
   render(): void {
     this.$el.append(this.getRoot());
+    this.componentsIntants.forEach((instComponent) => instComponent.init());
   }
 
   log(): void {
