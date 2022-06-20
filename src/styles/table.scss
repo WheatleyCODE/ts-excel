@@ -6,13 +6,33 @@
   width: 100%;
   top: $headerHeight + $headerPaddingTop + $toolbarHeight + $formulaHeight + $headerPaddingButtom;
 
+  .row-resize,
+  .col-resize {
+    position: absolute;
+    opacity: 0;
+    transition: all 0.1s;
+    background-color: $colorPrimary;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   .row {
     display: flex;
     min-height: 20px;
     height: $rowHeight;
+
+    &__row-resize {
+      width: 100%;
+      height: 5px;
+      bottom: 0;
+      cursor: row-resize;
+    }
   }
 
   .row__info {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,6 +47,7 @@
     display: flex;
 
     &__column {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -56,6 +77,13 @@
         outline: 2px solid $colorPrimary;
         z-index: 2;
       }
+    }
+
+    &__col-resize {
+      width: 5px;
+      height: 100%;
+      right: 0;
+      cursor: col-resize;
     }
   }
 }

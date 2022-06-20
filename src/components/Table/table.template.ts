@@ -11,16 +11,21 @@ function createCell() {
 
 function createCol(letter: string) {
   return `
-    <div class="data__column">
+    <div data-type="resizable" class="data__column">
       ${letter}
+      <div data-resize="col" class="data__col-resize col-resize"></div>
     </div>
   `;
 }
 
 function createRow(cols = '', i: string | number = '') {
+  const resizer = i ? '<div data-resize="row" class="row__row-resize row-resize"></div>' : '';
   return `
     <div class="excel-table__row row">
-      <div class="row__info">${i}</div>
+      <div class="row__info">
+        ${i}
+        ${resizer}
+      </div>
       <div class="row__data data">${cols}</div>
     </div>
   `;
