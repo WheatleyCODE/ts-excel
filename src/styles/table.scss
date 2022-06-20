@@ -2,7 +2,9 @@
 @import './mixins';
 
 .excel-table {
-  overflow-x: auto;
+  position: absolute;
+  width: 100%;
+  top: $headerHeight + $headerPaddingTop + $toolbarHeight + $formulaHeight + $headerPaddingButtom;
 
   .row {
     display: flex;

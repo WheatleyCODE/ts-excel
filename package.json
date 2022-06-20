@@ -1,7 +1,7 @@
 {
   "name": "tsexcel",
   "version": "1.0.0",
-  "description": "tsexcel",
+  "description": "Pure TypeScript app - Excel / Google Sheets",
   "main": "index.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack --mode development",

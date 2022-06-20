@@ -1,8 +1,10 @@
-# Pure Typescript project
+# Pure TypeScript project
 
 - JavaScript
 - TypeScript
 - Git
+- Паттерны
+- SOLID
 - Scss
 - BEM
 - Babel
