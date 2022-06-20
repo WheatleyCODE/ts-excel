@@ -3,8 +3,13 @@
 
 .excel-formula {
   display: flex;
-  height: 28px;
+  height: $formulaHeight;
   border-bottom: 1px solid $colorLightGrey;
+  position: fixed;
+  z-index: 10;
+  background-color: $colorWhite;
+  width: 100%;
+  top: $headerHeight + $headerPaddingTop + $toolbarHeight + $headerPaddingButtom;
 
   &__current-cell {
     width: 120px;
