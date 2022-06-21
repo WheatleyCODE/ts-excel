@@ -2,45 +2,45 @@ import { $, WQuery } from '@wquery';
 import { IComponent, IOptions } from '@types';
 
 export class Excel {
-  private $el: WQuery;
+  private $rootApp: WQuery;
   private components: typeof IComponent[];
-  private componentsIntants: IComponent[] = [];
+  private instantComponents: IComponent[] = [];
 
-  constructor(private rootSelector: string, private options: IOptions) {
-    this.$el = $(rootSelector);
+  constructor(rootSelector: string, options: IOptions) {
+    this.$rootApp = $(rootSelector);
     this.components = options.components;
   }
 
-  getRoot(): WQuery {
-    const $root = $.create('div', 'excel');
+  getRootExcel(): WQuery {
+    const $rootExcel = $.create('div', 'excel');
 
-    this.componentsIntants = this.components.map((Component) => {
+    this.instantComponents = this.components.map((Component) => {
       const $el = $.create('div', Component.classNames);
       const component = new Component($el);
 
       $el.setHtml(component.toHTML());
-      $root.append($el);
+      $rootExcel.append($el);
 
       return component;
     });
 
-    return $root;
+    return $rootExcel;
   }
 
   render(): void {
-    this.$el.append(this.getRoot());
-    this.componentsIntants.forEach((instComponent) => {
+    this.$rootApp.append(this.getRootExcel());
+    this.instantComponents.forEach((instComponent) => {
       instComponent.init();
       instComponent.componentDidMount();
     });
   }
 
   removeComponents(): void {
-    this.componentsIntants.forEach((instComponent) => {
+    this.instantComponents.forEach((instComponent) => {
       instComponent.componentWilUnmount();
       instComponent.destroy();
     });
 
-    this.$el.setHtml('');
+    this.$rootApp.setHtml('');
   }
 }

@@ -7,16 +7,8 @@ export class Formula extends ExcelComponent {
   constructor($el: WQuery) {
     super($el, {
       name: 'Formula',
-      listeners: ['input', 'click']
+      listeners: []
     });
-  }
-
-  onInput() {
-    console.log('hello');
-  }
-
-  onClick() {
-    console.log('click');
   }
 
   toHTML() {

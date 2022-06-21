@@ -7,8 +7,6 @@ export abstract class DomListener {
 
   constructor($root: WQuery, public options: IComOptions) {
     if (!$root) throw new Error('No $root privided for DomListener');
-
-    console.log($root);
     this.$root = $root;
   }
 

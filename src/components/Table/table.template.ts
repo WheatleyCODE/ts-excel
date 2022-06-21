@@ -1,7 +1,4 @@
-const CODES = {
-  A: 65,
-  Z: 90
-};
+import { CODES } from '@types';
 
 function createCell(rowNumber: number) {
   return function (_: string, i: number) {

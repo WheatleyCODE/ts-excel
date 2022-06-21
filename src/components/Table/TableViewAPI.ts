@@ -1,8 +1,5 @@
 import { $, WQuery } from '@wquery';
-
-const ID_FIRST_CELL = '0:0';
-const SELECTED_CELL = 'selected';
-const SELECTED_GROUP_CELL = 'selected-group';
+import { ID_FIRST_CELL, SELECTED_CELL, SELECTED_GROUP_CELL } from '@types';
 
 export class TableViewAPI {
   private $allCells: WQuery[];

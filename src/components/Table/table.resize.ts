@@ -1,9 +1,5 @@
-import { ResizeType } from '@types';
+import { ResizeType, RESIZER_MARGIN, MIN_COL_WIDTH, MIN_ROW_HEIGHT } from '@types';
 import { $, WQuery } from '@wquery';
-
-const MIN_ROW_HEIGHT = 20;
-const MIN_COL_WIDTH = 30;
-const RESIZER_MARGIN = 2;
 
 export function resize(resizeType: string, target: HTMLDivElement, $root: WQuery) {
   const $resizer = $(target);
