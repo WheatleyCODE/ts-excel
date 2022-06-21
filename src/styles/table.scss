@@ -6,20 +6,78 @@
   width: 100%;
   top: $headerHeight + $headerPaddingTop + $toolbarHeight + $formulaHeight + $headerPaddingButtom;
 
+  .row-resize,
+  .col-resize {
+    z-index: 100;
+    position: absolute;
+    opacity: 0;
+    background-color: $colorPrimary;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .row-resize::before,
+  .col-resize::before {
+    content: '';
+    position: absolute;
+    display: block;
+    background-color: $colorPrimary;
+  }
+
+  .col-resizing .col-resize,
+  .row-resizing .row-resize {
+    opacity: 1;
+  }
+
+  .row-resizing {
+    .row-resize::before {
+      left: 0px;
+      bottom: 2px;
+      width: 100vw;
+      height: 1px;
+    }
+  }
+
+  .col-resizing {
+    .col-resize::before {
+      top: 0;
+      right: 2px;
+      width: 1px;
+      height: 100vh;
+    }
+  }
+
   .row {
     display: flex;
-    min-height: 20px;
+    min-height: $minRowHeight;
     height: $rowHeight;
+
+    &__row-resize {
+      width: 100%;
+      height: 5px;
+      bottom: -3px;
+      cursor: row-resize;
+    }
+  }
+
+  .row__info,
+  .data__column {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background-color: $colorLightGrey2;
+    border: 1px solid $colorLightGrey;
+    align-items: center;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
   }
 
   .row__info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-width: $infoCellWidth;
     height: 100%;
-    border: 1px solid $colorLightGrey;
-    background-color: $colorLightGrey2;
     border-top: none;
   }
 
@@ -27,22 +85,16 @@
     display: flex;
 
     &__column {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid black;
-      background-color: $colorLightGrey2;
-      border: 1px solid $colorLightGrey;
       border-top: none;
       border-left: none;
-      min-width: 50px;
+      min-width: minColWidth;
       width: $cellWidth;
     }
 
     &__cell {
       display: flex;
       align-items: center;
-      min-width: 50px;
+      min-width: $minColWidth;
       width: $cellWidth;
       border: 1px solid #e2e2e3;
       border-top: none;
@@ -56,6 +108,13 @@
         outline: 2px solid $colorPrimary;
         z-index: 2;
       }
+    }
+
+    &__col-resize {
+      width: 5px;
+      height: 100%;
+      right: -3px;
+      cursor: col-resize;
     }
   }
 }

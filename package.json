@@ -16,7 +16,9 @@
     "typescript",
     "excel"
   ],
-  "eslintIgnore": ["webpack.config.js"],
+  "eslintIgnore": [
+    "webpack.config.js"
+  ],
   "browserslist": "> 0.25%, not dead",
   "author": "Dmitry Bazhaev <qb.wheatley@gmail.com>",
   "license": "ISC",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
+    "@babel/plugin-proposal-decorators": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-typescript": "^7.17.12",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
