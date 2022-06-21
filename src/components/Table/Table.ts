@@ -1,6 +1,7 @@
 import { ExcelComponent } from '@core';
-import { $, WQuery } from '@wquery';
+import { WQuery } from '@wquery';
 import { createTable } from './table.template';
+import { resize } from './table.resize';
 
 export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];
@@ -8,36 +9,17 @@ export class Table extends ExcelComponent {
   constructor($el: WQuery) {
     super($el, {
       name: 'Table',
-      listeners: ['mousedown', 'mouseup']
+      listeners: ['mousedown']
     });
   }
 
   onMousedown(e: MouseEvent): void {
-    if (!(e.target instanceof HTMLDivElement)) {
-      return;
-    }
+    if (!(e.target instanceof HTMLDivElement)) return;
 
-    if (e.target.dataset.resize) {
-      const $resizer = $(e.target);
-      const $parent = $resizer.getParent('[data-type="resizable"]');
+    const resType = e.target.dataset.resize;
+    if (!resType) return;
 
-      if (!$parent) return;
-      const coords = $parent.getCoords();
-
-      const mouseMoveCallBack = (e: MouseEvent) => {
-        const delta = e.pageX - coords.right;
-
-        $parent.css({
-          width: coords.width + delta + 'px'
-        });
-      };
-
-      document.onmousemove = mouseMoveCallBack;
-    }
-  }
-
-  onMouseup(): void {
-    document.onmousemove = null;
+    resize(resType, e.target, this.$root);
   }
 
   toHTML(): string {

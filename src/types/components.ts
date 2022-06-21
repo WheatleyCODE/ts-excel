@@ -7,6 +7,11 @@ export class IComponent extends ExcelComponent {
   }
 }
 
+export enum ResizeType {
+  COL = 'col',
+  ROW = 'row'
+}
+
 export interface IComOptions {
   name: string;
   listeners: string[];

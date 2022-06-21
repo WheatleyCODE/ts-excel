@@ -45,11 +45,11 @@
     transition: all 0.1s;
 
     &:hover {
-      border: 1px solid $colorGreen;
+      outline: 1px solid $colorGreen;
     }
 
     &:focus {
-      border: 2px solid $colorGreen;
+      outline: 2px solid $colorGreen;
     }
   }
 }

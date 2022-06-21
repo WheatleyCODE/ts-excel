@@ -4,16 +4,16 @@ export class WQuery {
   private $nativeElement: HTMLElement;
   private listeners: IWQueryListeners = {};
 
-  constructor(selector: string | HTMLElement | Element) {
+  constructor(selector: string | HTMLElement) {
     if (typeof selector === 'string') {
-      const node = document.querySelector(selector);
+      const node = document.querySelector<HTMLElement>(selector);
       if (!node)
         throw new Error(`WQuery: Node is not defined, Element is not found. Selector: ${selector}`);
-      this.$nativeElement = node as HTMLElement;
+      this.$nativeElement = node;
       return;
     }
 
-    this.$nativeElement = selector as HTMLElement;
+    this.$nativeElement = selector;
   }
 
   html(html?: string): string | WQuery {
@@ -50,12 +50,12 @@ export class WQuery {
 
   getParent(selector?: string): WQuery | null {
     if (selector) {
-      const $node = this.$nativeElement.closest(selector);
+      const $node = this.$nativeElement.closest<HTMLElement>(selector);
       if (!$node) return null;
       return $($node);
     }
 
-    const $node = this.$nativeElement.parentNode as Element;
+    const $node = this.$nativeElement.parentNode as HTMLElement;
     if (!$node) return null;
     return $($node);
   }
@@ -88,9 +88,45 @@ export class WQuery {
     this.$nativeElement.classList.remove(className);
     return this;
   }
+
+  clear(): WQuery {
+    this.html('');
+    return this;
+  }
+
+  focus(): WQuery {
+    this.$nativeElement.focus();
+    return this;
+  }
+
+  get data(): DOMStringMap {
+    return this.$nativeElement.dataset;
+  }
+
+  setAttr(attrName: string, value: string): WQuery {
+    this.$nativeElement.setAttribute(attrName, value);
+    return this;
+  }
+
+  getAttr(attrName: string): string | null {
+    return this.$nativeElement.getAttribute(attrName);
+  }
+
+  find(selector: string): WQuery | null {
+    const elem = this.$nativeElement.querySelector<HTMLElement>(selector);
+    if (elem === null) return null;
+    return $(elem);
+  }
+
+  findAll(selector: string): WQuery[] {
+    const nodeList = this.$nativeElement.querySelectorAll(selector) as NodeListOf<HTMLElement>;
+    const classArr: WQuery[] = [];
+    nodeList.forEach((elem) => classArr.push($(elem)));
+    return classArr;
+  }
 }
 
-export function $(selector: string | HTMLElement | Element): WQuery {
+export function $(selector: string | HTMLElement): WQuery {
   return new WQuery(selector);
 }
 

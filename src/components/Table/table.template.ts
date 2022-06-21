@@ -3,15 +3,20 @@ const CODES = {
   Z: 90
 };
 
-function createCell() {
+function createCell(_: string, i: number, rowNumber: number) {
   return `
-    <div contenteditable class="data__cell"></div>
+    <div contenteditable
+      data-col="${i}"
+      data-row="${rowNumber}"
+      data-id="${rowNumber}:${i}"
+      class="data__cell">
+     </div>
   `;
 }
 
-function createCol(letter: string) {
+function createCol(letter: string, i: number) {
   return `
-    <div data-type="resizable" class="data__column">
+    <div data-type="resizable" data-col="${i}" class="data__column">
       ${letter}
       <div data-resize="col" class="data__col-resize col-resize"></div>
     </div>
@@ -21,11 +26,8 @@ function createCol(letter: string) {
 function createRow(cols = '', i: string | number = '') {
   const resizer = i ? '<div data-resize="row" class="row__row-resize row-resize"></div>' : '';
   return `
-    <div class="excel-table__row row">
-      <div class="row__info">
-        ${i}
-        ${resizer}
-      </div>
+    <div data-row="${i}" data-type="resizable" class="excel-table__row row">
+      <div class="row__info">${i} ${resizer}</div>
       <div class="row__data data">${cols}</div>
     </div>
   `;
@@ -63,12 +65,15 @@ export function createTable(rowsCount = 60, colsCount = 30) {
     }
   }
 
-  const cells = new Array(colsCount).fill('').map(createCell).join('');
-
   rows.push(createRow(cols.join('')));
 
-  for (let i = 0; i < rowsCount; i++) {
-    rows.push(createRow(cells, i + 1));
+  for (let y = 0; y < rowsCount; y++) {
+    const cells = new Array(colsCount)
+      .fill('')
+      .map((el, i) => createCell(el, i, y))
+      .join('');
+
+    rows.push(createRow(cells, y + 1));
   }
 
   return rows.join('');
