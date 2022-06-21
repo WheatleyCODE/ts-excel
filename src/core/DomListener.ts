@@ -1,6 +1,6 @@
 import { WQuery } from '@wquery';
-import { createDOMListenerMethodName } from '@utils';
 import { IComOptions } from '@types';
+import { wutils } from '@utils';
 
 export abstract class DomListener {
   public $root: WQuery;
@@ -12,7 +12,7 @@ export abstract class DomListener {
 
   initDOMListeners() {
     this.options.listeners.forEach((listener) => {
-      const methodName = createDOMListenerMethodName(listener);
+      const methodName = wutils.createDOMListenerMethodName(listener);
 
       if (!this[methodName])
         throw new Error(

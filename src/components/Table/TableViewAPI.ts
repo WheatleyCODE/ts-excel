@@ -1,6 +1,6 @@
 import { $, WQuery } from '@wquery';
 import { ID_FIRST_CELL, SELECTED_CELL, SELECTED_GROUP_CELL } from '@types';
-import { splitAndToInt } from '@utils';
+import { wutils } from '@utils';
 
 export class TableViewAPI {
   private $allCells: WQuery[];
@@ -42,8 +42,8 @@ export class TableViewAPI {
     const newCellId = $newCell.data.id;
 
     if (activeCellId && newCellId) {
-      const actIds = splitAndToInt(activeCellId, ':');
-      const newIds = splitAndToInt(newCellId, ':');
+      const actIds = wutils.splitAndToInt(activeCellId, ':');
+      const newIds = wutils.splitAndToInt(newCellId, ':');
 
       const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
 
