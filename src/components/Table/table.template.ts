@@ -33,9 +33,7 @@ function createRow(cols = '', i: string | number = '') {
 }
 
 function toChar(_: string, i: number, count: number) {
-  if (count) {
-    return String.fromCharCode(CODES.A + i).repeat(count + 1);
-  }
+  if (count) return String.fromCharCode(CODES.A + i).repeat(count + 1);
 
   return String.fromCharCode(CODES.A + i);
 }

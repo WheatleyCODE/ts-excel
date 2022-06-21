@@ -1,5 +1,6 @@
 import { $, WQuery } from '@wquery';
 import { ID_FIRST_CELL, SELECTED_CELL, SELECTED_GROUP_CELL } from '@types';
+import { splitAndToInt } from '@utils';
 
 export class TableViewAPI {
   private $allCells: WQuery[];
@@ -12,17 +13,17 @@ export class TableViewAPI {
   }
 
   select(id: string) {
-    const $condidate = this.$allCells.find(($cel) => $cel.data.id === id);
-    this.selectCell($condidate);
+    const $newCell = this.$allCells.find(($cel) => $cel.data.id === id);
+    this.selectCell($newCell);
   }
 
-  private selectCell($condidate: WQuery | undefined) {
+  private selectCell($newCell: WQuery | undefined) {
     this.clearGroup();
-    if ($condidate) {
+    if ($newCell) {
       this.$activeCell.removeClass(SELECTED_CELL);
-      $condidate.addClass(SELECTED_CELL);
-      $condidate.focus();
-      this.$activeCell = $condidate;
+      $newCell.addClass(SELECTED_CELL);
+      $newCell.focus();
+      this.$activeCell = $newCell;
     }
   }
 
@@ -33,18 +34,21 @@ export class TableViewAPI {
 
   selectGroup(id: string) {
     this.clearGroup();
-    const $condidate = this.$allCells.find(($cel) => $cel.data.id === id);
+    const $newCell = this.$allCells.find(($cel) => $cel.data.id === id);
 
-    if (!$condidate) return;
+    if (!$newCell) return;
 
-    if (this.$activeCell.data.id && $condidate.data.id) {
-      const lastIds = this.$activeCell.data.id.split(':').map((str) => +str);
-      const newIds = $condidate.data.id.split(':').map((str) => +str);
+    const activeCellId = this.$activeCell.data.id;
+    const newCellId = $newCell.data.id;
+
+    if (activeCellId && newCellId) {
+      const actIds = splitAndToInt(activeCellId, ':');
+      const newIds = splitAndToInt(newCellId, ':');
 
       const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
 
-      const [maxRow, minRow] = [lastIds[0], newIds[0]].sort(sortCallBack);
-      const [maxCol, minCol] = [lastIds[1], newIds[1]].sort(sortCallBack);
+      const [maxRow, minRow] = [actIds[0], newIds[0]].sort(sortCallBack);
+      const [maxCol, minCol] = [actIds[1], newIds[1]].sort(sortCallBack);
 
       for (let i = minRow; i <= maxRow; i += 1) {
         for (let j = minCol; j <= maxCol; j += 1) {

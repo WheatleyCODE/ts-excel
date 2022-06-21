@@ -6,6 +6,8 @@ export const ID_FIRST_CELL = '0:0';
 export const SELECTED_CELL = 'selected';
 export const SELECTED_GROUP_CELL = 'selected-group';
 
+export const METHOD_PREFIX = 'on';
+
 export const CODES = {
   A: 65,
   Z: 90
