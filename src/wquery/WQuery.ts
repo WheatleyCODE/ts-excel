@@ -16,12 +16,12 @@ export class WQuery {
     this.$nativeElement = selector;
   }
 
-  html(html?: string): string | WQuery {
-    if (typeof html === 'string') {
-      this.$nativeElement.innerHTML = html;
-      return this;
-    }
+  setHtml(html: string): WQuery {
+    this.$nativeElement.innerHTML = html;
+    return this;
+  }
 
+  getHtml(): string {
     return this.$nativeElement.outerHTML.trim();
   }
 
@@ -90,7 +90,7 @@ export class WQuery {
   }
 
   clear(): WQuery {
-    this.html('');
+    this.setHtml('');
     return this;
   }
 

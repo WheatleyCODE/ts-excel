@@ -5,7 +5,7 @@ import { IComOptions } from '@types';
 export abstract class DomListener {
   public $root: WQuery;
 
-  constructor($root: WQuery, private options: IComOptions) {
+  constructor($root: WQuery, public options: IComOptions) {
     if (!$root) throw new Error('No $root privided for DomListener');
 
     console.log($root);

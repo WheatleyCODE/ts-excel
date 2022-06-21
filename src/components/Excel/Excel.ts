@@ -18,7 +18,7 @@ export class Excel {
       const $el = $.create('div', Component.classNames);
       const component = new Component($el);
 
-      $el.html(component.toHTML());
+      $el.setHtml(component.toHTML());
       $root.append($el);
 
       return component;
@@ -29,13 +29,18 @@ export class Excel {
 
   render(): void {
     this.$el.append(this.getRoot());
-    this.componentsIntants.forEach((instComponent) => instComponent.init());
+    this.componentsIntants.forEach((instComponent) => {
+      instComponent.init();
+      instComponent.componentDidMount();
+    });
   }
 
-  log(): void {
-    console.log(this.rootSelector);
-    console.log(this.options);
-    console.log(this.$el);
-    console.log(this.components);
+  removeComponents(): void {
+    this.componentsIntants.forEach((instComponent) => {
+      instComponent.componentWilUnmount();
+      instComponent.destroy();
+    });
+
+    this.$el.setHtml('');
   }
 }

@@ -9,6 +9,14 @@ export abstract class ExcelComponent extends DomListener {
 
   abstract toHTML(): string;
 
+  componentDidMount() {
+    console.log(this.$root, `${this.options.name} Component did mount`);
+  }
+
+  componentWilUnmount() {
+    console.log(this.$root, `${this.options.name} Component Will unmount`);
+  }
+
   init() {
     this.initDOMListeners();
   }
