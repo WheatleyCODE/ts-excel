@@ -11,7 +11,7 @@ export class Table extends ExcelComponent {
   constructor($el: WQuery) {
     super($el, {
       name: 'Table',
-      listeners: ['mousedown']
+      listeners: ['mousedown', 'keydown']
     });
   }
 
@@ -36,6 +36,12 @@ export class Table extends ExcelComponent {
   componentDidMount() {
     super.componentDidMount();
     this.tableViewApi = new TableViewAPI(this.$root);
+  }
+
+  onKeydown(e: KeyboardEvent): void {
+    if (!this.tableViewApi) return;
+
+    this.tableViewApi.onKeydownHandler(e);
   }
 
   toHTML(): string {

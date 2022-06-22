@@ -1,5 +1,12 @@
 import { $, WQuery } from '@wquery';
-import { ID_FIRST_CELL, SELECTED_CELL, SELECTED_GROUP_CELL } from '@types';
+import {
+  celectKeys,
+  EventKeys,
+  ICellId,
+  ID_FIRST_CELL,
+  SELECTED_CELL,
+  SELECTED_GROUP_CELL
+} from '@types';
 import { wutils } from '@utils';
 
 export class TableViewAPI {
@@ -12,19 +19,33 @@ export class TableViewAPI {
     this.select(ID_FIRST_CELL);
   }
 
-  select(id: string) {
-    const $newCell = this.$allCells.find(($cel) => $cel.data.id === id);
-    this.selectCell($newCell);
+  private activateCell($newCel: WQuery | undefined, activate: boolean) {
+    if (!$newCel || !activate) return;
+    this.$activeCell.removeClass(SELECTED_CELL);
+    $newCel.addClass(SELECTED_CELL);
+    $newCel.focus();
+    this.$activeCell = $newCel;
   }
 
-  private selectCell($newCell: WQuery | undefined) {
+  select(cell: WQuery | ICellId | string | undefined, activate = true): WQuery | undefined {
     this.clearGroup();
-    if ($newCell) {
-      this.$activeCell.removeClass(SELECTED_CELL);
-      $newCell.addClass(SELECTED_CELL);
-      $newCell.focus();
-      this.$activeCell = $newCell;
+
+    if (!cell) return;
+
+    if (cell && cell instanceof WQuery) {
+      this.activateCell(cell, activate);
+      return cell;
     }
+
+    if (typeof cell === 'string') {
+      const $newCell = this.$allCells.find(($cel) => $cel.data.id === cell);
+      this.activateCell($newCell, activate);
+      return $newCell;
+    }
+
+    const $newCell = this.$allCells.find(($cel) => $cel.data.id === `${cell.row}:${cell.col}`);
+    this.activateCell($newCell, activate);
+    return $newCell;
   }
 
   private clearGroup() {
@@ -32,9 +53,47 @@ export class TableViewAPI {
     this.$groupCells = [];
   }
 
+  onKeydownHandler(e: KeyboardEvent) {
+    const activeId = this.$activeCell.data.id;
+    if (!activeId) return;
+
+    const { key, shiftKey } = e;
+    const id = wutils.parceCellId(activeId);
+
+    if (celectKeys.includes(key)) {
+      e.preventDefault();
+      this.keyDownSelectCell(key, id, shiftKey);
+    }
+  }
+
+  private keyDownSelectCell(key: string, { row, col }: ICellId, isShiftKey: boolean) {
+    switch (key) {
+      case EventKeys.ARROW_UP:
+        row--;
+        break;
+      case EventKeys.ARROW_DOWN:
+        row++;
+        break;
+      case EventKeys.ARROW_LEFT:
+        col--;
+        break;
+      case EventKeys.ARROW_RIGHT:
+        col++;
+        break;
+      case EventKeys.TAB:
+        isShiftKey ? col-- : col++;
+        break;
+      case EventKeys.ENTER:
+        isShiftKey ? row-- : row++;
+        break;
+    }
+
+    this.select({ col, row });
+  }
+
   selectGroup(id: string) {
     this.clearGroup();
-    const $newCell = this.$allCells.find(($cel) => $cel.data.id === id);
+    const $newCell = this.select(id, false);
 
     if (!$newCell) return;
 
@@ -42,13 +101,13 @@ export class TableViewAPI {
     const newCellId = $newCell.data.id;
 
     if (activeCellId && newCellId) {
-      const actIds = wutils.splitAndToInt(activeCellId, ':');
-      const newIds = wutils.splitAndToInt(newCellId, ':');
+      const actIds = wutils.parceCellId(activeCellId);
+      const newIds = wutils.parceCellId(newCellId);
 
       const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
 
-      const [maxRow, minRow] = [actIds[0], newIds[0]].sort(sortCallBack);
-      const [maxCol, minCol] = [actIds[1], newIds[1]].sort(sortCallBack);
+      const [maxRow, minRow] = [actIds.row, newIds.row].sort(sortCallBack);
+      const [maxCol, minCol] = [actIds.col, newIds.col].sort(sortCallBack);
 
       for (let i = minRow; i <= maxRow; i += 1) {
         for (let j = minCol; j <= maxCol; j += 1) {
@@ -60,6 +119,8 @@ export class TableViewAPI {
           }
         }
       }
+
+      this.$groupCells.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
     }
 
     this.$activeCell.focus();

@@ -1,3 +1,5 @@
+import { ICellId } from '@types';
+
 class WUtils {
   private methodPrefix = 'on';
 
@@ -8,8 +10,14 @@ class WUtils {
   capitalize(string: string) {
     return string[0].toLocaleUpperCase() + string.slice(1);
   }
-  splitAndToInt(string: string, separator: string): number[] {
-    return string.split(separator).map((str) => +str);
+
+  parceCellId(id: string): ICellId {
+    const [row, col] = id.split(':').map((str) => +str);
+
+    return {
+      col,
+      row
+    };
   }
 }
 
