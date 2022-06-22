@@ -1,6 +1,6 @@
 import { EventNames, ExcelComponent } from '@core';
 import { WQuery } from '@wquery';
-import { IExcelComOptions } from '@types';
+import { EventKeys, IExcelComOptions } from '@types';
 
 export class Formula extends ExcelComponent {
   static classNames = ['excel__formula', 'excel-formula'];
@@ -9,13 +9,21 @@ export class Formula extends ExcelComponent {
   constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Formula',
-      listeners: ['input'],
+      listeners: ['input', 'keydown'],
       ...options
     });
   }
 
   onInput() {
-    this.emitter.emit(EventNames.FORMULA_INPUT, this.$input.getTextContent());
+    this.emit(EventNames.FORMULA_INPUT, this.$input.getTextContent());
+  }
+
+  onKeydown(e: KeyboardEvent) {
+    if (e.key === EventKeys.ENTER || e.key === EventKeys.TAB) {
+      e.preventDefault();
+
+      this.emit(EventNames.FORMULA_TAB_OR_ENTER_PRESS);
+    }
   }
 
   componentDidMount() {
@@ -25,7 +33,13 @@ export class Formula extends ExcelComponent {
     if (!$input) return;
     this.$input = $input;
 
-    this.emitter.subscribe(EventNames.TABLE_CELECT_CELL, (string) => {
+    this.on(EventNames.TABLE_CELECT_CELL, (string) => {
+      if (typeof string === 'string') {
+        this.$input.setTextContent(string);
+      }
+    });
+
+    this.on(EventNames.TABLE_INPUT, (string) => {
       if (typeof string === 'string') {
         this.$input.setTextContent(string);
       }

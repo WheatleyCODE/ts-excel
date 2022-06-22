@@ -12,7 +12,7 @@ export class Table extends ExcelComponent {
   constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown'],
+      listeners: ['mousedown', 'keydown', 'input'],
       ...options
     });
   }
@@ -33,19 +33,33 @@ export class Table extends ExcelComponent {
     if (resType) resize(resType, e.target, this.$root);
   }
 
+  onKeydown(e: KeyboardEvent): void {
+    this.tableViewApi.onKeydownHandler(e);
+  }
+
+  onInput() {
+    this.tableViewApi.onInputHandler();
+  }
+
   componentDidMount(): void {
     super.componentDidMount();
-    this.tableViewApi = new TableViewAPI(this.$root, this.emitter);
 
-    this.emitter.subscribe(EventNames.FORMULA_INPUT, (string) => {
+    const miniEmitter = {
+      on: this.on.bind(this),
+      emit: this.emit.bind(this)
+    };
+
+    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter);
+
+    this.on(EventNames.FORMULA_INPUT, (string) => {
       if (typeof string === 'string') {
         this.tableViewApi.changeText(string);
       }
     });
-  }
 
-  onKeydown(e: KeyboardEvent): void {
-    this.tableViewApi.onKeydownHandler(e);
+    this.on(EventNames.FORMULA_TAB_OR_ENTER_PRESS, () => {
+      this.tableViewApi.selectActiveCell();
+    });
   }
 
   toHTML(): string {

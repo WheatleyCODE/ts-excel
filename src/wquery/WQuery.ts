@@ -126,7 +126,8 @@ export class WQuery {
   }
 
   getTextContent(): string {
-    return this.$nativeElement.textContent || '';
+    const text = this.$nativeElement.textContent || '';
+    return text.trim();
   }
 
   setTextContent(string: string): WQuery {

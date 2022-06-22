@@ -41,7 +41,7 @@ export class Excel {
     });
   }
 
-  removeComponents(): void {
+  destroy(): void {
     this.instantComponents.forEach((instComponent) => {
       instComponent.componentWilUnmount();
       instComponent.destroy();

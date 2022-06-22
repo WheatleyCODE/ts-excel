@@ -8,25 +8,25 @@ import {
   SELECTED_GROUP_CELL
 } from '@types';
 import { wutils } from '@utils';
-import { Emitter, EventNames } from '@core';
+import { EventNames, IFacadeEmitter } from '@core';
 
 export class TableViewAPI {
   private $allCells: WQuery[];
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
 
-  constructor(private $root: WQuery, private emitter: Emitter) {
+  constructor(private $root: WQuery, private emitter: IFacadeEmitter) {
     this.$allCells = $root.findAll('[data-id]');
     this.select(ID_FIRST_CELL);
   }
 
-  private activateCell($newCel: WQuery | undefined, activate: boolean) {
-    if (!$newCel || !activate) return;
-    this.emitter.emit(EventNames.TABLE_CELECT_CELL, $newCel.getTextContent());
+  private activateCell($newCell: WQuery | undefined, activate = true) {
+    if (!$newCell || !activate) return;
+    this.emitter.emit(EventNames.TABLE_CELECT_CELL, $newCell.getTextContent());
     this.$activeCell.removeClass(SELECTED_CELL);
-    $newCel.addClass(SELECTED_CELL);
-    $newCel.focus();
-    this.$activeCell = $newCel;
+    $newCell.addClass(SELECTED_CELL);
+    $newCell.focus();
+    this.$activeCell = $newCell;
   }
 
   select(cell: WQuery | ICellId | string | undefined, activate = true): WQuery | undefined {
@@ -50,8 +50,16 @@ export class TableViewAPI {
     return $newCell;
   }
 
+  selectActiveCell() {
+    this.activateCell(this.$activeCell);
+  }
+
   changeText(string: string) {
     this.$activeCell.setTextContent(string);
+  }
+
+  onInputHandler() {
+    this.emitter.emit(EventNames.TABLE_INPUT, this.$activeCell.getTextContent());
   }
 
   private clearGroup() {
