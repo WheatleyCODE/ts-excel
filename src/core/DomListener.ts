@@ -1,14 +1,12 @@
 import { WQuery } from '@wquery';
-import { wutils } from '@utils';
 import { IComOptions } from '@types';
+import { wutils } from '@utils';
 
 export abstract class DomListener {
   public $root: WQuery;
 
-  constructor($root: WQuery, private options: IComOptions) {
+  constructor($root: WQuery, public options: IComOptions) {
     if (!$root) throw new Error('No $root privided for DomListener');
-
-    console.log($root);
     this.$root = $root;
   }
 

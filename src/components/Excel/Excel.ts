@@ -1,41 +1,52 @@
+import { Emitter } from '@core';
 import { $, WQuery } from '@wquery';
 import { IComponent, IOptions } from '@types';
 
 export class Excel {
-  private $el: WQuery;
+  private $rootApp: WQuery;
   private components: typeof IComponent[];
-  private componentsIntants: IComponent[] = [];
+  private instantComponents: IComponent[] = [];
+  private emitter = new Emitter();
 
-  constructor(private rootSelector: string, private options: IOptions) {
-    this.$el = $(rootSelector);
+  constructor(rootSelector: string, options: IOptions) {
+    this.$rootApp = $(rootSelector);
     this.components = options.components;
   }
 
-  getRoot(): WQuery {
-    const $root = $.create('div', 'excel');
+  getRootExcel(): WQuery {
+    const $rootExcel = $.create('div', 'excel');
 
-    this.componentsIntants = this.components.map((Component) => {
+    const componentOptions = {
+      emitter: this.emitter
+    };
+
+    this.instantComponents = this.components.map((Component) => {
       const $el = $.create('div', Component.classNames);
-      const component = new Component($el);
+      const component = new Component($el, componentOptions);
 
-      $el.html(component.toHTML());
-      $root.append($el);
+      $el.setHtml(component.toHTML());
+      $rootExcel.append($el);
 
       return component;
     });
 
-    return $root;
+    return $rootExcel;
   }
 
   render(): void {
-    this.$el.append(this.getRoot());
-    this.componentsIntants.forEach((instComponent) => instComponent.init());
+    this.$rootApp.append(this.getRootExcel());
+    this.instantComponents.forEach((instComponent) => {
+      instComponent.init();
+      instComponent.componentDidMount();
+    });
   }
 
-  log(): void {
-    console.log(this.rootSelector);
-    console.log(this.options);
-    console.log(this.$el);
-    console.log(this.components);
+  destroy(): void {
+    this.instantComponents.forEach((instComponent) => {
+      instComponent.componentWilUnmount();
+      instComponent.destroy();
+    });
+
+    this.$rootApp.setHtml('');
   }
 }

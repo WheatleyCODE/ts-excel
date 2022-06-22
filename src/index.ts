@@ -5,5 +5,4 @@ const excel = new Excel('#root', {
   components: [Header, Toolbar, Formula, Table]
 });
 
-excel.log();
 excel.render();

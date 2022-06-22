@@ -96,7 +96,7 @@
       align-items: center;
       min-width: $minColWidth;
       width: $cellWidth;
-      border: 1px solid #e2e2e3;
+      border: 1px solid $colorLightGrey3;
       border-top: none;
       padding: 4px;
       border-left: none;
@@ -107,6 +107,10 @@
         border: none;
         outline: 2px solid $colorPrimary;
         z-index: 2;
+      }
+
+      &.selected-group {
+        background-color: $colorPrimary2;
       }
     }
 

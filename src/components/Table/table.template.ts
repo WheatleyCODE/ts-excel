@@ -1,17 +1,16 @@
-const CODES = {
-  A: 65,
-  Z: 90
-};
+import { CODES } from '@types';
 
-function createCell(_: string, i: number, rowNumber: number) {
-  return `
-    <div contenteditable
-      data-col="${i}"
-      data-row="${rowNumber}"
-      data-id="${rowNumber}:${i}"
-      class="data__cell">
-     </div>
-  `;
+function createCell(rowNumber: number) {
+  return function (_: string, i: number) {
+    return `
+      <div contenteditable
+        data-col="${i}"
+        data-row="${rowNumber}"
+        data-id="${rowNumber}:${i}"
+        class="data__cell">
+      </div>
+    `;
+  };
 }
 
 function createCol(letter: string, i: number) {
@@ -34,9 +33,7 @@ function createRow(cols = '', i: string | number = '') {
 }
 
 function toChar(_: string, i: number, count: number) {
-  if (count) {
-    return String.fromCharCode(CODES.A + i).repeat(count + 1);
-  }
+  if (count) return String.fromCharCode(CODES.A + i).repeat(count + 1);
 
   return String.fromCharCode(CODES.A + i);
 }
@@ -68,10 +65,7 @@ export function createTable(rowsCount = 60, colsCount = 30) {
   rows.push(createRow(cols.join('')));
 
   for (let y = 0; y < rowsCount; y++) {
-    const cells = new Array(colsCount)
-      .fill('')
-      .map((el, i) => createCell(el, i, y))
-      .join('');
+    const cells = new Array(colsCount).fill('').map(createCell(y)).join('');
 
     rows.push(createRow(cells, y + 1));
   }

@@ -1,1 +1,1 @@
-export * from './WUtils';
+export { wutils } from './WUtils';
