@@ -8,19 +8,21 @@ import {
   SELECTED_GROUP_CELL
 } from '@types';
 import { wutils } from '@utils';
+import { Emitter, EventNames } from '@core';
 
 export class TableViewAPI {
   private $allCells: WQuery[];
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
 
-  constructor(private $root: WQuery) {
+  constructor(private $root: WQuery, private emitter: Emitter) {
     this.$allCells = $root.findAll('[data-id]');
     this.select(ID_FIRST_CELL);
   }
 
   private activateCell($newCel: WQuery | undefined, activate: boolean) {
     if (!$newCel || !activate) return;
+    this.emitter.emit(EventNames.TABLE_CELECT_CELL, $newCel.getTextContent());
     this.$activeCell.removeClass(SELECTED_CELL);
     $newCel.addClass(SELECTED_CELL);
     $newCel.focus();
@@ -46,6 +48,10 @@ export class TableViewAPI {
     const $newCell = this.$allCells.find(($cel) => $cel.data.id === `${cell.row}:${cell.col}`);
     this.activateCell($newCell, activate);
     return $newCell;
+  }
+
+  changeText(string: string) {
+    this.$activeCell.setTextContent(string);
   }
 
   private clearGroup() {

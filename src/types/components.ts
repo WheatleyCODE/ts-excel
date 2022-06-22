@@ -1,6 +1,15 @@
-import { ExcelComponent } from '@core';
+import { Emitter, ExcelComponent } from '@core';
+import { WQuery } from '@wquery';
 export class IComponent extends ExcelComponent {
   static classNames = ['', ''];
+
+  constructor($el: WQuery, options: IExcelComOptions) {
+    super($el, {
+      name: 'IComponent',
+      listeners: [],
+      ...options
+    });
+  }
 
   toHTML() {
     return '';
@@ -35,7 +44,11 @@ export interface ICellId {
   col: number;
 }
 
-export interface IComOptions {
+export interface IExcelComOptions {
+  emitter: Emitter;
+}
+
+export interface IComOptions extends IExcelComOptions {
   name: string;
   listeners: string[];
 }

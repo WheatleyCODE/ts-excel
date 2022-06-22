@@ -1,24 +1,24 @@
-import { ExcelComponent } from '@core';
+import { EventNames, ExcelComponent } from '@core';
 import { $, WQuery } from '@wquery';
 import { createTable } from './table.template';
 import { resize } from './table.resize';
 import { TableViewAPI } from './TableViewAPI';
+import { IExcelComOptions } from '@types';
 
 export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];
-  private tableViewApi: TableViewAPI | undefined;
+  private tableViewApi!: TableViewAPI;
 
-  constructor($el: WQuery) {
+  constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Table',
-      listeners: ['mousedown', 'keydown']
+      listeners: ['mousedown', 'keydown'],
+      ...options
     });
   }
 
   onMousedown(e: MouseEvent): void {
     if (!(e.target instanceof HTMLDivElement)) return;
-    if (!this.tableViewApi) return;
-    e.preventDefault();
 
     const $target = $(e.target);
     const id = $target.data.id;
@@ -33,14 +33,18 @@ export class Table extends ExcelComponent {
     if (resType) resize(resType, e.target, this.$root);
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     super.componentDidMount();
-    this.tableViewApi = new TableViewAPI(this.$root);
+    this.tableViewApi = new TableViewAPI(this.$root, this.emitter);
+
+    this.emitter.subscribe(EventNames.FORMULA_INPUT, (string) => {
+      if (typeof string === 'string') {
+        this.tableViewApi.changeText(string);
+      }
+    });
   }
 
   onKeydown(e: KeyboardEvent): void {
-    if (!this.tableViewApi) return;
-
     this.tableViewApi.onKeydownHandler(e);
   }
 

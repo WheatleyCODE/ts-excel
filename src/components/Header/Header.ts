@@ -1,13 +1,15 @@
 import { ExcelComponent } from '@core';
 import { WQuery } from '@wquery';
+import { IExcelComOptions } from '@types';
 
 export class Header extends ExcelComponent {
   static classNames = ['excel__header', 'excel-header'];
 
-  constructor($el: WQuery) {
+  constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Header',
-      listeners: []
+      listeners: [],
+      ...options
     });
   }
 

@@ -1,10 +1,14 @@
 import { WQuery } from '@wquery';
-import { IComOptions } from '@types';
 import { DomListener } from './DomListener';
+import { Emitter } from './Emitter';
+import { IComOptions } from '@types';
 
 export abstract class ExcelComponent extends DomListener {
-  constructor($el: WQuery, options: IComOptions = { name: 'ExcelComponent', listeners: [] }) {
+  public emitter: Emitter;
+
+  constructor($el: WQuery, options: IComOptions) {
     super($el, options);
+    this.emitter = options.emitter;
   }
 
   abstract toHTML(): string;

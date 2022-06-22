@@ -124,6 +124,15 @@ export class WQuery {
     nodeList.forEach((elem) => classArr.push($(elem)));
     return classArr;
   }
+
+  getTextContent(): string {
+    return this.$nativeElement.textContent || '';
+  }
+
+  setTextContent(string: string): WQuery {
+    this.$nativeElement.textContent = string;
+    return this;
+  }
 }
 
 export function $(selector: string | HTMLElement): WQuery {

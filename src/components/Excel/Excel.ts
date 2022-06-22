@@ -1,3 +1,4 @@
+import { Emitter } from '@core';
 import { $, WQuery } from '@wquery';
 import { IComponent, IOptions } from '@types';
 
@@ -5,6 +6,7 @@ export class Excel {
   private $rootApp: WQuery;
   private components: typeof IComponent[];
   private instantComponents: IComponent[] = [];
+  private emitter = new Emitter();
 
   constructor(rootSelector: string, options: IOptions) {
     this.$rootApp = $(rootSelector);
@@ -14,9 +16,13 @@ export class Excel {
   getRootExcel(): WQuery {
     const $rootExcel = $.create('div', 'excel');
 
+    const componentOptions = {
+      emitter: this.emitter
+    };
+
     this.instantComponents = this.components.map((Component) => {
       const $el = $.create('div', Component.classNames);
-      const component = new Component($el);
+      const component = new Component($el, componentOptions);
 
       $el.setHtml(component.toHTML());
       $rootExcel.append($el);

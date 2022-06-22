@@ -1,13 +1,15 @@
 import { ExcelComponent } from '@core';
 import { WQuery } from '@wquery';
+import { IExcelComOptions } from '@types';
 
 export class Toolbar extends ExcelComponent {
   static classNames = ['excel__toolbar', 'excel-toolbar'];
 
-  constructor($el: WQuery) {
+  constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Table',
-      listeners: []
+      listeners: [],
+      ...options
     });
   }
 
