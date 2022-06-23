@@ -27,6 +27,14 @@ export class TableViewAPI {
     $newCell.addClass(SELECTED_CELL);
     $newCell.focus();
     this.$activeCell = $newCell;
+    this.emitter.emit(EventNames.TABLE_EMIT_INFO, $newCell.data.id);
+  }
+
+  selectAll() {
+    this.clearGroup();
+    this.select(this.$allCells[0]);
+    this.$groupCells = this.$allCells;
+    this.$groupCells.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
   }
 
   select(cell: WQuery | ICellId | string | undefined, activate = true): WQuery | undefined {
@@ -103,6 +111,25 @@ export class TableViewAPI {
     }
 
     this.select({ col, row });
+  }
+
+  selectFullColumnOrRow(row: string | undefined, col: string | undefined) {
+    this.clearGroup();
+    let $newGroup: WQuery[] = [];
+
+    if (row && !col) {
+      const correctRow = `${+row - 1}`;
+      $newGroup = this.$allCells.filter(($cell) => $cell.data.row === correctRow);
+    }
+
+    if (col && !row) {
+      const correctColl = `${+col}`;
+      $newGroup = this.$allCells.filter(($cell) => $cell.data.col === correctColl);
+    }
+
+    $newGroup.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
+    this.select($newGroup[0]);
+    this.$groupCells = $newGroup;
   }
 
   selectGroup(id: string) {

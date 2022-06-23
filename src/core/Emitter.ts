@@ -2,7 +2,9 @@ export enum EventNames {
   FORMULA_INPUT = 'formula:input',
   TABLE_CELECT_CELL = 'table:select-cell',
   TABLE_INPUT = 'table:input',
-  FORMULA_TAB_OR_ENTER_PRESS = 'formula:tab-or-enter-press'
+  FORMULA_TAB_OR_ENTER_PRESS = 'formula:tab-or-enter-press',
+  FORMULA_SELECT_ALL = 'formula:select-all',
+  TABLE_EMIT_INFO = 'table:emit-info'
 }
 
 export interface IFacadeEmitter {

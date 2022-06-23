@@ -19,10 +19,15 @@ export class Table extends ExcelComponent {
 
   onMousedown(e: MouseEvent): void {
     if (!(e.target instanceof HTMLDivElement)) return;
+    e.preventDefault();
 
     const $target = $(e.target);
     const id = $target.data.id;
     const resType = $target.data.resize;
+
+    if ($target.data.maincoll || $target.data.mainrow) {
+      this.tableViewApi.selectFullColumnOrRow($target.data.row, $target.data.col);
+    }
 
     if (e.shiftKey && id) {
       this.tableViewApi.selectGroup(id);
@@ -60,9 +65,13 @@ export class Table extends ExcelComponent {
     this.on(EventNames.FORMULA_TAB_OR_ENTER_PRESS, () => {
       this.tableViewApi.selectActiveCell();
     });
+
+    this.on(EventNames.FORMULA_SELECT_ALL, () => {
+      this.tableViewApi.selectAll();
+    });
   }
 
   toHTML(): string {
-    return createTable(60, 30);
+    return createTable(30, 120);
   }
 }
