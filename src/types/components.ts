@@ -1,4 +1,5 @@
 import { Emitter, ExcelComponent } from '@core';
+import { WRedux } from '@redux';
 import { WQuery } from '@wquery';
 export class IComponent extends ExcelComponent {
   static classNames = ['', ''];
@@ -64,4 +65,5 @@ export interface IWQueryListeners {
 
 export interface IOptions {
   components: typeof IComponent[];
+  wredux: WRedux;
 }

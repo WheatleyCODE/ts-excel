@@ -88,8 +88,6 @@ export class TableViewAPI {
     }
 
     $cells.forEach(($cell) => {
-      console.log($cell);
-
       if (!$cell.data.id) return;
       const parsedId = wutils.parceCellId($cell.data.id);
 
