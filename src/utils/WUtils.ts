@@ -12,7 +12,7 @@ class WUtils {
   }
 
   parceCellId(id: string): ICellId {
-    const [row, col] = id.split(':').map((str) => +str);
+    const [col, row] = id.split(':').map((str) => +str);
 
     return {
       col,

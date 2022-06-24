@@ -4,7 +4,9 @@ import {
   EventKeys,
   ICellId,
   ID_FIRST_CELL,
+  ISelectOptions,
   SELECTED_CELL,
+  SELECTED_HEADER,
   SELECTED_GROUP_CELL
 } from '@types';
 import { wutils } from '@utils';
@@ -12,54 +14,94 @@ import { EventNames, IFacadeEmitter } from '@core';
 
 export class TableViewAPI {
   private $allCells: WQuery[];
+  private $headers: WQuery[];
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
 
   constructor(private $root: WQuery, private emitter: IFacadeEmitter) {
     this.$allCells = $root.findAll('[data-id]');
+    this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
+
     this.select(ID_FIRST_CELL);
   }
 
-  private activateCell($newCell: WQuery | undefined, activate = true) {
-    if (!$newCell || !activate) return;
-    this.emitter.emit(EventNames.TABLE_CELECT_CELL, $newCell.getTextContent());
+  selectCell(id: string) {
+    this.select(id);
+  }
+
+  selectAllCells() {
+    this.select(this.$allCells[0]);
+    this.selectAll(this.$allCells, { emit: false, clear: false });
+    this.emitter.emit(EventNames.TABLE_EMIT_INFO, 'All');
+  }
+
+  private select(cell: string | WQuery, options: ISelectOptions = {}) {
+    const { emit = true, clear = true } = options;
+    if (clear) this.clearGroup();
+    this.$headers.forEach(($header) => $header.removeClass('selected'));
+
+    let $newCell: WQuery | undefined;
+
+    if (cell instanceof WQuery) {
+      $newCell = cell;
+    }
+
+    if (typeof cell === 'string') {
+      $newCell = this.$allCells.find(($cell) => $cell.data.id === cell);
+    }
+
+    if (!$newCell) return;
+
     this.$activeCell.removeClass(SELECTED_CELL);
     $newCell.addClass(SELECTED_CELL);
     $newCell.focus();
     this.$activeCell = $newCell;
-    this.emitter.emit(EventNames.TABLE_EMIT_INFO, $newCell.data.id);
-  }
 
-  selectAll() {
-    this.clearGroup();
-    this.select(this.$allCells[0]);
-    this.$groupCells = this.$allCells;
-    this.$groupCells.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
-  }
-
-  select(cell: WQuery | ICellId | string | undefined, activate = true): WQuery | undefined {
-    this.clearGroup();
-
-    if (!cell) return;
-
-    if (cell && cell instanceof WQuery) {
-      this.activateCell(cell, activate);
-      return cell;
+    if (emit) {
+      this.emitter.emit(EventNames.TABLE_EMIT_INFO, $newCell.data.idPublic);
+      this.emitter.emit(EventNames.TABLE_CELECT_CELL, $newCell.getTextContent());
     }
 
-    if (typeof cell === 'string') {
-      const $newCell = this.$allCells.find(($cel) => $cel.data.id === cell);
-      this.activateCell($newCell, activate);
-      return $newCell;
-    }
+    if (!$newCell.data.id) return;
+    const parsedId = wutils.parceCellId($newCell.data.id);
 
-    const $newCell = this.$allCells.find(($cel) => $cel.data.id === `${cell.row}:${cell.col}`);
-    this.activateCell($newCell, activate);
+    Object.keys(parsedId).forEach((key) => {
+      const $header = this.$headers.find(($header) => $header.data[key] === `${parsedId[key]}`);
+      $header?.addClass(SELECTED_HEADER);
+    });
+
     return $newCell;
   }
 
-  selectActiveCell() {
-    this.activateCell(this.$activeCell);
+  private selectAll($cells: WQuery[], options: ISelectOptions = {}) {
+    const { emit = true, clear = true } = options;
+    if (clear) this.clearGroup();
+
+    $cells.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
+    this.$groupCells = $cells;
+
+    if (emit) {
+      this.emitter.emit(
+        EventNames.TABLE_EMIT_INFO,
+        `${$cells[0].data.idPublic}:${$cells[$cells.length - 1].data.idPublic}`
+      );
+    }
+
+    $cells.forEach(($cell) => {
+      console.log($cell);
+
+      if (!$cell.data.id) return;
+      const parsedId = wutils.parceCellId($cell.data.id);
+
+      Object.keys(parsedId).forEach((key) => {
+        const $header = this.$headers.find(($header) => $header.data[key] === `${parsedId[key]}`);
+        $header?.addClass(SELECTED_HEADER);
+      });
+    });
+  }
+
+  focusActiveCell() {
+    this.$activeCell.focus();
   }
 
   changeText(string: string) {
@@ -76,19 +118,19 @@ export class TableViewAPI {
   }
 
   onKeydownHandler(e: KeyboardEvent) {
-    const activeId = this.$activeCell.data.id;
-    if (!activeId) return;
+    const { id } = this.$activeCell.data;
+    if (!id) return;
 
     const { key, shiftKey } = e;
-    const id = wutils.parceCellId(activeId);
+    const parsedId = wutils.parceCellId(id);
 
     if (celectKeys.includes(key)) {
       e.preventDefault();
-      this.keyDownSelectCell(key, id, shiftKey);
+      this.keyDownSelectCell(key, parsedId, shiftKey);
     }
   }
 
-  private keyDownSelectCell(key: string, { row, col }: ICellId, isShiftKey: boolean) {
+  private keyDownSelectCell(key: string, { col, row }: ICellId, isShiftKey: boolean) {
     switch (key) {
       case EventKeys.ARROW_UP:
         row--;
@@ -110,32 +152,26 @@ export class TableViewAPI {
         break;
     }
 
-    this.select({ col, row });
+    this.select(`${col}:${row}`);
   }
 
-  selectFullColumnOrRow(row: string | undefined, col: string | undefined) {
-    this.clearGroup();
+  selectFullColumnOrRow(col: string | undefined, row: string | undefined) {
     let $newGroup: WQuery[] = [];
 
     if (row && !col) {
-      const correctRow = `${+row - 1}`;
-      $newGroup = this.$allCells.filter(($cell) => $cell.data.row === correctRow);
+      $newGroup = this.$allCells.filter(($cell) => $cell.data.row === row);
     }
 
     if (col && !row) {
-      const correctColl = `${+col}`;
-      $newGroup = this.$allCells.filter(($cell) => $cell.data.col === correctColl);
+      $newGroup = this.$allCells.filter(($cell) => $cell.data.col === col);
     }
 
-    $newGroup.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
-    this.select($newGroup[0]);
-    this.$groupCells = $newGroup;
+    this.select($newGroup[0], { emit: false });
+    this.selectAll($newGroup, { clear: false });
   }
 
   selectGroup(id: string) {
-    this.clearGroup();
-    const $newCell = this.select(id, false);
-
+    const $newCell = this.$allCells.find(($cell) => $cell.data.id === id);
     if (!$newCell) return;
 
     const activeCellId = this.$activeCell.data.id;
@@ -144,26 +180,22 @@ export class TableViewAPI {
     if (activeCellId && newCellId) {
       const actIds = wutils.parceCellId(activeCellId);
       const newIds = wutils.parceCellId(newCellId);
+      const $newCells: WQuery[] = [];
 
       const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
 
-      const [maxRow, minRow] = [actIds.row, newIds.row].sort(sortCallBack);
       const [maxCol, minCol] = [actIds.col, newIds.col].sort(sortCallBack);
+      const [maxRow, minRow] = [actIds.row, newIds.row].sort(sortCallBack);
 
-      for (let i = minRow; i <= maxRow; i += 1) {
-        for (let j = minCol; j <= maxCol; j += 1) {
+      for (let i = minCol; i <= maxCol; i += 1) {
+        for (let j = minRow; j <= maxRow; j += 1) {
           const $cell = this.$allCells.find(($cell) => $cell.data.id === `${i}:${j}`);
-
-          if ($cell) {
-            $cell.addClass(SELECTED_GROUP_CELL);
-            this.$groupCells.push($cell);
-          }
+          if ($cell) $newCells.push($cell);
         }
       }
 
-      this.$groupCells.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
+      this.$activeCell.focus();
+      this.selectAll($newCells);
     }
-
-    this.$activeCell.focus();
   }
 }

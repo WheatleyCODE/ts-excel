@@ -1,7 +1,7 @@
 import { ResizeType, RESIZER_MARGIN, MIN_COL_WIDTH, MIN_ROW_HEIGHT } from '@types';
 import { $, WQuery } from '@wquery';
 
-export function resize(resizeType: string, target: HTMLDivElement, $root: WQuery) {
+export function resizeHandler(resizeType: string, target: HTMLDivElement, $root: WQuery) {
   const $resizer = $(target);
   const $parent = $resizer.getParent('[data-type="resizable"]');
   if (!$parent) return;

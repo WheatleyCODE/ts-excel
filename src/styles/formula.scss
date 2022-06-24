@@ -12,6 +12,10 @@
   top: $headerHeight + $headerPaddingTop + $toolbarHeight + $headerPaddingButtom;
 
   &__current-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
     width: 120px;
     height: 100%;
   }
