@@ -50,6 +50,11 @@ export interface ICellId {
   col: number;
 }
 
+export interface IWithWidthFromOptions {
+  letter: string;
+  index: number;
+  width: number;
+}
 export interface IExcelComOptions {
   emitter: Emitter;
   wredux: WRedux;

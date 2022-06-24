@@ -3,11 +3,11 @@ import { ICellId } from '@types';
 class WUtils {
   private methodPrefix = 'on';
 
-  createDOMListenerMethodName(string: string) {
+  createDOMListenerMethodName(string: string): string {
     return this.methodPrefix + this.capitalize(string);
   }
 
-  capitalize(string: string) {
+  capitalize(string: string): string {
     return string[0].toLocaleUpperCase() + string.slice(1);
   }
 
@@ -20,10 +20,10 @@ class WUtils {
     };
   }
 
-  storage(key: string, data?: unknown) {
+  storage(key: string, data?: unknown): any {
     if (!data) {
-      const data = localStorage.getItem(key);
-      return JSON.parse(data || '{}');
+      const storageData = localStorage.getItem(key);
+      return storageData ? JSON.parse(storageData) : null;
     }
 
     localStorage.setItem(key, JSON.stringify(data));

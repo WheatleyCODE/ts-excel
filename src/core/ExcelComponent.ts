@@ -18,7 +18,7 @@ export abstract class ExcelComponent extends DomListener {
 
   abstract toHTML(): string;
 
-  componentDidMount() {
+  componentDidMount(): void {
     console.log(this.$root, `${this.options.name} Component did mount`);
   }
 
@@ -37,6 +37,10 @@ export abstract class ExcelComponent extends DomListener {
 
   subscribe(callback: (state: IState) => void): void {
     this.unsub = this.wredux.subscribe(callback);
+  }
+
+  getState(): IState {
+    return this.wredux.getState();
   }
 
   componentWilUnmount(): void {

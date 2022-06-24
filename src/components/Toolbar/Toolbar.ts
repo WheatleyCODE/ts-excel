@@ -13,7 +13,7 @@ export class Toolbar extends ExcelComponent {
     });
   }
 
-  toHTML() {
+  toHTML(): string {
     return `
       <div class="excel-toolbar__button">
         <i class="material-icons">

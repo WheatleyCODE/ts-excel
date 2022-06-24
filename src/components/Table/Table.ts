@@ -39,7 +39,7 @@ export class Table extends ExcelComponent {
     if (resize) this.resizeTable(resize, $target);
   }
 
-  async resizeTable(resize: string, $resizer: WQuery) {
+  async resizeTable(resize: string, $resizer: WQuery): Promise<void> {
     try {
       const resizeTableACOptions = await resizeHandler(resize, $resizer, this.$root);
       this.dispatch(resizeTableAC(resizeTableACOptions));
@@ -52,7 +52,7 @@ export class Table extends ExcelComponent {
     this.tableViewApi.onKeydownHandler(e);
   }
 
-  onInput() {
+  onInput(): void {
     this.tableViewApi.onInputHandler();
   }
 
@@ -82,6 +82,6 @@ export class Table extends ExcelComponent {
   }
 
   toHTML(): string {
-    return createTable(30, 30);
+    return createTable(30, 30, this.getState());
   }
 }

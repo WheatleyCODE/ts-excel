@@ -15,11 +15,11 @@ export class Formula extends ExcelComponent {
     });
   }
 
-  onInput() {
+  onInput(): void {
     this.emit(EventNames.FORMULA_INPUT, this.$input.getTextContent());
   }
 
-  onMousedown(e: MouseEvent) {
+  onMousedown(e: MouseEvent): void {
     if (!(e.target instanceof HTMLDivElement)) return;
 
     if (e.target.dataset.current === this.$currentCell.data.current) {
@@ -28,7 +28,7 @@ export class Formula extends ExcelComponent {
     }
   }
 
-  onKeydown(e: KeyboardEvent) {
+  onKeydown(e: KeyboardEvent): void {
     if (e.key === EventKeys.ENTER || e.key === EventKeys.TAB) {
       e.preventDefault();
 
@@ -36,7 +36,7 @@ export class Formula extends ExcelComponent {
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     super.componentDidMount();
 
     const $input = this.$root.find('[data-input]');
@@ -65,7 +65,7 @@ export class Formula extends ExcelComponent {
     });
   }
 
-  toHTML() {
+  toHTML(): string {
     return `
       <div data-current="true" class="excel-formula__current-cell"></div>
       <div class="excel-formula__formula-icon">

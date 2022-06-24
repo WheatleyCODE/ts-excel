@@ -25,17 +25,17 @@ export class TableViewAPI {
     this.select(ID_FIRST_CELL);
   }
 
-  selectCell(id: string) {
+  selectCell(id: string): void {
     this.select(id);
   }
 
-  selectAllCells() {
+  selectAllCells(): void {
     this.select(this.$allCells[0]);
     this.selectAll(this.$allCells, { emit: false, clear: false });
     this.emitter.emit(EventNames.TABLE_EMIT_INFO, 'All');
   }
 
-  private select(cell: string | WQuery, options: ISelectOptions = {}) {
+  private select(cell: string | WQuery, options: ISelectOptions = {}): WQuery | undefined {
     const { emit = true, clear = true } = options;
     if (clear) this.clearGroup();
     this.$headers.forEach(($header) => $header.removeClass('selected'));
@@ -73,7 +73,7 @@ export class TableViewAPI {
     return $newCell;
   }
 
-  private selectAll($cells: WQuery[], options: ISelectOptions = {}) {
+  private selectAll($cells: WQuery[], options: ISelectOptions = {}): void {
     const { emit = true, clear = true } = options;
     if (clear) this.clearGroup();
 
@@ -98,24 +98,24 @@ export class TableViewAPI {
     });
   }
 
-  focusActiveCell() {
+  focusActiveCell(): void {
     this.$activeCell.focus();
   }
 
-  changeText(string: string) {
+  changeText(string: string): void {
     this.$activeCell.setTextContent(string);
   }
 
-  onInputHandler() {
+  onInputHandler(): void {
     this.emitter.emit(EventNames.TABLE_INPUT, this.$activeCell.getTextContent());
   }
 
-  private clearGroup() {
+  private clearGroup(): void {
     this.$groupCells.forEach(($cell) => $cell.removeClass(SELECTED_GROUP_CELL));
     this.$groupCells = [];
   }
 
-  onKeydownHandler(e: KeyboardEvent) {
+  onKeydownHandler(e: KeyboardEvent): void {
     const { id } = this.$activeCell.data;
     if (!id) return;
 
@@ -128,7 +128,7 @@ export class TableViewAPI {
     }
   }
 
-  private keyDownSelectCell(key: string, { col, row }: ICellId, isShiftKey: boolean) {
+  private keyDownSelectCell(key: string, { col, row }: ICellId, isShiftKey: boolean): void {
     switch (key) {
       case EventKeys.ARROW_UP:
         row--;
@@ -153,7 +153,7 @@ export class TableViewAPI {
     this.select(`${col}:${row}`);
   }
 
-  selectFullColumnOrRow(col: string | undefined, row: string | undefined) {
+  selectFullColumnOrRow(col: string | undefined, row: string | undefined): void {
     let $newGroup: WQuery[] = [];
 
     if (row && !col) {
@@ -168,7 +168,7 @@ export class TableViewAPI {
     this.selectAll($newGroup, { clear: false });
   }
 
-  selectGroup(id: string) {
+  selectGroup(id: string): void {
     const $newCell = this.$allCells.find(($cell) => $cell.data.id === id);
     if (!$newCell) return;
 

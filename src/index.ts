@@ -4,9 +4,16 @@ import { wutils } from '@utils';
 import { IState, STORAGE_STATE_KEY } from '@types';
 import '@styles/index.scss';
 
-const initialState: IState = wutils.storage(STORAGE_STATE_KEY);
+const initialState: IState = {
+  resizeState: {
+    col: {},
+    row: {}
+  }
+};
 
-const wredux = new WRedux(rootReducer, initialState);
+const storageState: IState = wutils.storage(STORAGE_STATE_KEY);
+
+const wredux = new WRedux(rootReducer, storageState || initialState);
 
 wredux.subscribe((state) => {
   wutils.storage(STORAGE_STATE_KEY, state);

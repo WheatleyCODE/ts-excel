@@ -13,7 +13,7 @@ export class Header extends ExcelComponent {
     });
   }
 
-  toHTML() {
+  toHTML(): string {
     return `
       <div class="excel-header__left-panel h-left-panel">
         <div class="h-left-panel__logo"></div>
