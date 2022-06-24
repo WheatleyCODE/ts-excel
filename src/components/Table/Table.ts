@@ -1,7 +1,7 @@
 import { EventNames, ExcelComponent } from '@core';
 import { $, WQuery } from '@wquery';
 import { createTable } from './table.template';
-import { resize } from './table.resize';
+import { resizeHandler } from './table.resize';
 import { TableViewAPI } from './TableViewAPI';
 import { IExcelComOptions } from '@types';
 
@@ -22,15 +22,21 @@ export class Table extends ExcelComponent {
 
     const $target = $(e.target);
     const id = $target.data.id;
-    const resType = $target.data.resize;
+    const { resize, maincoll, mainrow, col, row } = $target.data;
 
-    if (e.shiftKey && id) {
-      this.tableViewApi.selectGroup(id);
-    } else if (id) {
-      this.tableViewApi.select(id);
+    if (maincoll || mainrow) {
+      e.preventDefault();
+      this.tableViewApi.selectFullColumnOrRow(col, row);
     }
 
-    if (resType) resize(resType, e.target, this.$root);
+    if (e.shiftKey && id) {
+      e.preventDefault();
+      this.tableViewApi.selectGroup(id);
+    } else if (id) {
+      this.tableViewApi.selectCell(id);
+    }
+
+    if (resize) resizeHandler(resize, e.target, this.$root);
   }
 
   onKeydown(e: KeyboardEvent): void {
@@ -58,11 +64,15 @@ export class Table extends ExcelComponent {
     });
 
     this.on(EventNames.FORMULA_TAB_OR_ENTER_PRESS, () => {
-      this.tableViewApi.selectActiveCell();
+      this.tableViewApi.focusActiveCell();
+    });
+
+    this.on(EventNames.FORMULA_SELECT_ALL, () => {
+      this.tableViewApi.selectAllCells();
     });
   }
 
   toHTML(): string {
-    return createTable(60, 30);
+    return createTable(30, 30);
   }
 }

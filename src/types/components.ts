@@ -21,6 +21,11 @@ export enum ResizeType {
   ROW = 'row'
 }
 
+export interface ISelectOptions {
+  emit?: boolean;
+  clear?: boolean;
+}
+
 export enum EventKeys {
   ARROW_UP = 'ArrowUp',
   ARROW_DOWN = 'ArrowDown',

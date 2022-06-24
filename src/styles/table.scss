@@ -121,4 +121,9 @@
       cursor: col-resize;
     }
   }
+
+  .row__info.selected,
+  .data__column.selected {
+    background-color: $colorLightGrey3;
+  }
 }
