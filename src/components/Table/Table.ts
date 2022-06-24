@@ -59,10 +59,6 @@ export class Table extends ExcelComponent {
   componentDidMount(): void {
     super.componentDidMount();
 
-    this.subscribe((state) => {
-      console.log(state.resizeState, 'checkSave');
-    });
-
     const miniEmitter = {
       on: this.on.bind(this),
       emit: this.emit.bind(this)

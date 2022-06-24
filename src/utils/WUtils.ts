@@ -19,6 +19,15 @@ class WUtils {
       row
     };
   }
+
+  storage(key: string, data?: unknown) {
+    if (!data) {
+      const data = localStorage.getItem(key);
+      return JSON.parse(data || '{}');
+    }
+
+    localStorage.setItem(key, JSON.stringify(data));
+  }
 }
 
 export const wutils = new WUtils();

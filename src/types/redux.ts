@@ -1,13 +1,12 @@
-import { IResizeTableACOptions } from './actions';
-
-interface IResizeState {
-  col: { [propName: string]: number };
-  row: { [propName: string]: number };
-}
-
 export enum ActionsType {
   INIT = '__INIT__',
   TABLE_RESIZE = 'TABLE_RESIZE'
+}
+
+export interface IResizeTableACOptions {
+  type: 'col' | 'row';
+  id: string;
+  value: number;
 }
 
 interface IActionResizeTable {
@@ -22,12 +21,17 @@ interface IActionInitial {
 
 export type Actions = IActionInitial | IActionResizeTable;
 
-export interface IUnsubscribe {
-  unsubscribe: () => void;
+interface IResizeState {
+  col: { [propName: string]: number };
+  row: { [propName: string]: number };
 }
 
 export interface IState {
   resizeState: IResizeState;
+}
+
+export interface IUnsubscribe {
+  unsubscribe: () => void;
 }
 
 export interface IStore {
