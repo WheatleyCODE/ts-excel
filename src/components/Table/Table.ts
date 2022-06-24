@@ -1,5 +1,6 @@
 import { EventNames, ExcelComponent } from '@core';
 import { $, WQuery } from '@wquery';
+import { resizeTableAC } from '@redux';
 import { createTable } from './table.template';
 import { resizeHandler } from './table.resize';
 import { TableViewAPI } from './TableViewAPI';
@@ -19,7 +20,6 @@ export class Table extends ExcelComponent {
 
   onMousedown(e: MouseEvent): void {
     if (!(e.target instanceof HTMLDivElement)) return;
-
     const $target = $(e.target);
     const id = $target.data.id;
     const { resize, maincoll, mainrow, col, row } = $target.data;
@@ -36,7 +36,16 @@ export class Table extends ExcelComponent {
       this.tableViewApi.selectCell(id);
     }
 
-    if (resize) resizeHandler(resize, e.target, this.$root);
+    if (resize) this.resizeTable(resize, $target);
+  }
+
+  async resizeTable(resize: string, $resizer: WQuery) {
+    try {
+      const resizeTableACOptions = await resizeHandler(resize, $resizer, this.$root);
+      this.dispatch(resizeTableAC(resizeTableACOptions));
+    } catch (e) {
+      console.warn(e.message);
+    }
   }
 
   onKeydown(e: KeyboardEvent): void {
@@ -49,6 +58,10 @@ export class Table extends ExcelComponent {
 
   componentDidMount(): void {
     super.componentDidMount();
+
+    this.subscribe((state) => {
+      console.log(state.resizeState, 'checkSave');
+    });
 
     const miniEmitter = {
       on: this.on.bind(this),

@@ -52,6 +52,7 @@ export interface ICellId {
 
 export interface IExcelComOptions {
   emitter: Emitter;
+  wredux: WRedux;
 }
 
 export interface IComOptions extends IExcelComOptions {

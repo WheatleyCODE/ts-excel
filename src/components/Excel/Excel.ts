@@ -1,23 +1,27 @@
 import { Emitter } from '@core';
 import { $, WQuery } from '@wquery';
-import { IComponent, IOptions } from '@types';
+import { IComponent, IExcelComOptions, IOptions } from '@types';
+import { WRedux } from '@redux';
 
 export class Excel {
   private $rootApp: WQuery;
   private components: typeof IComponent[];
   private instantComponents: IComponent[] = [];
   private emitter = new Emitter();
+  private wredux: WRedux;
 
   constructor(rootSelector: string, options: IOptions) {
     this.$rootApp = $(rootSelector);
     this.components = options.components;
+    this.wredux = options.wredux;
   }
 
   getRootExcel(): WQuery {
     const $rootExcel = $.create('div', 'excel');
 
-    const componentOptions = {
-      emitter: this.emitter
+    const componentOptions: IExcelComOptions = {
+      emitter: this.emitter,
+      wredux: this.wredux
     };
 
     this.instantComponents = this.components.map((Component) => {

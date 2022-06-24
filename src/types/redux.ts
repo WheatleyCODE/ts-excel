@@ -1,23 +1,33 @@
-interface IColState {
-  [x: string]: number;
+import { IResizeTableACOptions } from './actions';
+
+interface IResizeState {
+  col: { [propName: string]: number };
+  row: { [propName: string]: number };
 }
 
 export enum ActionsType {
-  INIT = '__INIT__'
+  INIT = '__INIT__',
+  TABLE_RESIZE = 'TABLE_RESIZE'
+}
+
+interface IActionResizeTable {
+  type: ActionsType.TABLE_RESIZE;
+  payload: IResizeTableACOptions;
 }
 
 interface IActionInitial {
   type: ActionsType.INIT;
+  payload: null;
 }
 
-export type Actions = IActionInitial;
+export type Actions = IActionInitial | IActionResizeTable;
 
 export interface IUnsubscribe {
   unsubscribe: () => void;
 }
 
 export interface IState {
-  colState: IColState;
+  resizeState: IResizeState;
 }
 
 export interface IStore {

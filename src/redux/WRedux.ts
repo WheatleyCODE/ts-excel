@@ -9,7 +9,7 @@ export class WRedux implements IStore {
     this.state = rootReducer(initialState, initAC());
   }
 
-  subscribe(callback: () => void): IUnsubscribe {
+  subscribe(callback: (state: IState) => void): IUnsubscribe {
     this.subscribers.push(callback);
 
     return {
