@@ -1,4 +1,4 @@
-projectinterface IColState {
+interface IColState {
   [x: string]: number;
 }
 
