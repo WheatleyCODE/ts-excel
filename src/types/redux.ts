@@ -1,6 +1,7 @@
 export enum ActionsType {
   INIT = '__INIT__',
-  TABLE_RESIZE = 'TABLE_RESIZE'
+  TABLE_RESIZE = 'TABLE_RESIZE',
+  CHANGE_TEXT = 'CHANGE_TEXT'
 }
 
 export interface IResizeTableACOptions {
@@ -14,20 +15,34 @@ interface IActionResizeTable {
   payload: IResizeTableACOptions;
 }
 
+interface IActionChangeText {
+  type: ActionsType.CHANGE_TEXT;
+  payload: {
+    id: string;
+    string: string;
+  };
+}
+
 interface IActionInitial {
   type: ActionsType.INIT;
   payload: null;
 }
 
-export type Actions = IActionInitial | IActionResizeTable;
+export type Actions = IActionInitial | IActionResizeTable | IActionChangeText;
 
 interface IResizeState {
   col: { [propName: string]: number };
   row: { [propName: string]: number };
 }
 
+interface ICellsDataState {
+  [propName: string]: string;
+}
+
 export interface IState {
   resizeState: IResizeState;
+  cellsDataState: ICellsDataState;
+  currentText: string;
 }
 
 export interface IUnsubscribe {
@@ -41,3 +56,9 @@ export interface IStore {
 }
 
 export type Reducer = (state: IState, action: Actions) => IState;
+
+export interface IFacadeWredux {
+  dispatch: (actions: Actions) => void;
+  subscribe: (callback: (state: IState) => void) => void;
+  getState: () => IState;
+}

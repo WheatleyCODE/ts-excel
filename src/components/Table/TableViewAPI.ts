@@ -7,10 +7,12 @@ import {
   ISelectOptions,
   SELECTED_CELL,
   SELECTED_HEADER,
-  SELECTED_GROUP_CELL
+  SELECTED_GROUP_CELL,
+  IFacadeWredux
 } from '@types';
 import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter } from '@core';
+import { changeTextAC } from '@redux';
 
 export class TableViewAPI {
   private $allCells: WQuery[];
@@ -18,7 +20,11 @@ export class TableViewAPI {
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
 
-  constructor(private $root: WQuery, private emitter: IFacadeEmitter) {
+  constructor(
+    private $root: WQuery,
+    private emitter: IFacadeEmitter,
+    private wredux: IFacadeWredux
+  ) {
     this.$allCells = $root.findAll('[data-id]');
     this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
 
@@ -104,10 +110,18 @@ export class TableViewAPI {
 
   changeText(string: string): void {
     this.$activeCell.setTextContent(string);
+
+    this.textInStore(this.$activeCell.data.id, this.$activeCell.getTextContent());
   }
 
   onInputHandler(): void {
-    this.emitter.emit(EventNames.TABLE_INPUT, this.$activeCell.getTextContent());
+    this.textInStore(this.$activeCell.data.id, this.$activeCell.getTextContent());
+  }
+
+  private textInStore(id: string | undefined, text: string) {
+    if (id) {
+      this.wredux.dispatch(changeTextAC(id, text));
+    }
   }
 
   private clearGroup(): void {

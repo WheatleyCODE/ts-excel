@@ -52,10 +52,8 @@ export class Formula extends ExcelComponent {
       }
     });
 
-    this.on(EventNames.TABLE_INPUT, (string) => {
-      if (typeof string === 'string') {
-        this.$input.setTextContent(string);
-      }
+    this.subscribe(({ currentText }) => {
+      this.$input.setTextContent(currentText);
     });
 
     this.on(EventNames.TABLE_EMIT_INFO, (string) => {

@@ -7,8 +7,9 @@ import {
   MAX_LENGTH
 } from '@types';
 
-function createCell(rowNumber: number): (optons: IWithWidthFromOptions) => string {
+function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOptions) => string {
   return ({ letter, index, width }: IWithWidthFromOptions): string => {
+    const text = state.cellsDataState[`${index}:${rowNumber}`];
     return `
       <div contenteditable
         style="width: ${width}px"
@@ -18,6 +19,7 @@ function createCell(rowNumber: number): (optons: IWithWidthFromOptions) => strin
         data-id="${index}:${rowNumber}"
         data-id-public="${letter}${rowNumber}"
         class="data__cell">
+        ${text || ''}
       </div>
     `;
   };
@@ -121,7 +123,7 @@ export function createTable(rowsCount = 60, colsCount = 30, state: IState): stri
       .fill('')
       .map(toCharCode())
       .map(withWidthFrom(state))
-      .map(createCell(i))
+      .map(createCell(i, state))
       .join('');
 
     rows.push(createRowWithHeightFrom(state)(cells, i));

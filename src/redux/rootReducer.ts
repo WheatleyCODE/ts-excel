@@ -23,6 +23,19 @@ export function rootReducer(state: IState, action: Actions): IState {
       };
     }
 
+    case ActionsType.CHANGE_TEXT: {
+      const { string, id } = action.payload;
+
+      return {
+        ...state,
+        currentText: string,
+        cellsDataState: {
+          ...state.cellsDataState,
+          [id]: string
+        }
+      };
+    }
+
     default: {
       return { ...state };
     }

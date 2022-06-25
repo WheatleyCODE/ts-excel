@@ -1,10 +1,10 @@
-import { EventNames, ExcelComponent } from '@core';
+import { EventNames, ExcelComponent, IFacadeEmitter } from '@core';
 import { $, WQuery } from '@wquery';
 import { resizeTableAC } from '@redux';
 import { createTable } from './table.template';
 import { resizeHandler } from './table.resize';
 import { TableViewAPI } from './TableViewAPI';
-import { IExcelComOptions } from '@types';
+import { IExcelComOptions, IFacadeWredux } from '@types';
 
 export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];
@@ -59,12 +59,18 @@ export class Table extends ExcelComponent {
   componentDidMount(): void {
     super.componentDidMount();
 
-    const miniEmitter = {
+    const miniEmitter: IFacadeEmitter = {
       on: this.on.bind(this),
       emit: this.emit.bind(this)
     };
 
-    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter);
+    const miniWRedux: IFacadeWredux = {
+      dispatch: this.dispatch.bind(this),
+      subscribe: this.subscribe.bind(this),
+      getState: this.getState.bind(this)
+    };
+
+    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter, miniWRedux);
 
     this.on(EventNames.FORMULA_INPUT, (string) => {
       if (typeof string === 'string') {
