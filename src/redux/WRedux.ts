@@ -15,6 +15,10 @@ export class WRedux implements IStore {
     return {
       unsubscribe: () => {
         this.subscribers = this.subscribers.filter((fn) => fn !== callback);
+      },
+
+      unsubscribeAll: () => {
+        this.subscribers = [];
       }
     };
   }
@@ -25,6 +29,6 @@ export class WRedux implements IStore {
   }
 
   getState(): IState {
-    return this.state;
+    return JSON.parse(JSON.stringify(this.state));
   }
 }

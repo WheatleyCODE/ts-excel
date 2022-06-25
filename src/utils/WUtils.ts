@@ -28,6 +28,14 @@ class WUtils {
 
     localStorage.setItem(key, JSON.stringify(data));
   }
+
+  isEqual(a: string | number | object, b: string | number | object): boolean {
+    if (typeof a === 'object' && typeof a === 'object') {
+      return JSON.stringify(a) === JSON.stringify(b);
+    }
+
+    return a === b;
+  }
 }
 
 export const wutils = new WUtils();

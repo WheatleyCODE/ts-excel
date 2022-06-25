@@ -1,4 +1,4 @@
-import { Emitter } from '@core';
+import { Emitter, WReduxSubscriber } from '@core';
 import { $, WQuery } from '@wquery';
 import { IComponent, IExcelComOptions, IOptions } from '@types';
 import { WRedux } from '@redux';
@@ -9,11 +9,13 @@ export class Excel {
   private instantComponents: IComponent[] = [];
   private emitter = new Emitter();
   private wredux: WRedux;
+  private wreduxSubscriber: WReduxSubscriber;
 
   constructor(rootSelector: string, options: IOptions) {
     this.$rootApp = $(rootSelector);
     this.components = options.components;
     this.wredux = options.wredux;
+    this.wreduxSubscriber = new WReduxSubscriber(this.wredux);
   }
 
   getRootExcel(): WQuery {
@@ -43,9 +45,12 @@ export class Excel {
       instComponent.init();
       instComponent.componentDidMount();
     });
+
+    this.wreduxSubscriber.subscribeComponents(this.instantComponents);
   }
 
   destroy(): void {
+    this.wreduxSubscriber.unsubscribeComponents();
     this.instantComponents.forEach((instComponent) => {
       instComponent.componentWilUnmount();
       instComponent.destroy();

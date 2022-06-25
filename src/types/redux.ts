@@ -45,8 +45,12 @@ export interface IState {
   currentText: string;
 }
 
+export type StateKeys = keyof IState;
+export type StateValues = IState[StateKeys];
+
 export interface IUnsubscribe {
   unsubscribe: () => void;
+  unsubscribeAll: () => void;
 }
 
 export interface IStore {

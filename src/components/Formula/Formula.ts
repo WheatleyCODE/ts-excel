@@ -1,6 +1,6 @@
 import { EventNames, ExcelComponent } from '@core';
 import { WQuery } from '@wquery';
-import { EventKeys, IExcelComOptions } from '@types';
+import { EventKeys, IExcelComOptions, StateValues } from '@types';
 
 export class Formula extends ExcelComponent {
   static classNames = ['excel__formula', 'excel-formula'];
@@ -11,6 +11,7 @@ export class Formula extends ExcelComponent {
     super($el, {
       name: 'Formula',
       listeners: ['input', 'keydown', 'mousedown'],
+      subscribe: ['currentText'],
       ...options
     });
   }
@@ -25,6 +26,13 @@ export class Formula extends ExcelComponent {
     if (e.target.dataset.current === this.$currentCell.data.current) {
       e.preventDefault();
       this.emit(EventNames.FORMULA_SELECT_ALL);
+    }
+  }
+
+  wreduxChanged(changes: { [key: string]: StateValues }): void {
+    const { currentText } = changes;
+    if (typeof currentText === 'string') {
+      this.$input.setTextContent(currentText);
     }
   }
 
@@ -50,10 +58,6 @@ export class Formula extends ExcelComponent {
       if (typeof string === 'string') {
         this.$input.setTextContent(string);
       }
-    });
-
-    this.subscribe(({ currentText }) => {
-      this.$input.setTextContent(currentText);
     });
 
     this.on(EventNames.TABLE_EMIT_INFO, (string) => {
