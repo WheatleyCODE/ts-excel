@@ -41,20 +41,21 @@ export class Excel {
 
   render(): void {
     this.$rootApp.append(this.getRootExcel());
+    this.wreduxSubscriber.subscribeComponents(this.instantComponents);
+
     this.instantComponents.forEach((instComponent) => {
       instComponent.init();
       instComponent.componentDidMount();
     });
-
-    this.wreduxSubscriber.subscribeComponents(this.instantComponents);
   }
 
   destroy(): void {
-    this.wreduxSubscriber.unsubscribeComponents();
     this.instantComponents.forEach((instComponent) => {
       instComponent.componentWilUnmount();
       instComponent.destroy();
     });
+
+    this.wreduxSubscriber.unsubscribeComponents();
 
     this.$rootApp.setHtml('');
   }

@@ -29,6 +29,7 @@ export class TableViewAPI {
     this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
 
     this.select(ID_FIRST_CELL);
+    this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.getTextContent());
   }
 
   selectCell(id: string): void {
@@ -37,14 +38,13 @@ export class TableViewAPI {
 
   selectAllCells(): void {
     this.select(this.$allCells[0]);
-    this.selectAll(this.$allCells, { emit: false, clear: false });
-    this.emitter.emit(EventNames.TABLE_EMIT_INFO, 'All');
+    this.selectAll(this.$allCells, { clear: false });
   }
 
   private select(cell: string | WQuery, options: ISelectOptions = {}): WQuery | undefined {
     const { emit = true, clear = true } = options;
     if (clear) this.clearGroup();
-    this.$headers.forEach(($header) => $header.removeClass('selected'));
+    this.$headers.forEach(($header) => $header.removeClass(SELECTED_HEADER));
 
     let $newCell: WQuery | undefined;
 
@@ -65,7 +65,10 @@ export class TableViewAPI {
 
     if (emit) {
       this.emitter.emit(EventNames.TABLE_EMIT_INFO, $newCell.data.idPublic);
-      this.emitter.emit(EventNames.TABLE_CELECT_CELL, $newCell.getTextContent());
+
+      if ($newCell.data.id) {
+        this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.getTextContent()));
+      }
     }
 
     if (!$newCell.data.id) return;
@@ -91,6 +94,12 @@ export class TableViewAPI {
         EventNames.TABLE_EMIT_INFO,
         `${$cells[0].data.idPublic}:${$cells[$cells.length - 1].data.idPublic}`
       );
+
+      if (this.$activeCell.data.id) {
+        this.wredux.dispatch(
+          changeTextAC(this.$activeCell.data.id, this.$activeCell.getTextContent())
+        );
+      }
     }
 
     $cells.forEach(($cell) => {

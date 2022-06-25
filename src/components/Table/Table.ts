@@ -66,7 +66,6 @@ export class Table extends ExcelComponent {
 
     const miniWRedux: IFacadeWredux = {
       dispatch: this.dispatch.bind(this),
-      subscribe: this.subscribe.bind(this),
       getState: this.getState.bind(this)
     };
 

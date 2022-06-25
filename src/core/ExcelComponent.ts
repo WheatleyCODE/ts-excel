@@ -41,10 +41,6 @@ export abstract class ExcelComponent extends DomListener {
     this.wredux.dispatch(actions);
   }
 
-  subscribe(callback: (state: IState) => void): void {
-    this.unsub = this.wredux.subscribe(callback);
-  }
-
   getState(): IState {
     return this.wredux.getState();
   }

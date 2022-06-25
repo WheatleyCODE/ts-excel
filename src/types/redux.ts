@@ -63,6 +63,5 @@ export type Reducer = (state: IState, action: Actions) => IState;
 
 export interface IFacadeWredux {
   dispatch: (actions: Actions) => void;
-  subscribe: (callback: (state: IState) => void) => void;
   getState: () => IState;
 }

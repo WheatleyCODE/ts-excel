@@ -3,7 +3,7 @@ import { IComponent, IState, IUnsubscribe, StateKeys } from '@types';
 import { wutils } from '@utils';
 
 export class WReduxSubscriber {
-  private unsab!: IUnsubscribe;
+  private unsabs: IUnsubscribe[] = [];
   private prevState: IState = initialState;
 
   constructor(private wredux: WRedux) {}
@@ -11,10 +11,9 @@ export class WReduxSubscriber {
   subscribeComponents(components: IComponent[]) {
     this.prevState = this.wredux.getState();
 
-    this.unsab = this.wredux.subscribe((state) => {
+    const unsub = this.wredux.subscribe((state) => {
       Object.keys(state).forEach((key) => {
         const stateKey = key as StateKeys;
-
         if (!wutils.isEqual(this.prevState[stateKey], state[stateKey])) {
           components.forEach((comp) => {
             if (comp.stringSubs && comp.stringSubs.includes(stateKey)) {
@@ -28,10 +27,10 @@ export class WReduxSubscriber {
       this.prevState = this.wredux.getState();
     });
 
-    console.log(this.unsab, 'fdfd');
+    this.unsabs.push(unsub);
   }
 
   unsubscribeComponents() {
-    this.unsab.unsubscribeAll();
+    this.unsabs.forEach((unsab) => unsab.unsubscribe());
   }
 }
