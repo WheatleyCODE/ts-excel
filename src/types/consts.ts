@@ -9,7 +9,7 @@ export const SELECTED_CELL = 'selected';
 export const SELECTED_HEADER = 'selected';
 export const SELECTED_GROUP_CELL = 'selected-group';
 
-export const COLORS = ['black', 'white', 'red', 'yellow', 'orange', 'blue'];
+export const COLORS = ['rgb(50, 50, 50)', 'white', 'red', 'yellow', 'orange', 'rgb(37, 95, 212)'];
 
 export const STORAGE_STATE_KEY = 'excel-state';
 

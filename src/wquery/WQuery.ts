@@ -1,4 +1,4 @@
-import { toolbartStyles, IWQueryListeners, ToolbarStyles } from '@types';
+import { toolbartStylesArr, IWQueryListeners, ToolbarStyles } from '@types';
 
 export class WQuery {
   private $nativeElement: HTMLElement;
@@ -72,7 +72,7 @@ export class WQuery {
     return this;
   }
 
-  getStyles(styles: ToolbarStyles[] = toolbartStyles) {
+  getStyles(styles: ToolbarStyles[] = toolbartStylesArr) {
     return styles.reduce((acc, style) => {
       acc[style] = this.$nativeElement.style[style];
       return acc;

@@ -14,3 +14,18 @@ export const changeTextAC = (id: string, string: string): Actions => ({
     string
   }
 });
+
+export const changeStyleAC = (id: string, style: { [key: string]: string }): Actions => ({
+  type: ActionsType.CHANGE_STYLE,
+  payload: {
+    id,
+    style
+  }
+});
+
+export const stylesCurrentCellAC = (styles: { [key: string]: string }): Actions => ({
+  type: ActionsType.STYLES_CURRENT_CELL,
+  payload: {
+    styles
+  }
+});

@@ -1,3 +1,4 @@
+import { changeStyleAC, stylesCurrentCellAC } from '@redux';
 import { $, WQuery } from '@wquery';
 import {
   celectKeys,
@@ -80,7 +81,7 @@ export class TableViewAPI {
       $header?.addClass(SELECTED_HEADER);
     });
 
-    console.log($newCell.getStyles());
+    this.wredux.dispatch(stylesCurrentCellAC($newCell.getStyles()));
     return $newCell;
   }
 
@@ -222,16 +223,24 @@ export class TableViewAPI {
     }
   }
 
-  applyStyle(style: IStyle) {
+  applyStyle(style: { [key: string]: string }): void {
     if (this.$groupCells.length) {
-      this.$groupCells.forEach(($cell) => $cell.css(style));
+      this.$groupCells.forEach(($cell) => {
+        if (!$cell.data.id) return;
+        $cell.css(style);
+        this.wredux.dispatch(changeStyleAC($cell.data.id, style));
+      });
+      this.$activeCell.focus();
       return;
     }
 
     this.$activeCell.css(style);
+    this.$activeCell.focus();
+    if (!this.$activeCell.data.id) return;
+    this.wredux.dispatch(changeStyleAC(this.$activeCell.data.id, style));
   }
 
-  private changeType($cell: WQuery, type: string) {
+  private changeType($cell: WQuery, type: string): void {
     const text = $cell.getTextContent();
     const numbers = Number(text);
     if (isNaN(numbers)) {

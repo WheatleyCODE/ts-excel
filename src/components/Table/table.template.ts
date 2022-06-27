@@ -1,18 +1,32 @@
 import {
   CODES,
+  defaultToolbarStyles,
   DEFAULT_HEGHT,
   DEFAULT_WIDTH,
   IState,
   IWithWidthFromOptions,
   MAX_LENGTH
 } from '@types';
+import { wutils } from '@utils';
 
 function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOptions) => string {
   return ({ letter, index, width }: IWithWidthFromOptions): string => {
     const text = state.cellsDataState[`${index}:${rowNumber}`];
+
+    let styles = { ...defaultToolbarStyles };
+    const storageStyles = state.cellsStylesState[`${index}:${rowNumber}`];
+
+    if (storageStyles) {
+      styles = { ...styles, ...storageStyles };
+    }
+
+    const stylesArr = Object.keys(styles).map(
+      (key) => `${wutils.camelCaseToDashCase(key)}: ${styles[key]}; `
+    );
+
     return `
       <div contenteditable
-        style="width: ${width}px"
+        style="width: ${width}px; ${stylesArr.join(' ')}"
         data-col="${index}"
         data-col-public="${letter}"
         data-row="${rowNumber}"

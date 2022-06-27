@@ -1,4 +1,4 @@
-import { IState, STORAGE_STATE_KEY } from '@types';
+import { initialToolbarState, IState, STORAGE_STATE_KEY } from '@types';
 import { wutils } from '@utils';
 
 const defaultState: IState = {
@@ -7,7 +7,11 @@ const defaultState: IState = {
     row: {}
   },
   cellsDataState: {},
-  currentText: ''
+  cellsStylesState: {},
+  currentText: '',
+  currentCellStyles: {
+    ...initialToolbarState
+  }
 };
 
 export const initialState: IState = wutils.storage(STORAGE_STATE_KEY)

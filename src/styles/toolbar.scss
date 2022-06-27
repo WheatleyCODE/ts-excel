@@ -61,26 +61,11 @@
       width: 25px;
       height: 25px;
       border-radius: 50%;
+      border: 1px solid $colorLightGrey3;
 
       &:hover {
         transform: scale(1.05);
       }
-    }
-
-    &__color.black {
-      background-color: black;
-    }
-    &__color.red {
-      background-color: red;
-    }
-    &__color.yellow {
-      background-color: yellow;
-    }
-    &__color.orange {
-      background-color: orange;
-    }
-    &__color.blue {
-      background-color: blue;
     }
   }
 

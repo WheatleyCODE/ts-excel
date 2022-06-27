@@ -1,6 +1,8 @@
 import { Actions, ActionsType, IState } from '@types';
 
 export function rootReducer(state: IState, action: Actions): IState {
+  const prevState: IState = JSON.parse(JSON.stringify(state));
+
   switch (action.type) {
     case ActionsType.INIT: {
       return { ...state };
@@ -33,6 +35,34 @@ export function rootReducer(state: IState, action: Actions): IState {
           ...state.cellsDataState,
           [id]: string
         }
+      };
+    }
+
+    case ActionsType.CHANGE_STYLE: {
+      const { id, style } = action.payload;
+
+      Object.keys(style).forEach((key) => {
+        prevState.currentCellStyles[key] = style[key];
+      });
+
+      return {
+        ...prevState,
+        cellsStylesState: {
+          ...prevState.cellsStylesState,
+          [id]: { ...prevState.cellsStylesState[id], ...style }
+        }
+      };
+    }
+
+    case ActionsType.STYLES_CURRENT_CELL: {
+      const { styles } = action.payload;
+
+      Object.keys(styles).forEach((key) => {
+        prevState.currentCellStyles[key] = styles[key];
+      });
+
+      return {
+        ...prevState
       };
     }
 

@@ -92,7 +92,8 @@ export class Table extends ExcelComponent {
         this.tableViewApi.changeDataType(style);
       }
 
-      this.tableViewApi.applyStyle(style);
+      const styles = style as { [key: string]: string };
+      this.tableViewApi.applyStyle(styles);
     });
   }
 

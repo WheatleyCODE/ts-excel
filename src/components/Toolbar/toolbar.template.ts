@@ -1,20 +1,26 @@
 import { COLORS, IToolbarState, IStyle, IButton } from '@types';
 
-function createDropdown(meta: string, value: false | IStyle) {
+function createColors(meta: string, prop: string): string {
+  const colors = COLORS.map(
+    (color) =>
+      `<div ${meta} data-value='{"${prop}":"${color}"}' style="background-color: ${color};" class="btn-dropdown__color"></div>`
+  );
+
+  return colors.join('');
+}
+
+function createDropdown(meta: string, value: false | IStyle): string | undefined {
   if (!value) return;
   const prop = Object.keys(value)[0] === 'openColorModal' ? 'color' : 'background-color';
 
   return `
     <div data-dropdown="true" class="excel-button__dropdown btn-dropdown">
-      ${COLORS.map(
-        (color) =>
-          `<div ${meta} data-value='{"${prop}":"${color}"}' class="btn-dropdown__color ${color}"></div>`
-      ).join('')}
+      ${createColors(meta, prop)}
     </div>
   `;
 }
 
-function toButton({ icon, active, isWall, value, modal }: IButton) {
+function toButton({ icon, active, isWall, value, modal }: IButton): string {
   const meta = 'data-type="button"';
   const sValue = value ? `data-value='${JSON.stringify(value)}'` : '';
 
@@ -31,7 +37,7 @@ function toButton({ icon, active, isWall, value, modal }: IButton) {
   `;
 }
 
-export function createToolbar(state: IToolbarState) {
+export function createToolbar(state: IToolbarState): string {
   const buttons: IButton[] = [
     {
       icon: 'undo',
@@ -131,8 +137,11 @@ export function createToolbar(state: IToolbarState) {
     {
       icon: 'border_all',
       isWall: false,
-      active: state.border === '1px solid black',
-      value: state.border === '1px solid black' ? { border: 'none' } : { border: '1px solid black' }
+      active: state.borderColor === '1px solid black',
+      value:
+        state.borderColor === '1px solid black'
+          ? { borderColor: 'none' }
+          : { borderColor: '1px solid black' }
     },
     {
       icon: 'format_align_left',

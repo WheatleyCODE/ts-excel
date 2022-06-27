@@ -36,6 +36,10 @@ class WUtils {
 
     return a === b;
   }
+
+  camelCaseToDashCase(str: string): string {
+    return str.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`);
+  }
 }
 
 export const wutils = new WUtils();

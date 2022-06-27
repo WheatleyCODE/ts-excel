@@ -1,5 +1,5 @@
 import { $, WQuery } from '@wquery';
-import { IExcelComOptions, IToolbarState, IStyle, initialToolbarState } from '@types';
+import { IExcelComOptions, IToolbarState, IStyle, initialToolbarState, StateValues } from '@types';
 import { createToolbar } from './toolbar.template';
 import { ExcelStateComponent } from '@core/ExcelStateComponent';
 import { EventNames } from '@core';
@@ -11,6 +11,7 @@ export class Toolbar extends ExcelStateComponent<IToolbarState> {
     super($el, {
       name: 'Table',
       listeners: ['click'],
+      subscribe: ['currentCellStyles'],
       ...options
     });
   }
@@ -30,6 +31,14 @@ export class Toolbar extends ExcelStateComponent<IToolbarState> {
     super.componentWilUnmount();
 
     document.onclick = null;
+  }
+
+  wreduxChanged(changes: { [key: string]: StateValues }): void {
+    const currentCellStyles = changes.currentCellStyles as IToolbarState;
+    this.setComponentState({
+      ...this.getComponentState(),
+      ...currentCellStyles
+    });
   }
 
   onClickOutside(e: MouseEvent) {
