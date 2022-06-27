@@ -8,7 +8,8 @@ import {
   SELECTED_CELL,
   SELECTED_HEADER,
   SELECTED_GROUP_CELL,
-  IFacadeWredux
+  IFacadeWredux,
+  IStyle
 } from '@types';
 import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter } from '@core';
@@ -79,6 +80,7 @@ export class TableViewAPI {
       $header?.addClass(SELECTED_HEADER);
     });
 
+    console.log($newCell.getStyles());
     return $newCell;
   }
 
@@ -218,5 +220,45 @@ export class TableViewAPI {
       this.$activeCell.focus();
       this.selectAll($newCells);
     }
+  }
+
+  applyStyle(style: IStyle) {
+    if (this.$groupCells.length) {
+      this.$groupCells.forEach(($cell) => $cell.css(style));
+      return;
+    }
+
+    this.$activeCell.css(style);
+  }
+
+  private changeType($cell: WQuery, type: string) {
+    const text = $cell.getTextContent();
+    const numbers = Number(text);
+    if (isNaN(numbers)) {
+      if (text[text.length - 1] === '%' || text[text.length - 1] === 'р') {
+        const numbers = text.slice(0, -1);
+        $cell.setHtml(`${numbers}`);
+      }
+
+      return;
+    }
+
+    let per = '';
+    if (type === 'percent') per = '%';
+    if (type === 'ruble') per = 'р';
+
+    $cell.setHtml(`${numbers} ${per}`);
+  }
+
+  changeDataType(type: IStyle) {
+    const dType = type.dataType;
+    if (!(typeof dType === 'string')) return;
+
+    if (this.$groupCells.length) {
+      this.$groupCells.forEach(($cell) => this.changeType($cell, dType));
+      return;
+    }
+
+    this.changeType(this.$activeCell, dType);
   }
 }

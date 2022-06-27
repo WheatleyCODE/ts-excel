@@ -16,9 +16,15 @@ export abstract class ExcelComponent extends DomListener {
     this.emitter = options.emitter;
     this.wredux = options.wredux;
     this.stringSubs = options.subscribe;
+
+    this.componentWillMount();
   }
 
   abstract toHTML(): string;
+
+  componentWillMount(): void {
+    console.log(this.$root, `${this.options.name} Component will mount`);
+  }
 
   componentDidMount(): void {
     console.log(this.$root, `${this.options.name} Component did mount`);

@@ -1,4 +1,4 @@
-import { IWQueryListeners } from '@types';
+import { toolbartStyles, IWQueryListeners, ToolbarStyles } from '@types';
 
 export class WQuery {
   private $nativeElement: HTMLElement;
@@ -64,7 +64,7 @@ export class WQuery {
     return this.$nativeElement.getBoundingClientRect();
   }
 
-  css(styles: { [x: string]: string } = {}): WQuery {
+  css(styles: { [x: string]: string | boolean }): WQuery {
     Object.keys(styles).forEach((key) => {
       const value = styles[key];
       this.$nativeElement.style[key] = value;
@@ -72,7 +72,7 @@ export class WQuery {
     return this;
   }
 
-  getStyles(styles: string[]): { [propName: string]: string } {
+  getStyles(styles: ToolbarStyles[] = toolbartStyles) {
     return styles.reduce((acc, style) => {
       acc[style] = this.$nativeElement.style[style];
       return acc;

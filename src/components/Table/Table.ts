@@ -84,6 +84,16 @@ export class Table extends ExcelComponent {
     this.on(EventNames.FORMULA_SELECT_ALL, () => {
       this.tableViewApi.selectAllCells();
     });
+
+    this.on(EventNames.TOOLBAR_BUTTON_CLICK, (style) => {
+      if (!(typeof style === 'object')) return;
+      if (!(typeof Object.values(style)[0] === 'string')) return;
+      if (Object.keys(style)[0] === 'dataType') {
+        this.tableViewApi.changeDataType(style);
+      }
+
+      this.tableViewApi.applyStyle(style);
+    });
   }
 
   toHTML(): string {
