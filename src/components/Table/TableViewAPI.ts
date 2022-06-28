@@ -190,8 +190,6 @@ export class TableViewAPI {
         $header?.addClass(SELECTED_HEADER);
       });
     });
-
-    this.select(this.$activeCell, { clear: false });
   }
 
   focusActiveCell(): void {

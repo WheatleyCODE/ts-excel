@@ -33,8 +33,7 @@ function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOp
         data-id="${index}:${rowNumber}"
         data-id-public="${letter}${rowNumber}"
         class="data__cell">
-        ${text || ''}
-        <div class="selection-el" data-selection="true"></div>
+        <hr class="selection-el" data-selection="true" />
       </div>
     `;
   };
