@@ -34,6 +34,7 @@ function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOp
         data-id-public="${letter}${rowNumber}"
         class="data__cell">
         ${text || ''}
+        <div class="selection-el" data-selection="true"></div>
       </div>
     `;
   };

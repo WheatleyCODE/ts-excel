@@ -8,9 +8,9 @@ import {
   ISelectOptions,
   SELECTED_CELL,
   SELECTED_HEADER,
-  SELECTED_GROUP_CELL,
   IFacadeWredux,
-  IStyle
+  IStyle,
+  ACTIVE_SEL_EL
 } from '@types';
 import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter } from '@core';
@@ -85,11 +85,85 @@ export class TableViewAPI {
     return $newCell;
   }
 
+  reActivateVisualSelection() {
+    if (!this.$groupCells.length) return;
+    this.activateVisualSelection(this.$groupCells);
+  }
+
+  private activateVisualSelection($cells: WQuery[]) {
+    const idFirstCell = this.$groupCells[0].data.id;
+    const idLastCell = this.$groupCells[this.$groupCells.length - 1].data.id;
+
+    if (!idFirstCell || !idLastCell) return;
+
+    const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
+    const idsArr: { col: number[]; row: number[] } = { col: [], row: [] };
+
+    [idFirstCell, idLastCell].forEach((id) => {
+      const percedId = wutils.parceCellId(id);
+
+      Object.keys(percedId).forEach((key) => {
+        if (percedId[key]) idsArr[key].push(percedId[key]);
+      });
+    });
+
+    Object.keys(idsArr).forEach((key) => {
+      idsArr[key] = idsArr[key].filter(sortCallBack);
+    });
+
+    const count = Object.keys(idsArr).reduce(
+      (acc, key) => {
+        const [min, max] = idsArr[key];
+        const result = max - min + 1;
+
+        acc[key] = result;
+
+        return acc;
+      },
+      { col: 0, row: 0 }
+    );
+
+    const sum = $cells.reduce(
+      (acc, $cell) => {
+        const widthPx = $cell.getStyles(['width']);
+        const heightPx = $cell.getParent('[data-type="resizable"]')?.getStyles(['height']);
+
+        if (widthPx && heightPx) {
+          const width = wutils.parceStyleValueToInt(widthPx.width);
+          const height = wutils.parceStyleValueToInt(heightPx.height);
+
+          acc.row += height;
+          acc.col += width;
+        }
+
+        return acc;
+      },
+      { col: 0, row: 0 }
+    );
+
+    Object.keys(sum).forEach((key) => {
+      sum[key] = sum[key] / this.$groupCells.length - 1;
+    });
+
+    const { col, row } = Object.keys(sum).reduce(
+      (acc, key) => {
+        acc[key] = sum[key] * count[key] + count[key];
+        return acc;
+      },
+      { col: 0, row: 0 }
+    );
+
+    const $selection = $cells[0].find('[data-selection]');
+
+    if ($selection) {
+      $selection?.addClass(ACTIVE_SEL_EL);
+      $selection.css({ width: `${col}px`, height: `${row}px` });
+    }
+  }
+
   private selectAll($cells: WQuery[], options: ISelectOptions = {}): void {
     const { emit = true, clear = true } = options;
     if (clear) this.clearGroup();
-
-    $cells.forEach(($cell) => $cell.addClass(SELECTED_GROUP_CELL));
     this.$groupCells = $cells;
 
     if (emit) {
@@ -105,6 +179,8 @@ export class TableViewAPI {
       }
     }
 
+    this.activateVisualSelection($cells);
+
     $cells.forEach(($cell) => {
       if (!$cell.data.id) return;
       const parsedId = wutils.parceCellId($cell.data.id);
@@ -114,6 +190,8 @@ export class TableViewAPI {
         $header?.addClass(SELECTED_HEADER);
       });
     });
+
+    this.select(this.$activeCell, { clear: false });
   }
 
   focusActiveCell(): void {
@@ -137,8 +215,16 @@ export class TableViewAPI {
   }
 
   private clearGroup(): void {
-    this.$groupCells.forEach(($cell) => $cell.removeClass(SELECTED_GROUP_CELL));
-    this.$groupCells = [];
+    if (this.$groupCells.length) {
+      const $selection = this.$groupCells[0].find('[data-selection]');
+
+      if ($selection) {
+        $selection.removeClass(ACTIVE_SEL_EL);
+        $selection.css({ width: '0px', height: '0px' });
+      }
+
+      this.$groupCells = [];
+    }
   }
 
   onKeydownHandler(e: KeyboardEvent): void {

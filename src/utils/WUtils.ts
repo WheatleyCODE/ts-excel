@@ -20,6 +20,16 @@ class WUtils {
     };
   }
 
+  parceStyleValueToInt(str: string): number {
+    if (str.endsWith('px')) {
+      const value = str.slice(0, -2);
+
+      return +value;
+    }
+
+    return +str;
+  }
+
   storage(key: string, data?: unknown): any {
     if (!data) {
       const storageData = localStorage.getItem(key);

@@ -92,6 +92,7 @@
     }
 
     &__cell {
+      position: relative;
       display: flex;
       align-items: center;
       min-width: $minColWidth;
@@ -105,12 +106,27 @@
 
       &.selected {
         border: none;
-        outline: 2px solid $colorPrimary;
+        outline: 2px solid $colorPrimary !important;
         z-index: 2;
       }
 
       &.selected-group {
         background-color: $colorPrimary2;
+      }
+
+      .selection-el {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 200;
+        background-color: rgba(36, 113, 255, 0.11);
+        outline: 1px solid $colorPrimary;
+        pointer-events: none;
+      }
+
+      .selection-el.active {
+        display: block;
       }
     }
 

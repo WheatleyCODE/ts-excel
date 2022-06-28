@@ -7,7 +7,7 @@ export const DEFAULT_HEGHT = 24;
 export const ID_FIRST_CELL = '1:1';
 export const SELECTED_CELL = 'selected';
 export const SELECTED_HEADER = 'selected';
-export const SELECTED_GROUP_CELL = 'selected-group';
+export const ACTIVE_SEL_EL = 'active';
 
 export const COLORS = ['rgb(50, 50, 50)', 'white', 'red', 'yellow', 'orange', 'rgb(37, 95, 212)'];
 

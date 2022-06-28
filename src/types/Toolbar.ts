@@ -25,6 +25,17 @@ export interface IToolbarState extends IToolbarStyles {
 }
 
 export type ToolbarStyles = keyof IToolbarStyles;
+export type StyleName =
+  | 'width'
+  | 'height'
+  | 'justifyContent'
+  | 'alignItems'
+  | 'fontWeight'
+  | 'textDecoration'
+  | 'fontStyle'
+  | 'borderColor'
+  | 'color'
+  | 'backgroundColor';
 
 export const toolbartStylesArr: ToolbarStyles[] = [
   'justifyContent',
