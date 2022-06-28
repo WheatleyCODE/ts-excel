@@ -50,6 +50,20 @@ class WUtils {
   camelCaseToDashCase(str: string): string {
     return str.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`);
   }
+
+  debounse(fn: (...args: any[]) => void, wait: number) {
+    let timeout: NodeJS.Timeout;
+
+    return function (...args: any[]) {
+      const later = () => {
+        clearTimeout(timeout);
+        fn(...args);
+      };
+
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
 }
 
 export const wutils = new WUtils();

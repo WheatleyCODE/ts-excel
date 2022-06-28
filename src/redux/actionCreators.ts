@@ -29,3 +29,8 @@ export const stylesCurrentCellAC = (styles: { [key: string]: string }): Actions 
     styles
   }
 });
+
+export const changeTitleAC = (payload: string): Actions => ({
+  type: ActionsType.CHANGE_TITLE,
+  payload
+});

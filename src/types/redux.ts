@@ -4,6 +4,7 @@ export enum ActionsType {
   INIT = '__INIT__',
   TABLE_RESIZE = 'TABLE_RESIZE',
   CHANGE_TEXT = 'CHANGE_TEXT',
+  CHANGE_TITLE = 'CHANGE_TITLE',
   CHANGE_STYLE = 'CHANGE_STYLE',
   STYLES_CURRENT_CELL = 'STYLES_CURRENT_CELL'
 }
@@ -12,6 +13,11 @@ export interface IResizeTableACOptions {
   type: 'col' | 'row';
   id: string;
   value: number;
+}
+
+interface IActionChangeTitle {
+  type: ActionsType.CHANGE_TITLE;
+  payload: string;
 }
 
 interface IActionChangeStyle {
@@ -52,7 +58,8 @@ export type Actions =
   | IActionResizeTable
   | IActionChangeText
   | IActionChangeStyle
-  | IActionStylesCurrentCell;
+  | IActionStylesCurrentCell
+  | IActionChangeTitle;
 
 interface IResizeState {
   col: { [propName: string]: number };
@@ -73,6 +80,7 @@ export interface IState {
   cellsStylesState: ICellStylesState;
   currentText: string;
   currentCellStyles: IToolbarState;
+  title: string;
 }
 
 export type StateKeys = keyof IState;

@@ -38,6 +38,13 @@ export function rootReducer(state: IState, action: Actions): IState {
       };
     }
 
+    case ActionsType.CHANGE_TITLE: {
+      return {
+        ...state,
+        title: action.payload
+      };
+    }
+
     case ActionsType.CHANGE_STYLE: {
       const { id, style } = action.payload;
 
