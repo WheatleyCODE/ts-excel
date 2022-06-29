@@ -13,7 +13,7 @@ import {
   ACTIVE_SEL_EL
 } from '@types';
 import { wutils } from '@utils';
-import { EventNames, IFacadeEmitter } from '@core';
+import { EventNames, IFacadeEmitter, Parcer } from '@core';
 import { changeTextAC } from '@redux';
 
 export class TableViewAPI {
@@ -25,12 +25,20 @@ export class TableViewAPI {
   constructor(
     private $root: WQuery,
     private emitter: IFacadeEmitter,
-    private wredux: IFacadeWredux
+    private wredux: IFacadeWredux,
+    private parcer: Parcer
   ) {
     this.$allCells = $root.findAll('[data-id]');
     this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
 
     this.select(ID_FIRST_CELL);
+    const { parcerData } = this.wredux.getState();
+
+    if (parcerData[ID_FIRST_CELL]) {
+      this.emitter.emit(EventNames.TABLE_CELECT_CELL, parcerData[ID_FIRST_CELL].formula);
+      return;
+    }
+
     this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.getTextContent());
   }
 
@@ -69,7 +77,14 @@ export class TableViewAPI {
       this.emitter.emit(EventNames.TABLE_EMIT_INFO, $newCell.data.idPublic);
 
       if ($newCell.data.id) {
-        this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.getTextContent()));
+        const state = this.wredux.getState();
+        if (state.parcerData[$newCell.data.id]) {
+          this.wredux.dispatch(
+            changeTextAC($newCell.data.id, state.parcerData[$newCell.data.id].formula)
+          );
+        } else {
+          this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.getTextContent()));
+        }
       }
     }
 
@@ -197,13 +212,18 @@ export class TableViewAPI {
   }
 
   changeText(string: string): void {
-    this.$activeCell.setTextContent(string);
-
-    this.textInStore(this.$activeCell.data.id, this.$activeCell.getTextContent());
+    const id = this.$activeCell.data.id;
+    if (!id) return;
+    this.$activeCell.setTextContent(this.parcer.parce(string, 'output', id));
+    this.textInStore(this.$activeCell.data.id, string);
   }
 
   onInputHandler(): void {
-    this.textInStore(this.$activeCell.data.id, this.$activeCell.getTextContent());
+    const string = this.$activeCell.getTextContent();
+    const id = this.$activeCell.data.id;
+    if (!id) return;
+
+    this.textInStore(id, this.parcer.parce(string, 'input', id));
   }
 
   private textInStore(id: string | undefined, text: string) {

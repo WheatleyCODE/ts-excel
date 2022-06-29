@@ -34,3 +34,12 @@ export const changeTitleAC = (payload: string): Actions => ({
   type: ActionsType.CHANGE_TITLE,
   payload
 });
+
+export const changeParcerData = (id: string, formula: string, result: string): Actions => ({
+  type: ActionsType.CHANGE_PARCER_DATA,
+  payload: {
+    id,
+    formula,
+    result
+  }
+});

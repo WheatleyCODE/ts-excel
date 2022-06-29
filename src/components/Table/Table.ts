@@ -70,7 +70,7 @@ export class Table extends ExcelComponent {
       getState: this.getState.bind(this)
     };
 
-    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter, miniWRedux);
+    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter, miniWRedux, this.parcer);
 
     this.on(EventNames.FORMULA_INPUT, (string) => {
       if (typeof string === 'string') {

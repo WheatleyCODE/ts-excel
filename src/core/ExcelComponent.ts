@@ -2,6 +2,7 @@ import { WQuery } from '@wquery';
 import { WRedux } from '@redux';
 import { DomListener } from './DomListener';
 import { Emitter, EmitterArg, EventNames } from './Emitter';
+import { Parcer } from './Parcer';
 import { Actions, IComOptions, IState, IUnsubscribe, StateKeys, StateValues } from '@types';
 
 export abstract class ExcelComponent extends DomListener {
@@ -10,12 +11,14 @@ export abstract class ExcelComponent extends DomListener {
   private wredux: WRedux;
   private unsub!: IUnsubscribe;
   public stringSubs: StateKeys[] | undefined;
+  public parcer: Parcer;
 
   constructor($el: WQuery, options: IComOptions) {
     super($el, options);
     this.emitter = options.emitter;
     this.wredux = options.wredux;
     this.stringSubs = options.subscribe;
+    this.parcer = options.parcer;
 
     this.componentWillMount();
   }

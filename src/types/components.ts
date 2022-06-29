@@ -1,4 +1,4 @@
-import { Emitter, ExcelComponent } from '@core';
+import { Emitter, ExcelComponent, Parcer } from '@core';
 import { WRedux } from '@redux';
 import { WQuery } from '@wquery';
 import { StateKeys } from './redux';
@@ -61,6 +61,7 @@ export interface IWithWidthFromOptions {
 export interface IExcelComOptions {
   emitter: Emitter;
   wredux: WRedux;
+  parcer: Parcer;
 }
 
 export interface IComOptions extends IExcelComOptions {

@@ -17,7 +17,7 @@ export class Formula extends ExcelComponent {
   }
 
   onInput(): void {
-    this.emit(EventNames.FORMULA_INPUT, this.$input.getTextContent());
+    this.emit(EventNames.FORMULA_INPUT, this.parcer.parce(this.$input.getTextContent(), 'input'));
   }
 
   onMousedown(e: MouseEvent): void {

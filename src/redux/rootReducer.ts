@@ -45,6 +45,14 @@ export function rootReducer(state: IState, action: Actions): IState {
       };
     }
 
+    case ActionsType.CHANGE_PARCER_DATA: {
+      const { id, result, formula } = action.payload;
+      return {
+        ...state,
+        parcerData: { ...state.parcerData, [id]: { result, formula } }
+      };
+    }
+
     case ActionsType.CHANGE_STYLE: {
       const { id, style } = action.payload;
 

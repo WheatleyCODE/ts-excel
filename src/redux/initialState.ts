@@ -12,7 +12,8 @@ const defaultState: IState = {
   currentCellStyles: {
     ...initialToolbarState
   },
-  title: 'Новая таблица'
+  title: 'Новая таблица',
+  parcerData: {}
 };
 
 export const initialState: IState = wutils.storage(STORAGE_STATE_KEY)

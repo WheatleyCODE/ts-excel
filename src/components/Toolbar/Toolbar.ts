@@ -9,7 +9,7 @@ export class Toolbar extends ExcelStateComponent<IToolbarState> {
 
   constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
-      name: 'Table',
+      name: 'Toolbar',
       listeners: ['click'],
       subscribe: ['currentCellStyles'],
       ...options

@@ -11,7 +11,12 @@ import { wutils } from '@utils';
 
 function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOptions) => string {
   return ({ letter, index, width }: IWithWidthFromOptions): string => {
-    const text = state.cellsDataState[`${index}:${rowNumber}`];
+    const id = `${index}:${rowNumber}`;
+    let text = state.cellsDataState[id];
+
+    if (state.parcerData[id]) {
+      text = state.parcerData[id].result;
+    }
 
     let styles = { ...defaultToolbarStyles };
     const storageStyles = state.cellsStylesState[`${index}:${rowNumber}`];
