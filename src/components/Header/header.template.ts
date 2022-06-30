@@ -3,7 +3,9 @@ import { IHeaderState } from './Header';
 export function createHeader(state: IHeaderState, title: string) {
   return `
     <div class="excel-header__left-panel h-left-panel">
-      <div class="h-left-panel__logo"></div>
+      <a href="#dashboard">
+        <div class="h-left-panel__logo"></div>
+      </a>
       <div class="h-left-panel__group h-group">
         <input data-input="true" value="${title}" class="h-group__input">
         <div class="h-group__menubars menubars">
