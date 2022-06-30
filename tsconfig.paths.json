@@ -37,6 +37,9 @@
 
       "@pages": ["pages"],
       "@pages/*": ["pages/*"],
+
+      "@routing": ["routing"],
+      "@routing/*": ["routing/*"],
     }
   }
 }

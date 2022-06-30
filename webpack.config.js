@@ -61,7 +61,8 @@ module.exports = {
       '@types': path.resolve(__dirname, 'src/types'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@wquery': path.resolve(__dirname, 'src/wquery'),
-      '@pages': path.resolve(__dirname, 'src/pages')
+      '@pages': path.resolve(__dirname, 'src/pages'),
+      '@routing': path.resolve(__dirname, 'src/routing')
     }
   },
   optimization: {
