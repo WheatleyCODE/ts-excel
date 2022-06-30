@@ -43,3 +43,7 @@ export const changeParserData = (id: string, formula: string, result: string): A
     result
   }
 });
+
+export const changeOpenDate = (): Actions => ({
+  type: ActionsType.CHANGE_OPEN_DATE
+});

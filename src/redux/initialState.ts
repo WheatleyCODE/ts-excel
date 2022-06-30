@@ -1,7 +1,7 @@
-import { initialToolbarState, IState, STORAGE_STATE_KEY } from '@types';
+import { initialToolbarState, IState } from '@types';
 import { wutils } from '@utils';
 
-const defaultState: IState = {
+export const defaultState: IState = {
   resizeState: {
     col: {},
     row: {}
@@ -13,9 +13,11 @@ const defaultState: IState = {
     ...initialToolbarState
   },
   title: 'Новая таблица',
-  parserData: {}
+  parserData: {},
+  openDate: new Date().toJSON()
 };
 
-export const initialState: IState = wutils.storage(STORAGE_STATE_KEY)
-  ? wutils.storage(STORAGE_STATE_KEY)
-  : defaultState;
+export function getInitialState(key: string): IState {
+  const initialState: IState = wutils.storage(key) ? wutils.storage(key) : defaultState;
+  return initialState;
+}

@@ -1,8 +1,8 @@
-import { WQuery } from '@wquery';
-import { IExcelComOptions, StateValues } from '@types';
+import { $, WQuery } from '@wquery';
+import { ExcelStateComponent, ActiveRoute } from '@core';
+import { IExcelComOptions } from '@types';
 import { createHeader } from './header.template';
-import { ExcelStateComponent } from '@core/ExcelStateComponent';
-import { changeTitleAC } from '@redux';
+import { changeOpenDate, changeTitleAC } from '@redux';
 
 export interface IHeaderState {
   openModal: boolean;
@@ -14,13 +14,34 @@ export class Header extends ExcelStateComponent<IHeaderState> {
   constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Header',
-      listeners: ['input'],
+      listeners: ['input', 'click'],
       ...options
     });
 
     this.initComponentState({
       openModal: false
     });
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.dispatch(changeOpenDate());
+  }
+
+  onClick(e: MouseEvent) {
+    if (!(e.target instanceof HTMLElement)) return;
+
+    const $target = $(e.target);
+
+    if ($target.data.logo) {
+      console.log('object');
+      ActiveRoute.navigation('');
+    }
+
+    if ($target.data.remove) {
+      localStorage.removeItem(`excel:${ActiveRoute.firstParam}`);
+      ActiveRoute.navigation('');
+    }
   }
 
   onInput(e: InputEvent) {

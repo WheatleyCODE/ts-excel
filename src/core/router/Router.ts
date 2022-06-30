@@ -3,12 +3,15 @@ import { DashboardPage } from 'pages/DashboardPage';
 import { ExcelPage } from 'pages/ExcelPage';
 import { ActiveRoute } from './ActiveRoute';
 
+type TPage = DashboardPage | ExcelPage;
+
 export interface IRoutes {
   [key: string]: typeof DashboardPage | typeof ExcelPage;
 }
 
 export class Router {
   $root: WQuery;
+  page: TPage | null = null;
 
   constructor(selector: string, private routes: IRoutes) {
     this.$root = $(selector);
@@ -18,23 +21,25 @@ export class Router {
   }
 
   changePage(): void {
-    this.$root.setHtml('');
-    const pathName = ActiveRoute.pathName;
-    const params = ActiveRoute.params;
+    if (this.page) this.page.destroyPage();
+    this.$root.clear();
 
-    console.log(pathName);
-    console.log(this.routes[pathName]);
-    console.log(this.routes);
+    const pathName = ActiveRoute.pathName;
+    const param = ActiveRoute.firstParam;
 
     if (!this.routes[pathName]) {
-      this.$root.append($.create('h1', 'error404').setTextContent('Error 404'));
+      this.createPage('home', param);
       return;
     }
 
+    this.createPage(pathName, param);
+  }
+
+  createPage(pathName: string, param: string) {
     const Page = this.routes[pathName];
-    const page = new Page(params);
-    this.$root.append(page.getRoot());
-    page.initPage();
+    this.page = new Page(param);
+    this.$root.append(this.page.getRoot());
+    this.page.initPage();
   }
 
   init() {

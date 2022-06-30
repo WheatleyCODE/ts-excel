@@ -17,4 +17,8 @@ export class ActiveRoute {
   static get firstParam(): string {
     return this.params[0];
   }
+
+  static navigation(path: string) {
+    window.location.hash = path;
+  }
 }
