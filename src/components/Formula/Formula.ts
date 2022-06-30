@@ -23,6 +23,8 @@ export class Formula extends ExcelComponent {
   onMousedown(e: MouseEvent): void {
     if (!(e.target instanceof HTMLDivElement)) return;
 
+    this.emit(EventNames.FORMULA_PRINT_FORMULA_SELECT);
+
     if (e.target.dataset.current === this.$currentCell.data.current) {
       e.preventDefault();
       this.emit(EventNames.FORMULA_SELECT_ALL);

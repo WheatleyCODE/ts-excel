@@ -17,7 +17,7 @@ export class Excel {
     this.components = options.components;
     this.wredux = options.wredux;
     this.wreduxSubscriber = new WReduxSubscriber(this.wredux);
-    this.parcer = new Parcer(this.wredux);
+    this.parcer = new Parcer(this.wredux, this.emitter);
   }
 
   getRootExcel(): WQuery {

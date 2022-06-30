@@ -75,6 +75,7 @@ export class Table extends ExcelComponent {
     this.on(EventNames.FORMULA_INPUT, (string) => {
       if (typeof string === 'string') {
         this.tableViewApi.changeText(string);
+        this.tableViewApi.updateAllParcerResult();
       }
     });
 
@@ -95,6 +96,30 @@ export class Table extends ExcelComponent {
 
       const styles = style as { [key: string]: string };
       this.tableViewApi.applyStyle(styles);
+    });
+
+    const emit = this.emit.bind(this);
+
+    this.on(EventNames.PARCER_CHECK_CELL, (publicId) => {
+      if (typeof publicId !== 'string') return;
+      const text = this.tableViewApi.getText(publicId);
+
+      if (text !== false) {
+        if (text === '') {
+          emit(EventNames.TABLE_PARCER_ID, `${publicId}|${0}`);
+          return;
+        }
+
+        emit(EventNames.TABLE_PARCER_ID, `${publicId}|${text}`);
+      }
+    });
+
+    this.on(EventNames.PARCER_CLEAR_FORMULA_SELECT, () => {
+      this.tableViewApi.clearFormulaSelect();
+    });
+
+    this.on(EventNames.FORMULA_PRINT_FORMULA_SELECT, () => {
+      this.tableViewApi.printFormulaSelect();
     });
   }
 

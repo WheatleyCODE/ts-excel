@@ -64,6 +64,11 @@ export interface IExcelComOptions {
   parcer: Parcer;
 }
 
+export interface IParcerData {
+  id: string;
+  formula: string;
+}
+
 export interface IComOptions extends IExcelComOptions {
   name: string;
   listeners: string[];

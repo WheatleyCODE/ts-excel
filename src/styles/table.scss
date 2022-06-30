@@ -114,6 +114,10 @@
         background-color: $colorPrimary2;
       }
 
+      &.formula-select {
+        outline: 1px dashed $colorGreen;
+      }
+
       .selection-el {
         display: none;
         position: absolute;

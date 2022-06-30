@@ -7,7 +7,11 @@ export enum EventNames {
   FORMULA_TAB_OR_ENTER_PRESS = 'formula:tab-or-enter-press',
   FORMULA_SELECT_ALL = 'formula:select-all',
   TABLE_EMIT_INFO = 'table:emit-info',
-  TOOLBAR_BUTTON_CLICK = 'toolbar:button-click'
+  TOOLBAR_BUTTON_CLICK = 'toolbar:button-click',
+  PARCER_CHECK_CELL = 'parcer:check-cell',
+  TABLE_PARCER_ID = 'table:parcer-id',
+  FORMULA_PRINT_FORMULA_SELECT = 'formula:print-formula-select',
+  PARCER_CLEAR_FORMULA_SELECT = 'parcer:clear-formula-select'
 }
 
 export interface IFacadeEmitter {

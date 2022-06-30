@@ -10,7 +10,8 @@ import {
   SELECTED_HEADER,
   IFacadeWredux,
   IStyle,
-  ACTIVE_SEL_EL
+  ACTIVE_SEL_EL,
+  FORMULA_SELECT
 } from '@types';
 import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter, Parcer } from '@core';
@@ -21,6 +22,7 @@ export class TableViewAPI {
   private $headers: WQuery[];
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
+  private $formulaSelectCells: WQuery[] = [];
 
   constructor(
     private $root: WQuery,
@@ -218,7 +220,31 @@ export class TableViewAPI {
     this.textInStore(this.$activeCell.data.id, string);
   }
 
+  updateAllParcerResult() {
+    const { parcerData } = this.wredux.getState();
+    const arr = Object.keys(parcerData).map((key) => {
+      if (parcerData[key].formula !== '') {
+        return { id: key, formula: parcerData[key].formula };
+      }
+
+      return false;
+    });
+
+    const data = arr.filter((el) => el !== false) as { id: string; formula: string }[];
+
+    data.forEach(({ id, formula }) => {
+      const $cell = this.$allCells.find(($cell) => $cell.data.id === id);
+
+      if ($cell && !($cell.data.id === this.$activeCell.data.id)) {
+        $cell.setTextContent(this.parcer.parce(formula, 'output', $cell.data.id));
+        this.clearFormulaSelect();
+      }
+    });
+  }
+
   onInputHandler(): void {
+    this.updateAllParcerResult();
+
     const string = this.$activeCell.getTextContent();
     const id = this.$activeCell.data.id;
     if (!id) return;
@@ -243,6 +269,9 @@ export class TableViewAPI {
 
       this.$groupCells = [];
     }
+
+    this.$formulaSelectCells.forEach(($cell) => $cell.removeClass(FORMULA_SELECT));
+    this.$formulaSelectCells = [];
   }
 
   onKeydownHandler(e: KeyboardEvent): void {
@@ -373,5 +402,30 @@ export class TableViewAPI {
     }
 
     this.changeType(this.$activeCell, dType);
+  }
+
+  getText(publicId: string): string | false {
+    const $cell = this.$allCells.find(($cell) => $cell.data.idPublic === publicId);
+
+    if ($cell) {
+      $cell.addClass(FORMULA_SELECT);
+      this.$formulaSelectCells.push($cell);
+    }
+
+    return $cell ? $cell.getTextContent() : false;
+  }
+
+  clearFormulaSelect() {
+    this.$formulaSelectCells.forEach(($cell) => $cell.removeClass(FORMULA_SELECT));
+    this.$formulaSelectCells = [];
+  }
+
+  printFormulaSelect() {
+    const { parcerData } = this.wredux.getState();
+    const id = this.$activeCell.data.id;
+    if (!id) return;
+    const data = parcerData[id];
+    if (!data) return;
+    this.$activeCell.setTextContent(this.parcer.parce(data.formula, 'output'));
   }
 }
