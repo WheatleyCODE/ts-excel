@@ -1,5 +1,8 @@
-import { Emitter, ExcelComponent } from '@core';
+import { Emitter, ExcelComponent, Parser } from '@core';
+import { WRedux } from '@redux';
 import { WQuery } from '@wquery';
+import { StateKeys } from './redux';
+
 export class IComponent extends ExcelComponent {
   static classNames = ['', ''];
 
@@ -7,6 +10,7 @@ export class IComponent extends ExcelComponent {
     super($el, {
       name: 'IComponent',
       listeners: [],
+      subscribe: [],
       ...options
     });
   }
@@ -49,13 +53,26 @@ export interface ICellId {
   col: number;
 }
 
+export interface IWithWidthFromOptions {
+  letter: string;
+  index: number;
+  width: number;
+}
 export interface IExcelComOptions {
   emitter: Emitter;
+  wredux: WRedux;
+  parser: Parser;
+}
+
+export interface IParserData {
+  id: string;
+  formula: string;
 }
 
 export interface IComOptions extends IExcelComOptions {
   name: string;
   listeners: string[];
+  subscribe?: StateKeys[];
 }
 
 export interface IWQueryListeners {
@@ -64,4 +81,5 @@ export interface IWQueryListeners {
 
 export interface IOptions {
   components: typeof IComponent[];
+  wredux: WRedux;
 }

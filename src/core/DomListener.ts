@@ -10,7 +10,7 @@ export abstract class DomListener {
     this.$root = $root;
   }
 
-  initDOMListeners() {
+  initDOMListeners(): void {
     this.options.listeners.forEach((listener) => {
       const methodName = wutils.createDOMListenerMethodName(listener);
 
@@ -25,7 +25,7 @@ export abstract class DomListener {
     });
   }
 
-  removeDOMListeners() {
+  removeDOMListeners(): void {
     this.options.listeners.forEach((listener) => {
       this.$root.off(listener);
     });

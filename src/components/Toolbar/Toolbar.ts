@@ -1,140 +1,88 @@
-import { ExcelComponent } from '@core';
-import { WQuery } from '@wquery';
-import { IExcelComOptions } from '@types';
+import { $, WQuery } from '@wquery';
+import { IExcelComOptions, IToolbarState, IStyle, initialToolbarState, StateValues } from '@types';
+import { createToolbar } from './toolbar.template';
+import { ExcelStateComponent } from '@core/ExcelStateComponent';
+import { EventNames } from '@core';
 
-export class Toolbar extends ExcelComponent {
+export class Toolbar extends ExcelStateComponent<IToolbarState> {
   static classNames = ['excel__toolbar', 'excel-toolbar'];
 
   constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
-      name: 'Table',
-      listeners: [],
+      name: 'Toolbar',
+      listeners: ['click'],
+      subscribe: ['currentCellStyles'],
       ...options
     });
   }
 
-  toHTML() {
-    return `
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          undo
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          redo
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          print
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_paint
-        </i>
-      </div>
+  componentWillMount() {
+    super.componentWillMount();
+    this.initComponentState(initialToolbarState);
+  }
 
-      <div class="excel-toolbar__wall"></div>
+  componentDidMount() {
+    super.componentDidMount();
 
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          currency_ruble
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          percent
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          chevron_left
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          chevron_right
-        </i>
-      </div>
+    document.onclick = (e) => this.onClickOutside(e);
+  }
 
-      <div class="excel-toolbar__wall"></div>
+  componentWilUnmount() {
+    super.componentWilUnmount();
 
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_bold
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_italic
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          strikethrough_s
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_underlined
-        </i>
-      </div>
+    document.onclick = null;
+  }
 
-      <div class="excel-toolbar__wall"></div>
+  wreduxChanged(changes: { [key: string]: StateValues }): void {
+    const currentCellStyles = changes.currentCellStyles as IToolbarState;
+    this.setComponentState({
+      ...this.getComponentState(),
+      ...currentCellStyles
+    });
+  }
 
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_color_text
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_color_fill
-        </i>
-      </div>
+  onClickOutside(e: MouseEvent) {
+    if (!(e.target instanceof HTMLElement)) return;
+    const $target = $(e.target);
+    const state = this.getComponentState();
 
-      <div class="excel-toolbar__wall"></div>
+    if (state.openBackgroundColorModal || state.openColorModal) {
+      if (!$target.data.dropdown) {
+        this.setComponentState({
+          ...state,
+          openBackgroundColorModal: false,
+          openColorModal: false
+        });
+      }
+    }
+  }
 
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          border_all
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_align_left
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_align_center
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          format_align_right
-        </i>
-      </div>
+  onClick(e: MouseEvent) {
+    if (!(e.target instanceof HTMLDivElement)) return;
+    e.stopPropagation();
+    const $target = $(e.target);
 
-      <div class="excel-toolbar__wall"></div>
+    this.onClickOutside(e);
 
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          align_vertical_bottom
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          align_vertical_center
-        </i>
-      </div>
-      <div class="excel-toolbar__button">
-        <i class="material-icons">
-          align_vertical_top
-        </i>
-      </div>
-    `;
+    if ($target.data.type) {
+      if ($target.data.value) {
+        const style: IStyle = JSON.parse($target.data.value);
+
+        this.setComponentState({
+          ...this.getComponentState(),
+          ...style
+        });
+
+        this.emit(EventNames.TOOLBAR_BUTTON_CLICK, style);
+      }
+    }
+  }
+
+  get template() {
+    return createToolbar(this.getComponentState());
+  }
+
+  toHTML(): string {
+    return this.template;
   }
 }

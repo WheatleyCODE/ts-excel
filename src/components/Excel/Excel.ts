@@ -1,23 +1,32 @@
-import { Emitter } from '@core';
+import { Emitter, Parser, WReduxSubscriber } from '@core';
 import { $, WQuery } from '@wquery';
-import { IComponent, IOptions } from '@types';
+import { IComponent, IExcelComOptions, IOptions } from '@types';
+import { WRedux } from '@redux';
 
 export class Excel {
   private $rootApp: WQuery;
   private components: typeof IComponent[];
   private instantComponents: IComponent[] = [];
   private emitter = new Emitter();
+  private wredux: WRedux;
+  private wreduxSubscriber: WReduxSubscriber;
+  private parser: Parser;
 
   constructor(rootSelector: string, options: IOptions) {
     this.$rootApp = $(rootSelector);
     this.components = options.components;
+    this.wredux = options.wredux;
+    this.wreduxSubscriber = new WReduxSubscriber(this.wredux);
+    this.parser = new Parser(this.wredux, this.emitter);
   }
 
   getRootExcel(): WQuery {
     const $rootExcel = $.create('div', 'excel');
 
-    const componentOptions = {
-      emitter: this.emitter
+    const componentOptions: IExcelComOptions = {
+      emitter: this.emitter,
+      wredux: this.wredux,
+      parser: this.parser
     };
 
     this.instantComponents = this.components.map((Component) => {
@@ -35,6 +44,8 @@ export class Excel {
 
   render(): void {
     this.$rootApp.append(this.getRootExcel());
+    this.wreduxSubscriber.subscribeComponents(this.instantComponents);
+
     this.instantComponents.forEach((instComponent) => {
       instComponent.init();
       instComponent.componentDidMount();
@@ -46,6 +57,8 @@ export class Excel {
       instComponent.componentWilUnmount();
       instComponent.destroy();
     });
+
+    this.wreduxSubscriber.unsubscribeComponents();
 
     this.$rootApp.setHtml('');
   }

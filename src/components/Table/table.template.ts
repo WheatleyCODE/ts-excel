@@ -1,42 +1,94 @@
-import { CODES, MAX_LENGTH } from '@types';
+import {
+  CODES,
+  defaultToolbarStyles,
+  DEFAULT_HEGHT,
+  DEFAULT_WIDTH,
+  IState,
+  IWithWidthFromOptions,
+  MAX_LENGTH
+} from '@types';
+import { wutils } from '@utils';
 
-function createCell(rowNumber: number): (letter: string, i: number) => string {
-  return (letter: string, i: number): string => {
+function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOptions) => string {
+  return ({ letter, index, width }: IWithWidthFromOptions): string => {
+    const id = `${index}:${rowNumber}`;
+    let text = state.cellsDataState[id];
+
+    if (state.parserData[id]) {
+      text = state.parserData[id].result;
+    }
+
+    let styles = { ...defaultToolbarStyles };
+    const storageStyles = state.cellsStylesState[`${index}:${rowNumber}`];
+
+    if (storageStyles) {
+      styles = { ...styles, ...storageStyles };
+    }
+
+    const stylesArr = Object.keys(styles).map(
+      (key) => `${wutils.camelCaseToDashCase(key)}: ${styles[key]}; `
+    );
+
     return `
       <div contenteditable
-        data-col="${i + 1}"
+        style="width: ${width}px; ${stylesArr.join(' ')}"
+        data-col="${index}"
         data-col-public="${letter}"
         data-row="${rowNumber}"
-        data-id="${i + 1}:${rowNumber}"
+        data-id="${index}:${rowNumber}"
         data-id-public="${letter}${rowNumber}"
         class="data__cell">
+        ${text || ''}
+        <hr class="selection-el" data-selection="true" />
       </div>
     `;
   };
 }
 
-function createCol(letter: string, i: number): string {
+function createCol({ letter, index, width }: IWithWidthFromOptions): string {
   return `
-    <div data-type="resizable" data-maincoll="true" data-col-public="${letter}" data-col="${
-    i + 1
-  }" class="data__column">
+    <div
+      style="width: ${width}px"
+      data-type="resizable"
+      data-maincoll="true" 
+      data-col-public="${letter}"
+      data-col="${index}"
+      class="data__column"
+    >
       ${letter}
       <div data-resize="col" class="data__col-resize col-resize"></div>
     </div>
   `;
 }
 
-function createRow(cols: string, i: string | number = ''): string {
-  const resizer = i ? '<div data-resize="row" class="row__row-resize row-resize"></div>' : '';
-  const dataRow = i
-    ? `<div data-mainrow="true" data-row="${i}" class="row__info">${i} ${resizer}</div>`
-    : '<div class="row__info"></div>';
-  return `
-    <div data-row="${i}" data-type="resizable" class="excel-table__row row">
-      ${dataRow}
-      <div class="row__data data">${cols}</div>
-    </div>
-  `;
+function createRowWithHeightFrom(state: IState): (cols: string, i?: number) => string {
+  return (cols: string, i?: number): string => {
+    if (i) {
+      const heigh = getHeight(state, i);
+
+      return `
+        <div
+          style="height:${heigh}px"
+          ${i && `data-row="${i}"`}
+          ${i && 'data-type="resizable"'}
+          class="excel-table__row row"
+        >
+          <div data-mainrow="true" data-row="${i}" class="row__info">
+            ${i}
+            <div data-resize="row" class="row__row-resize row-resize"></div>
+          </div>
+          <div class="row__data data">${cols}</div>
+        </div>
+      `;
+    }
+
+    return `
+        <div class="excel-table__row row">
+          <div class="row__info"></div>
+          <div class="row__data data">${cols}</div>
+        </div>
+      `;
+  };
 }
 
 function toCharCode(): () => string {
@@ -55,19 +107,46 @@ function toCharCode(): () => string {
   };
 }
 
-export function createTable(rowsCount = 60, colsCount = 30): string {
+function getWidth(state: IState, i: number): number {
+  return state.resizeState.col[i] || DEFAULT_WIDTH;
+}
+
+function getHeight(state: IState, i: number): number {
+  return state.resizeState.row[i] || DEFAULT_HEGHT;
+}
+
+function withWidthFrom(state: IState): (letter: string, index: number) => IWithWidthFromOptions {
+  return (letter: string, index: number): IWithWidthFromOptions => {
+    index++;
+
+    return {
+      letter,
+      index,
+      width: getWidth(state, index)
+    };
+  };
+}
+
+export function createTable(rowsCount = 60, colsCount = 30, state: IState): string {
   const rows = [];
-  const cols = new Array(colsCount).fill('').map(toCharCode()).map(createCol).join('');
+  const cols = new Array(colsCount)
+    .fill('')
+    .map(toCharCode())
+    .map(withWidthFrom(state))
+    .map(createCol)
+    .join('');
 
-  rows.push(createRow(cols));
+  rows.push(createRowWithHeightFrom(state)(cols));
 
-  for (let i = 0; i < rowsCount; i++) {
+  for (let i = 1; i <= rowsCount; i++) {
     const cells = new Array(colsCount)
       .fill('')
       .map(toCharCode())
-      .map(createCell(i + 1))
+      .map(withWidthFrom(state))
+      .map(createCell(i, state))
       .join('');
-    rows.push(createRow(cells, i + 1));
+
+    rows.push(createRowWithHeightFrom(state)(cells, i));
   }
 
   return rows.join('');
