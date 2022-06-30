@@ -1,4 +1,4 @@
-import { Page } from '@routing';
+import { Page } from '@core';
 import { $ } from '@wquery';
 import { createDashboard } from './dashboard.template';
 

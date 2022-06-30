@@ -1,4 +1,4 @@
-import { Router } from '@routing';
+import { Router } from '@core';
 import { DashboardPage, ExcelPage } from '@pages';
 import '@styles/index.scss';
 

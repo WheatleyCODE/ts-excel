@@ -1,4 +1,4 @@
-import { Page } from '@routing';
+import { Page } from '@core';
 import { getInitialState, rootReducer, WRedux } from '@redux';
 import { Excel, Header, Table, Toolbar, Formula } from '@components';
 import { wutils } from '@utils';

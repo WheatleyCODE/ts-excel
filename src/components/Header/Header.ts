@@ -1,6 +1,5 @@
 import { $, WQuery } from '@wquery';
-import { ExcelStateComponent } from '@core';
-import { ActiveRoute } from '@routing';
+import { ExcelStateComponent, ActiveRoute } from '@core';
 import { IExcelComOptions } from '@types';
 import { createHeader } from './header.template';
 import { changeOpenDate, changeTitleAC } from '@redux';
