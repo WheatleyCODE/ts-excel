@@ -8,10 +8,10 @@ export enum EventNames {
   FORMULA_SELECT_ALL = 'formula:select-all',
   TABLE_EMIT_INFO = 'table:emit-info',
   TOOLBAR_BUTTON_CLICK = 'toolbar:button-click',
-  PARCER_CHECK_CELL = 'parcer:check-cell',
-  TABLE_PARCER_ID = 'table:parcer-id',
+  PARSER_CHECK_CELL = 'parser:check-cell',
+  TABLE_PARSER_ID = 'table:parser-id',
   FORMULA_PRINT_FORMULA_SELECT = 'formula:print-formula-select',
-  PARCER_CLEAR_FORMULA_SELECT = 'parcer:clear-formula-select'
+  PARSER_CLEAR_FORMULA_SELECT = 'parser:clear-formula-select'
 }
 
 export interface IFacadeEmitter {

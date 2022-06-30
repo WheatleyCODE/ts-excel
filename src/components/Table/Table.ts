@@ -70,12 +70,12 @@ export class Table extends ExcelComponent {
       getState: this.getState.bind(this)
     };
 
-    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter, miniWRedux, this.parcer);
+    this.tableViewApi = new TableViewAPI(this.$root, miniEmitter, miniWRedux, this.parser);
 
     this.on(EventNames.FORMULA_INPUT, (string) => {
       if (typeof string === 'string') {
         this.tableViewApi.changeText(string);
-        this.tableViewApi.updateAllParcerResult();
+        this.tableViewApi.updateAllParserResult();
       }
     });
 
@@ -100,21 +100,21 @@ export class Table extends ExcelComponent {
 
     const emit = this.emit.bind(this);
 
-    this.on(EventNames.PARCER_CHECK_CELL, (publicId) => {
+    this.on(EventNames.PARSER_CHECK_CELL, (publicId) => {
       if (typeof publicId !== 'string') return;
       const text = this.tableViewApi.getText(publicId);
 
       if (text !== false) {
         if (text === '') {
-          emit(EventNames.TABLE_PARCER_ID, `${publicId}|${0}`);
+          emit(EventNames.TABLE_PARSER_ID, `${publicId}|${0}`);
           return;
         }
 
-        emit(EventNames.TABLE_PARCER_ID, `${publicId}|${text}`);
+        emit(EventNames.TABLE_PARSER_ID, `${publicId}|${text}`);
       }
     });
 
-    this.on(EventNames.PARCER_CLEAR_FORMULA_SELECT, () => {
+    this.on(EventNames.PARSER_CLEAR_FORMULA_SELECT, () => {
       this.tableViewApi.clearFormulaSelect();
     });
 

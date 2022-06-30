@@ -7,7 +7,7 @@ export enum ActionsType {
   CHANGE_TITLE = 'CHANGE_TITLE',
   CHANGE_STYLE = 'CHANGE_STYLE',
   STYLES_CURRENT_CELL = 'STYLES_CURRENT_CELL',
-  CHANGE_PARCER_DATA = 'CHANGE_PARCER_DATA'
+  CHANGE_PARSER_DATA = 'CHANGE_PARSER_DATA'
 }
 
 export interface IResizeTableACOptions {
@@ -21,13 +21,13 @@ interface IActionChangeTitle {
   payload: string;
 }
 
-export interface IParcerData {
+export interface IParserData {
   formula: string;
   result: string;
 }
 
-interface IActionChangeParcerData {
-  type: ActionsType.CHANGE_PARCER_DATA;
+interface IActionChangeParserData {
+  type: ActionsType.CHANGE_PARSER_DATA;
   payload: { id: string; formula: string; result: string };
 }
 
@@ -71,7 +71,7 @@ export type Actions =
   | IActionChangeStyle
   | IActionStylesCurrentCell
   | IActionChangeTitle
-  | IActionChangeParcerData;
+  | IActionChangeParserData;
 
 interface IResizeState {
   col: { [propName: string]: number };
@@ -93,7 +93,7 @@ export interface IState {
   currentText: string;
   currentCellStyles: IToolbarState;
   title: string;
-  parcerData: { [key: string]: IParcerData };
+  parserData: { [key: string]: IParserData };
 }
 
 export type StateKeys = keyof IState;

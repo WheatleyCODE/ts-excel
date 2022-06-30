@@ -14,7 +14,7 @@ import {
   FORMULA_SELECT
 } from '@types';
 import { wutils } from '@utils';
-import { EventNames, IFacadeEmitter, Parcer } from '@core';
+import { EventNames, IFacadeEmitter, Parser } from '@core';
 import { changeTextAC } from '@redux';
 
 export class TableViewAPI {
@@ -28,16 +28,16 @@ export class TableViewAPI {
     private $root: WQuery,
     private emitter: IFacadeEmitter,
     private wredux: IFacadeWredux,
-    private parcer: Parcer
+    private parser: Parser
   ) {
     this.$allCells = $root.findAll('[data-id]');
     this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
 
     this.select(ID_FIRST_CELL);
-    const { parcerData } = this.wredux.getState();
+    const { parserData } = this.wredux.getState();
 
-    if (parcerData[ID_FIRST_CELL]) {
-      this.emitter.emit(EventNames.TABLE_CELECT_CELL, parcerData[ID_FIRST_CELL].formula);
+    if (parserData[ID_FIRST_CELL]) {
+      this.emitter.emit(EventNames.TABLE_CELECT_CELL, parserData[ID_FIRST_CELL].formula);
       return;
     }
 
@@ -80,9 +80,9 @@ export class TableViewAPI {
 
       if ($newCell.data.id) {
         const state = this.wredux.getState();
-        if (state.parcerData[$newCell.data.id]) {
+        if (state.parserData[$newCell.data.id]) {
           this.wredux.dispatch(
-            changeTextAC($newCell.data.id, state.parcerData[$newCell.data.id].formula)
+            changeTextAC($newCell.data.id, state.parserData[$newCell.data.id].formula)
           );
         } else {
           this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.getTextContent()));
@@ -91,7 +91,7 @@ export class TableViewAPI {
     }
 
     if (!$newCell.data.id) return;
-    const parsedId = wutils.parceCellId($newCell.data.id);
+    const parsedId = wutils.parseCellId($newCell.data.id);
 
     Object.keys(parsedId).forEach((key) => {
       const $header = this.$headers.find(($header) => $header.data[key] === `${parsedId[key]}`);
@@ -117,7 +117,7 @@ export class TableViewAPI {
     const idsArr: { col: number[]; row: number[] } = { col: [], row: [] };
 
     [idFirstCell, idLastCell].forEach((id) => {
-      const percedId = wutils.parceCellId(id);
+      const percedId = wutils.parseCellId(id);
 
       Object.keys(percedId).forEach((key) => {
         if (percedId[key]) idsArr[key].push(percedId[key]);
@@ -146,8 +146,8 @@ export class TableViewAPI {
         const heightPx = $cell.getParent('[data-type="resizable"]')?.getStyles(['height']);
 
         if (widthPx && heightPx) {
-          const width = wutils.parceStyleValueToInt(widthPx.width);
-          const height = wutils.parceStyleValueToInt(heightPx.height);
+          const width = wutils.parseStyleValueToInt(widthPx.width);
+          const height = wutils.parseStyleValueToInt(heightPx.height);
 
           acc.row += height;
           acc.col += width;
@@ -200,7 +200,7 @@ export class TableViewAPI {
 
     $cells.forEach(($cell) => {
       if (!$cell.data.id) return;
-      const parsedId = wutils.parceCellId($cell.data.id);
+      const parsedId = wutils.parseCellId($cell.data.id);
 
       Object.keys(parsedId).forEach((key) => {
         const $header = this.$headers.find(($header) => $header.data[key] === `${parsedId[key]}`);
@@ -216,15 +216,15 @@ export class TableViewAPI {
   changeText(string: string): void {
     const id = this.$activeCell.data.id;
     if (!id) return;
-    this.$activeCell.setTextContent(this.parcer.parce(string, 'output', id));
+    this.$activeCell.setTextContent(this.parser.parse(string, 'output', id));
     this.textInStore(this.$activeCell.data.id, string);
   }
 
-  updateAllParcerResult() {
-    const { parcerData } = this.wredux.getState();
-    const arr = Object.keys(parcerData).map((key) => {
-      if (parcerData[key].formula !== '') {
-        return { id: key, formula: parcerData[key].formula };
+  updateAllParserResult() {
+    const { parserData } = this.wredux.getState();
+    const arr = Object.keys(parserData).map((key) => {
+      if (parserData[key].formula !== '') {
+        return { id: key, formula: parserData[key].formula };
       }
 
       return false;
@@ -236,20 +236,20 @@ export class TableViewAPI {
       const $cell = this.$allCells.find(($cell) => $cell.data.id === id);
 
       if ($cell && !($cell.data.id === this.$activeCell.data.id)) {
-        $cell.setTextContent(this.parcer.parce(formula, 'output', $cell.data.id));
+        $cell.setTextContent(this.parser.parse(formula, 'output', $cell.data.id));
         this.clearFormulaSelect();
       }
     });
   }
 
   onInputHandler(): void {
-    this.updateAllParcerResult();
+    this.updateAllParserResult();
 
     const string = this.$activeCell.getTextContent();
     const id = this.$activeCell.data.id;
     if (!id) return;
 
-    this.textInStore(id, this.parcer.parce(string, 'input', id));
+    this.textInStore(id, this.parser.parse(string, 'input', id));
   }
 
   private textInStore(id: string | undefined, text: string) {
@@ -279,7 +279,7 @@ export class TableViewAPI {
     if (!id) return;
 
     const { key, shiftKey } = e;
-    const parsedId = wutils.parceCellId(id);
+    const parsedId = wutils.parseCellId(id);
 
     if (celectKeys.includes(key)) {
       e.preventDefault();
@@ -335,8 +335,8 @@ export class TableViewAPI {
     const newCellId = $newCell.data.id;
 
     if (activeCellId && newCellId) {
-      const actIds = wutils.parceCellId(activeCellId);
-      const newIds = wutils.parceCellId(newCellId);
+      const actIds = wutils.parseCellId(activeCellId);
+      const newIds = wutils.parseCellId(newCellId);
       const $newCells: WQuery[] = [];
 
       const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
@@ -421,11 +421,11 @@ export class TableViewAPI {
   }
 
   printFormulaSelect() {
-    const { parcerData } = this.wredux.getState();
+    const { parserData } = this.wredux.getState();
     const id = this.$activeCell.data.id;
     if (!id) return;
-    const data = parcerData[id];
+    const data = parserData[id];
     if (!data) return;
-    this.$activeCell.setTextContent(this.parcer.parce(data.formula, 'output'));
+    this.$activeCell.setTextContent(this.parser.parse(data.formula, 'output'));
   }
 }

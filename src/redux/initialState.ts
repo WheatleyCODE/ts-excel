@@ -13,7 +13,7 @@ const defaultState: IState = {
     ...initialToolbarState
   },
   title: 'Новая таблица',
-  parcerData: {}
+  parserData: {}
 };
 
 export const initialState: IState = wutils.storage(STORAGE_STATE_KEY)

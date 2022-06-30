@@ -11,7 +11,7 @@ class WUtils {
     return string[0].toLocaleUpperCase() + string.slice(1);
   }
 
-  parceCellId(id: string): ICellId {
+  parseCellId(id: string): ICellId {
     const [col, row] = id.split(':').map((str) => +str);
 
     return {
@@ -20,7 +20,7 @@ class WUtils {
     };
   }
 
-  parceStyleValueToInt(str: string): number {
+  parseStyleValueToInt(str: string): number {
     if (str.endsWith('px')) {
       const value = str.slice(0, -2);
 

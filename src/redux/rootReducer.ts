@@ -45,11 +45,12 @@ export function rootReducer(state: IState, action: Actions): IState {
       };
     }
 
-    case ActionsType.CHANGE_PARCER_DATA: {
+    case ActionsType.CHANGE_PARSER_DATA: {
       const { id, result, formula } = action.payload;
+
       return {
         ...state,
-        parcerData: { ...state.parcerData, [id]: { result, formula } }
+        parserData: { ...state.parserData, [id]: { result, formula } }
       };
     }
 

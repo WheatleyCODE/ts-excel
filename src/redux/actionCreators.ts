@@ -35,8 +35,8 @@ export const changeTitleAC = (payload: string): Actions => ({
   payload
 });
 
-export const changeParcerData = (id: string, formula: string, result: string): Actions => ({
-  type: ActionsType.CHANGE_PARCER_DATA,
+export const changeParserData = (id: string, formula: string, result: string): Actions => ({
+  type: ActionsType.CHANGE_PARSER_DATA,
   payload: {
     id,
     formula,

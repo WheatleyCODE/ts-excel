@@ -131,7 +131,11 @@ export class WQuery {
   }
 
   setTextContent(string: string): WQuery {
+    const childsArr = this.$nativeElement.children as any;
+    const childrens = [...childsArr];
+
     this.$nativeElement.textContent = string;
+    childrens.forEach((child) => this.$nativeElement.append(child));
     return this;
   }
 }

@@ -14,8 +14,8 @@ function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOp
     const id = `${index}:${rowNumber}`;
     let text = state.cellsDataState[id];
 
-    if (state.parcerData[id]) {
-      text = state.parcerData[id].result;
+    if (state.parserData[id]) {
+      text = state.parserData[id].result;
     }
 
     let styles = { ...defaultToolbarStyles };
