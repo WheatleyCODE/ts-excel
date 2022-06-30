@@ -37,6 +37,9 @@
 
       "@pages": ["pages"],
       "@pages/*": ["pages/*"],
+
+      "@routes": ["routes"],
+      "@routes/*": ["routes/*"],
     }
   }
 }

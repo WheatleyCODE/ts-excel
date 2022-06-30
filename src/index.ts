@@ -1,9 +1,5 @@
 import { Router } from '@core';
-import { DashboardPage, ExcelPage } from '@pages';
+import { pathRoutes } from '@routes/pathRoutes';
 import '@styles/index.scss';
 
-new Router('#root', {
-  home: DashboardPage,
-  dashboard: DashboardPage,
-  excel: ExcelPage
-});
+new Router('#root', pathRoutes);
