@@ -1,4 +1,5 @@
-import { EventNames, ExcelComponent, IFacadeEmitter } from '@core';
+import { ExcelComponent } from '@components/ExcelComponent/ExcelComponent';
+import { EventNames, IFacadeEmitter } from '@core';
 import { $, WQuery } from '@wquery';
 import { resizeTableAC } from '@redux';
 import { createTable } from './table.template';

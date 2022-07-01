@@ -2,23 +2,20 @@ import { WQuery } from '@wquery';
 import { WRedux } from '@redux';
 import { DomListener } from './DomListener';
 import { Emitter, EmitterArg, EventNames } from './Emitter';
-import { Parser } from './Parser';
 import { Actions, IComOptions, IState, IUnsubscribe, StateKeys, StateValues } from '@types';
 
-export abstract class ExcelComponent extends DomListener {
+export abstract class Component extends DomListener {
   public emitter: Emitter;
   private unsubscribers: Array<() => void> = [];
   private wredux: WRedux;
   private unsub!: IUnsubscribe;
   public stringSubs: StateKeys[] | undefined;
-  public parser: Parser;
 
   constructor($el: WQuery, options: IComOptions) {
     super($el, options);
     this.emitter = options.emitter;
     this.wredux = options.wredux;
     this.stringSubs = options.subscribe;
-    this.parser = options.parser;
 
     this.componentWillMount();
   }
@@ -55,7 +52,7 @@ export abstract class ExcelComponent extends DomListener {
   }
 
   wreduxChanged(changes: { [key: string]: StateValues }): void {
-    console.warn('WRedux: dispatch method in ExcelComponent', changes, this);
+    console.warn('WRedux: dispatch method in Component', changes, this);
   }
 
   init(): void {
@@ -65,5 +62,13 @@ export abstract class ExcelComponent extends DomListener {
   destroy(): void {
     this.removeDOMListeners();
     this.unsubscribers.forEach((unsub) => unsub());
+  }
+
+  setComponentState<X extends object>(newState: X): void {
+    throw new Error('Use decorator @stateComponent');
+  }
+
+  getComponentState<X extends object>(): X {
+    throw new Error('Use decorator @stateComponent');
   }
 }

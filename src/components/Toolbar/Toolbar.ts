@@ -1,10 +1,11 @@
 import { $, WQuery } from '@wquery';
 import { IExcelComOptions, IToolbarState, IStyle, initialToolbarState, StateValues } from '@types';
 import { createToolbar } from './toolbar.template';
-import { ExcelStateComponent } from '@core/ExcelStateComponent';
-import { EventNames } from '@core';
+import { EventNames, stateComponent } from '@core';
+import { ExcelComponent } from '@components/ExcelComponent/ExcelComponent';
 
-export class Toolbar extends ExcelStateComponent<IToolbarState> {
+@stateComponent<IToolbarState>(initialToolbarState)
+export class Toolbar extends ExcelComponent {
   static classNames = ['excel__toolbar', 'excel-toolbar'];
 
   constructor($el: WQuery, options: IExcelComOptions) {
@@ -16,26 +17,19 @@ export class Toolbar extends ExcelStateComponent<IToolbarState> {
     });
   }
 
-  componentWillMount() {
-    super.componentWillMount();
-    this.initComponentState(initialToolbarState);
-  }
-
   componentDidMount() {
     super.componentDidMount();
-
     document.onclick = (e) => this.onClickOutside(e);
   }
 
   componentWilUnmount() {
     super.componentWilUnmount();
-
     document.onclick = null;
   }
 
   wreduxChanged(changes: { [key: string]: StateValues }): void {
     const currentCellStyles = changes.currentCellStyles as IToolbarState;
-    this.setComponentState({
+    this.setComponentState<IToolbarState>({
       ...this.getComponentState(),
       ...currentCellStyles
     });
@@ -44,7 +38,7 @@ export class Toolbar extends ExcelStateComponent<IToolbarState> {
   onClickOutside(e: MouseEvent) {
     if (!(e.target instanceof HTMLElement)) return;
     const $target = $(e.target);
-    const state = this.getComponentState();
+    const state = this.getComponentState<IToolbarState>();
 
     if (state.openBackgroundColorModal || state.openColorModal) {
       if (!$target.data.dropdown) {
@@ -68,7 +62,7 @@ export class Toolbar extends ExcelStateComponent<IToolbarState> {
       if ($target.data.value) {
         const style: IStyle = JSON.parse($target.data.value);
 
-        this.setComponentState({
+        this.setComponentState<IToolbarState>({
           ...this.getComponentState(),
           ...style
         });

@@ -1,4 +1,5 @@
-import { Emitter, ExcelComponent, Parser } from '@core';
+import { ExcelComponent } from '@components/ExcelComponent/ExcelComponent';
+import { Emitter, Parser } from '@core';
 import { WRedux } from '@redux';
 import { WQuery } from '@wquery';
 import { StateKeys } from './redux';
