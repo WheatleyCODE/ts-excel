@@ -2,7 +2,15 @@ import { WQuery } from '@wquery';
 import { WRedux } from '@redux';
 import { DomListener } from './DomListener';
 import { Emitter, EmitterArg, EventNames } from './Emitter';
-import { Actions, IComOptions, IState, IUnsubscribe, StateKeys, StateValues } from '@types';
+import {
+  Actions,
+  IDashOptions,
+  IExcelOptions,
+  IState,
+  IUnsubscribe,
+  StateKeys,
+  StateValues
+} from '@types';
 
 export abstract class Component extends DomListener {
   public emitter: Emitter;
@@ -11,7 +19,7 @@ export abstract class Component extends DomListener {
   private unsub!: IUnsubscribe;
   public stringSubs: StateKeys[] | undefined;
 
-  constructor($el: WQuery, options: IComOptions) {
+  constructor($el: WQuery, options: IDashOptions) {
     super($el, options);
     this.emitter = options.emitter;
     this.wredux = options.wredux;

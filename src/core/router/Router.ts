@@ -1,18 +1,14 @@
-import { IRoutes, IPage } from '@types';
+import { IAppRouterOprions } from '@core/App';
+import { IPage } from '@types';
 import { $, WQuery } from '@wquery';
 import { ActiveRoute } from './ActiveRoute';
 
 export class Router {
   $root: WQuery;
   page: IPage | null = null;
-  routes: { [key: string]: typeof IPage } = {};
 
-  constructor(selector: string, routes: IRoutes[]) {
+  constructor(selector: string, private routes: { [key: string]: IAppRouterOprions }) {
     this.$root = $(selector);
-
-    routes.forEach(({ path, Page }) => {
-      this.routes[path] = Page;
-    });
 
     this.changePage = this.changePage.bind(this);
     this.init();
@@ -34,8 +30,8 @@ export class Router {
   }
 
   createPage(pathName: string, param: string) {
-    const Page = this.routes[pathName];
-    this.page = new Page(param);
+    const { Page, options } = this.routes[pathName];
+    this.page = new Page(param, options);
     this.$root.append(this.page.getRoot());
     this.page.initPage();
   }

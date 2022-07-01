@@ -1,31 +1,28 @@
-import { Emitter, Parser, WReduxSubscriber } from '@core';
+import { Emitter, WReduxSubscriber } from '@core';
 import { $, WQuery } from '@wquery';
-import { IExcelComponent, IExcelComOptions, IExcOptions } from '@types';
+import { IDashboardComOptions, IDashComponent, IDasOptions } from '@types';
 import { WRedux } from '@redux';
 
-export class Excel {
-  private components: typeof IExcelComponent[];
-  private instantComponents: IExcelComponent[] = [];
+export class Dashboard {
+  private components: typeof IDashComponent[];
+  private instantComponents: IDashComponent[] = [];
   private wredux: WRedux;
   private wreduxSubscriber: WReduxSubscriber;
   private emitter: Emitter;
-  private parser: Parser;
 
-  constructor(options: IExcOptions) {
+  constructor(options: IDasOptions) {
     this.components = options.components;
     this.wredux = options.wredux;
     this.wreduxSubscriber = options.wreduxSubscriber;
     this.emitter = options.emitter;
-    this.parser = new Parser(this.wredux, this.emitter);
   }
 
-  getRootExcel(): WQuery {
-    const $rootExcel = $.create('div', 'excel');
+  getRootDashboard(): WQuery {
+    const $rootExcel = $.create('div', 'db');
 
-    const componentOptions: IExcelComOptions = {
+    const componentOptions: IDashboardComOptions = {
       emitter: this.emitter,
-      wredux: this.wredux,
-      parser: this.parser
+      wredux: this.wredux
     };
 
     this.instantComponents = this.components.map((Component) => {

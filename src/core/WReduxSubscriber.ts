@@ -1,5 +1,5 @@
 import { defaultState, WRedux } from '@redux';
-import { IComponent, IState, IUnsubscribe, StateKeys } from '@types';
+import { IExcelComponent, IDashComponent, IState, IUnsubscribe, StateKeys } from '@types';
 import { wutils } from '@utils';
 
 export class WReduxSubscriber {
@@ -8,7 +8,7 @@ export class WReduxSubscriber {
 
   constructor(private wredux: WRedux) {}
 
-  subscribeComponents(components: IComponent[]) {
+  subscribeComponents(components: IExcelComponent[] | IDashComponent[]) {
     this.prevState = this.wredux.getState();
 
     const unsub = this.wredux.subscribe((state) => {

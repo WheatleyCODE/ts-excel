@@ -1,4 +1,4 @@
-import { ExcelComponent } from '@components/ExcelComponent/ExcelComponent';
+import { ExcelComponent } from '@components/Excel/ExcelComponent';
 import { $, WQuery } from '@wquery';
 import { ActiveRoute, stateComponent } from '@core';
 import { IExcelComOptions } from '@types';

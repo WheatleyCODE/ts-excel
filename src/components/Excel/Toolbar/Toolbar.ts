@@ -2,7 +2,7 @@ import { $, WQuery } from '@wquery';
 import { IExcelComOptions, IToolbarState, IStyle, initialToolbarState, StateValues } from '@types';
 import { createToolbar } from './toolbar.template';
 import { EventNames, stateComponent } from '@core';
-import { ExcelComponent } from '@components/ExcelComponent/ExcelComponent';
+import { ExcelComponent } from '@components/Excel/ExcelComponent';
 
 @stateComponent<IToolbarState>(initialToolbarState)
 export class Toolbar extends ExcelComponent {
