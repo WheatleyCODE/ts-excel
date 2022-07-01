@@ -1,10 +1,10 @@
-import { initialState, WRedux } from '@redux';
+import { defaultState, WRedux } from '@redux';
 import { IComponent, IState, IUnsubscribe, StateKeys } from '@types';
 import { wutils } from '@utils';
 
 export class WReduxSubscriber {
   private unsabs: IUnsubscribe[] = [];
-  private prevState: IState = initialState;
+  private prevState: IState = defaultState;
 
   constructor(private wredux: WRedux) {}
 

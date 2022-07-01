@@ -45,6 +45,13 @@ export function rootReducer(state: IState, action: Actions): IState {
       };
     }
 
+    case ActionsType.CHANGE_OPEN_DATE: {
+      return {
+        ...state,
+        openDate: new Date().toJSON()
+      };
+    }
+
     case ActionsType.CHANGE_PARSER_DATA: {
       const { id, result, formula } = action.payload;
 

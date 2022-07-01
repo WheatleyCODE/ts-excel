@@ -63,12 +63,6 @@ export interface IExcelComOptions {
   wredux: WRedux;
   parser: Parser;
 }
-
-export interface IParserData {
-  id: string;
-  formula: string;
-}
-
 export interface IComOptions extends IExcelComOptions {
   name: string;
   listeners: string[];

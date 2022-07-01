@@ -34,6 +34,12 @@
 
       "@wquery": ["wquery"],
       "@wquery/*": ["wquery/*"],
+
+      "@pages": ["pages"],
+      "@pages/*": ["pages/*"],
+
+      "@routes": ["routes"],
+      "@routes/*": ["routes/*"],
     }
   }
 }

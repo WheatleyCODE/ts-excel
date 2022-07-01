@@ -12,7 +12,7 @@ export const ACTIVE_SEL_EL = 'active';
 
 export const COLORS = ['rgb(50, 50, 50)', 'white', 'red', 'yellow', 'orange', 'rgb(37, 95, 212)'];
 
-export const STORAGE_STATE_KEY = 'excel-state';
+export const STORAGE_STATE_KEY = 'excel';
 
 export const CODES = {
   A: 65,
