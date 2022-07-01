@@ -1,6 +1,6 @@
 import { WQuery } from '@wquery';
 import { IDashboardComOptions } from '@types';
-import { createTableCreator } from './tablecreator.template';
+import { createTableCreator } from './tableCreator.template';
 import { Component } from '@core';
 
 export class TableCreator extends Component {

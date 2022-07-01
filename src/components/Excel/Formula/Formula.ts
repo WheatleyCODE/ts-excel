@@ -1,5 +1,5 @@
-import { ExcelComponent } from '@components/Excel/ExcelComponent';
 import { EventNames } from '@core';
+import { ExcelComponent } from '@components';
 import { WQuery } from '@wquery';
 import { EventKeys, IExcelComOptions, StateValues } from '@types';
 

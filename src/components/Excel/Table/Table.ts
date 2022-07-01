@@ -1,11 +1,11 @@
-import { ExcelComponent } from '@components/Excel/ExcelComponent';
+import { ExcelComponent } from '@components';
 import { EventNames, IFacadeEmitter } from '@core';
 import { $, WQuery } from '@wquery';
 import { resizeTableAC } from '@redux';
+import { IExcelComOptions, IFacadeWredux } from '@types';
 import { createTable } from './table.template';
 import { resizeHandler } from './table.resize';
 import { TableViewAPI } from './TableViewAPI';
-import { IExcelComOptions, IFacadeWredux } from '@types';
 
 export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];

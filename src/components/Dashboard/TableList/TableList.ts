@@ -1,6 +1,6 @@
 import { WQuery } from '@wquery';
 import { IDashboardComOptions } from '@types';
-import { createTableList } from './tablelist.tempale';
+import { createTableList } from './tableList.tempale';
 import { Component } from '@core';
 
 export class TableList extends Component {

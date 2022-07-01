@@ -1,5 +1,5 @@
 import { Page } from '@core';
-import { Excel, Header, Table, Toolbar, Formula } from '@components';
+import { Excel, ExcelHeader, Table, Toolbar, Formula } from '@components';
 
 export class ExcelPage extends Page {
   excel?: Excel;
@@ -8,7 +8,7 @@ export class ExcelPage extends Page {
     console.log(this.options, 'this.options');
 
     this.excel = new Excel({
-      components: [Header, Toolbar, Formula, Table],
+      components: [ExcelHeader, Toolbar, Formula, Table],
       ...this.options
     });
 

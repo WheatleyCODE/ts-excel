@@ -11,10 +11,6 @@ export function stateComponent<X extends object>(initialState: X) {
       }
 
       getComponentState<J>(): any {
-        if (!this.state) {
-          throw new Error(`State not initialized in ${this.options.name} Component`);
-        }
-
         return { ...this.state };
       }
     };

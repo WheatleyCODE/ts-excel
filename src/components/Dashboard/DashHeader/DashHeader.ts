@@ -1,9 +1,9 @@
 import { WQuery } from '@wquery';
 import { IDashboardComOptions } from '@types';
-import { createDHeader } from './dheader.template';
+import { createDashHeader } from './dashHeader.template';
 import { Component } from '@core';
 
-export class DHeader extends Component {
+export class DashHeader extends Component {
   static classNames = ['db__header', 'db-header'];
 
   constructor($el: WQuery, options: IDashboardComOptions) {
@@ -15,6 +15,6 @@ export class DHeader extends Component {
   }
 
   toHTML(): string {
-    return createDHeader();
+    return createDashHeader();
   }
 }

@@ -1,4 +1,4 @@
-export function createDHeader() {
+export function createDashHeader() {
   return `
     <div class="db-header__menu db-menu">
       <button class="db-menu__burger-menu">
