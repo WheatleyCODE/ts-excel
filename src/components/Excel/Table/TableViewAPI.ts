@@ -17,9 +17,19 @@ import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter, Parser } from '@core';
 import { changeTextAC } from '@redux';
 
+interface IAllHeaders {
+  col: { [key: string]: WQuery };
+  row: { [key: string]: WQuery };
+}
+
+interface IAllCells {
+  [key: string]: WQuery;
+}
+
 export class TableViewAPI {
-  private $allCells: WQuery[];
-  private $headers: WQuery[];
+  private $allCells: IAllCells = {};
+  private $allHeaders: IAllHeaders = { col: {}, row: {} };
+  private $activeHeaders: WQuery[] = [];
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
   private $formulaSelectCells: WQuery[] = [];
@@ -30,8 +40,29 @@ export class TableViewAPI {
     private wredux: IFacadeWredux,
     private parser: Parser
   ) {
-    this.$allCells = $root.findAll('[data-id]');
-    this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
+    const allCels = $root.findAll('[data-id]');
+
+    allCels.forEach(($cell) => {
+      const id = $cell.data.id;
+      const idPublic = $cell.data.idPublic;
+
+      if (!id || !idPublic) return;
+
+      this.$allCells[id] = $cell;
+      this.$allCells[idPublic] = $cell;
+    });
+
+    const allHeaders = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
+
+    allHeaders.forEach(($header) => {
+      let key: string | null = null;
+
+      if ($header.data.col) key = 'col';
+      if ($header.data.row) key = 'row';
+      if (!key) return;
+
+      this.$allHeaders[key][$header.data[key]] = $header;
+    });
 
     this.select(ID_FIRST_CELL);
     const state = this.wredux.getState();
@@ -45,19 +76,28 @@ export class TableViewAPI {
     this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.getTextContent());
   }
 
+  private selectHeader(key: string, id: string) {
+    const $cell: WQuery = this.$allHeaders[key][id];
+
+    if ($cell) {
+      $cell.addClass(SELECTED_HEADER);
+      this.$activeHeaders.push($cell);
+    }
+  }
+
   selectCell(id: string): void {
     this.select(id);
   }
 
   selectAllCells(): void {
     this.select(this.$allCells[0]);
-    this.selectAll(this.$allCells, { clear: false });
+    this.selectAll(Object.values(this.$allCells), { clear: false });
   }
 
   private select(cell: string | WQuery, options: ISelectOptions = {}): WQuery | undefined {
     const { emit = true, clear = true } = options;
     if (clear) this.clearGroup();
-    this.$headers.forEach(($header) => $header.removeClass(SELECTED_HEADER));
+    this.$activeHeaders.forEach(($cell) => $cell.removeClass(SELECTED_HEADER));
 
     let $newCell: WQuery | undefined;
 
@@ -66,7 +106,7 @@ export class TableViewAPI {
     }
 
     if (typeof cell === 'string') {
-      $newCell = this.$allCells.find(($cell) => $cell.data.id === cell);
+      $newCell = this.$allCells[cell];
     }
 
     if (!$newCell) return;
@@ -97,8 +137,7 @@ export class TableViewAPI {
     const parsedId = wutils.parseCellId($newCell.data.id);
 
     Object.keys(parsedId).forEach((key) => {
-      const $header = this.$headers.find(($header) => $header.data[key] === `${parsedId[key]}`);
-      $header?.addClass(SELECTED_HEADER);
+      this.selectHeader(key, parsedId[key]);
     });
 
     this.wredux.dispatch(stylesCurrentCellAC($newCell.getStyles()));
@@ -206,8 +245,7 @@ export class TableViewAPI {
       const parsedId = wutils.parseCellId($cell.data.id);
 
       Object.keys(parsedId).forEach((key) => {
-        const $header = this.$headers.find(($header) => $header.data[key] === `${parsedId[key]}`);
-        $header?.addClass(SELECTED_HEADER);
+        this.selectHeader(key, parsedId[key]);
       });
     });
   }
@@ -237,7 +275,7 @@ export class TableViewAPI {
     const data = arr.filter((el) => el !== false) as { id: string; formula: string }[];
 
     data.forEach(({ id, formula }) => {
-      const $cell = this.$allCells.find(($cell) => $cell.data.id === id);
+      const $cell = this.$allCells[id];
 
       if ($cell && !($cell.data.id === this.$activeCell.data.id)) {
         $cell.setTextContent(this.parser.parse(formula, 'output', $cell.data.id));
@@ -321,11 +359,11 @@ export class TableViewAPI {
     let $newGroup: WQuery[] = [];
 
     if (row && !col) {
-      $newGroup = this.$allCells.filter(($cell) => $cell.data.row === row);
+      $newGroup = Object.values(this.$allCells).filter(($cell) => $cell.data.row === row);
     }
 
     if (col && !row) {
-      $newGroup = this.$allCells.filter(($cell) => $cell.data.col === col);
+      $newGroup = Object.values(this.$allCells).filter(($cell) => $cell.data.col === col);
     }
 
     this.select($newGroup[0], { emit: false });
@@ -333,7 +371,7 @@ export class TableViewAPI {
   }
 
   selectGroup(id: string): void {
-    const $newCell = this.$allCells.find(($cell) => $cell.data.id === id);
+    const $newCell = this.$allCells[id];
     if (!$newCell) return;
 
     const activeCellId = this.$activeCell.data.id;
@@ -351,7 +389,7 @@ export class TableViewAPI {
 
       for (let i = minCol; i <= maxCol; i += 1) {
         for (let j = minRow; j <= maxRow; j += 1) {
-          const $cell = this.$allCells.find(($cell) => $cell.data.id === `${i}:${j}`);
+          const $cell = this.$allCells[`${i}:${j}`];
           if ($cell) $newCells.push($cell);
         }
       }
@@ -410,7 +448,7 @@ export class TableViewAPI {
   }
 
   getText(publicId: string): string | false {
-    const $cell = this.$allCells.find(($cell) => $cell.data.idPublic === publicId);
+    const $cell = this.$allCells[publicId];
     return $cell ? $cell.getTextContent() : false;
   }
 
@@ -430,7 +468,7 @@ export class TableViewAPI {
     const ids = this.parser.checkCells(data.formula);
 
     ids.forEach((id) => {
-      const $cell = this.$allCells.find(($cell) => $cell.data.idPublic === id);
+      const $cell = this.$allCells[id];
 
       if ($cell) {
         $cell.addClass(FORMULA_SELECT);
