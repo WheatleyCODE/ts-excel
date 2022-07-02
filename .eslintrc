@@ -24,6 +24,7 @@
         "ignoreTemplateLiterals": true
       }
     ],
-    "require-jsdoc": 0
+    "require-jsdoc": 0,
+    "@typescript-eslint/no-empty-function": 0
   }
 }

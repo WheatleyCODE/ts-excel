@@ -1,17 +1,18 @@
-import { EventNames, ExcelComponent } from '@core';
-import { WQuery } from '@wquery';
-import { EventKeys, IExcelComOptions, StateValues } from '@types';
+import { EventNames } from '@core';
+import { ExcelComponent } from '@components';
+import { $, WQuery } from '@wquery';
+import { EventKeys, ICombinedState, IExcelComOptions } from '@types';
 
 export class Formula extends ExcelComponent {
   static classNames = ['excel__formula', 'excel-formula'];
-  private $input!: WQuery;
+  private $input: WQuery = $.create('div');
   private $currentCell!: WQuery;
 
   constructor($el: WQuery, options: IExcelComOptions) {
     super($el, {
       name: 'Formula',
       listeners: ['input', 'keydown', 'mousedown'],
-      subscribe: ['currentText'],
+      subscribe: { state: 'excelState', value: ['currentText'] },
       ...options
     });
   }
@@ -31,8 +32,8 @@ export class Formula extends ExcelComponent {
     }
   }
 
-  wreduxChanged(changes: { [key: string]: StateValues }): void {
-    const { currentText } = changes;
+  wreduxChanged(changes: ICombinedState): void {
+    const { currentText } = changes.excelState;
     if (typeof currentText === 'string') {
       this.$input.setTextContent(currentText);
     }
@@ -47,8 +48,6 @@ export class Formula extends ExcelComponent {
   }
 
   componentDidMount(): void {
-    super.componentDidMount();
-
     const $input = this.$root.find('[data-input]');
     const $currentCell = this.$root.find('[data-current]');
 

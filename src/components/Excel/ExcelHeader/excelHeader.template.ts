@@ -1,6 +1,6 @@
-import { IHeaderState } from './Header';
+import { IExcelHeaderState } from './ExcelHeader';
 
-export function createHeader(state: IHeaderState, title: string) {
+export function createExcelHeader(state: IExcelHeaderState, title: string) {
   return `
     <div class="excel-header__left-panel h-left-panel">
       <div data-logo="true" class="h-left-panel__logo"></div>

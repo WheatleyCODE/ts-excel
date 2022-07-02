@@ -1,11 +1,11 @@
 import { WQuery } from '@wquery';
-import { IComOptions } from '@types';
+import { IDashOptions } from '@types';
 import { wutils } from '@utils';
 
 export abstract class DomListener {
   public $root: WQuery;
 
-  constructor($root: WQuery, public options: IComOptions) {
+  constructor($root: WQuery, public options: IDashOptions) {
     if (!$root) throw new Error('No $root privided for DomListener');
     this.$root = $root;
   }

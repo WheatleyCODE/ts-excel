@@ -1,4 +1,4 @@
-import { initialToolbarState, IState } from '@types';
+import { ICombinedState, initialToolbarState, IState } from '@types';
 import { wutils } from '@utils';
 
 export const defaultState: IState = {
@@ -17,7 +17,9 @@ export const defaultState: IState = {
   openDate: new Date().toJSON()
 };
 
-export function getInitialState(key: string): IState {
-  const initialState: IState = wutils.storage(key) ? wutils.storage(key) : defaultState;
+export function getInitialState(key: string): ICombinedState {
+  const initialState: ICombinedState = wutils.storage(key)
+    ? wutils.storage(key)
+    : { excelState: defaultState, dashboardState: defaultState };
   return initialState;
 }

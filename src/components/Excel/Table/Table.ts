@@ -1,10 +1,11 @@
-import { EventNames, ExcelComponent, IFacadeEmitter } from '@core';
+import { ExcelComponent } from '@components';
+import { EventNames, IFacadeEmitter } from '@core';
 import { $, WQuery } from '@wquery';
 import { resizeTableAC } from '@redux';
+import { IExcelComOptions, IFacadeWredux } from '@types';
 import { createTable } from './table.template';
 import { resizeHandler } from './table.resize';
 import { TableViewAPI } from './TableViewAPI';
-import { IExcelComOptions, IFacadeWredux } from '@types';
 
 export class Table extends ExcelComponent {
   static classNames = ['excel__table', 'excel-table'];
@@ -58,8 +59,6 @@ export class Table extends ExcelComponent {
   }
 
   componentDidMount(): void {
-    super.componentDidMount();
-
     const miniEmitter: IFacadeEmitter = {
       on: this.on.bind(this),
       emit: this.emit.bind(this)
@@ -124,6 +123,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML(): string {
-    return createTable(30, 30, this.getState());
+    const state = this.getState();
+    return createTable(30, 30, state.excelState);
   }
 }

@@ -1,23 +1,31 @@
 import { defaultState, WRedux } from '@redux';
-import { IComponent, IState, IUnsubscribe, StateKeys } from '@types';
+import { IExcelComponent, IDashComponent, IUnsubscribe, ICombinedState } from '@types';
 import { wutils } from '@utils';
 
 export class WReduxSubscriber {
   private unsabs: IUnsubscribe[] = [];
-  private prevState: IState = defaultState;
+  private prevState: ICombinedState = {
+    excelState: defaultState,
+    dashboardState: defaultState
+  };
 
   constructor(private wredux: WRedux) {}
 
-  subscribeComponents(components: IComponent[]) {
+  subscribeComponents(components: IExcelComponent[] | IDashComponent[]) {
     this.prevState = this.wredux.getState();
 
     const unsub = this.wredux.subscribe((state) => {
       Object.keys(state).forEach((key) => {
-        const stateKey = key as StateKeys;
-        if (!wutils.isEqual(this.prevState[stateKey], state[stateKey])) {
+        if (!wutils.isEqual(this.prevState[key], state[key])) {
           components.forEach((comp) => {
-            if (comp.stringSubs && comp.stringSubs.includes(stateKey)) {
-              const changes = { [stateKey]: state[stateKey] };
+            if (comp.strSubs && comp.strSubs.state === key) {
+              const index = comp.strSubs.value.findIndex(
+                (str) => !wutils.isEqual(this.prevState[key][str], state[key][str])
+              );
+
+              if (index === -1) return;
+
+              const changes = { [key]: state[key] } as any;
               comp.wreduxChanged(changes);
             }
           });

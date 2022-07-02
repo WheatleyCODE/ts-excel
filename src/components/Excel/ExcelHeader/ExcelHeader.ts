@@ -1,14 +1,16 @@
+import { ActiveRoute, stateComponent } from '@core';
+import { ExcelComponent } from '@components';
 import { $, WQuery } from '@wquery';
-import { ExcelStateComponent, ActiveRoute } from '@core';
-import { IExcelComOptions } from '@types';
-import { createHeader } from './header.template';
 import { changeOpenDate, changeTitleAC } from '@redux';
+import { IExcelComOptions } from '@types';
+import { createExcelHeader } from './excelHeader.template';
 
-export interface IHeaderState {
+export interface IExcelHeaderState {
   openModal: boolean;
 }
 
-export class Header extends ExcelStateComponent<IHeaderState> {
+@stateComponent<IExcelHeaderState>({ openModal: false })
+export class ExcelHeader extends ExcelComponent {
   static classNames = ['excel__header', 'excel-header'];
 
   constructor($el: WQuery, options: IExcelComOptions) {
@@ -17,15 +19,11 @@ export class Header extends ExcelStateComponent<IHeaderState> {
       listeners: ['input', 'click'],
       ...options
     });
-
-    this.initComponentState({
-      openModal: false
-    });
   }
 
   componentDidMount() {
-    super.componentDidMount();
     this.dispatch(changeOpenDate());
+    this.setComponentState<IExcelHeaderState>({ openModal: true });
   }
 
   onClick(e: MouseEvent) {
@@ -34,7 +32,6 @@ export class Header extends ExcelStateComponent<IHeaderState> {
     const $target = $(e.target);
 
     if ($target.data.logo) {
-      console.log('object');
       ActiveRoute.navigation('');
     }
 
@@ -49,13 +46,10 @@ export class Header extends ExcelStateComponent<IHeaderState> {
     this.dispatch(changeTitleAC(e.target.value));
   }
 
-  get template() {
-    const { title } = this.getState();
-    const state = this.getComponentState();
-    return createHeader(state, title);
-  }
-
   toHTML(): string {
-    return this.template;
+    const { excelState } = this.getState();
+    const { title } = excelState;
+    const state = this.getComponentState<IExcelHeaderState>();
+    return createExcelHeader(state, title);
   }
 }

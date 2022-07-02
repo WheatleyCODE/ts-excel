@@ -1,12 +1,23 @@
+import { TableList, TableCreator, DashHeader, Dashboard } from '@components';
 import { Page } from '@core';
-import { $ } from '@wquery';
-import { createDashboard } from './dashboard.template';
 
 export class DashboardPage extends Page {
-  initPage() {}
-  destroyPage() {}
+  dashbpard?: Dashboard;
 
   getRoot() {
-    return $.create('div', 'db').setHtml(createDashboard());
+    this.dashbpard = new Dashboard({
+      components: [DashHeader, TableCreator, TableList],
+      ...this.options
+    });
+
+    return this.dashbpard?.getRootDashboard();
+  }
+
+  initPage() {
+    this.dashbpard?.init();
+  }
+
+  destroyPage() {
+    this.dashbpard?.destroy();
   }
 }

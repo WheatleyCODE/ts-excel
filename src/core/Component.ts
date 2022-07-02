@@ -2,40 +2,31 @@ import { WQuery } from '@wquery';
 import { WRedux } from '@redux';
 import { DomListener } from './DomListener';
 import { Emitter, EmitterArg, EventNames } from './Emitter';
-import { Parser } from './Parser';
-import { Actions, IComOptions, IState, IUnsubscribe, StateKeys, StateValues } from '@types';
+import { Actions, ICombinedState, IDashOptions, IStringSub, IUnsubscribe } from '@types';
 
-export abstract class ExcelComponent extends DomListener {
+export abstract class Component extends DomListener {
   public emitter: Emitter;
   private unsubscribers: Array<() => void> = [];
   private wredux: WRedux;
   private unsub!: IUnsubscribe;
-  public stringSubs: StateKeys[] | undefined;
-  public parser: Parser;
+  public strSubs: IStringSub | undefined;
 
-  constructor($el: WQuery, options: IComOptions) {
+  constructor($el: WQuery, options: IDashOptions) {
     super($el, options);
     this.emitter = options.emitter;
     this.wredux = options.wredux;
-    this.stringSubs = options.subscribe;
-    this.parser = options.parser;
+    this.strSubs = options.subscribe;
 
     this.componentWillMount();
   }
 
   abstract toHTML(): string;
 
-  componentWillMount(): void {
-    console.log(this.$root, `${this.options.name} Component will mount`);
-  }
+  componentWillMount(): void {}
 
-  componentDidMount(): void {
-    console.log(this.$root, `${this.options.name} Component did mount`);
-  }
+  componentDidMount(): void {}
 
-  componentWilUnmount(): void {
-    console.log(this.$root, `${this.options.name} Component Will unmount`);
-  }
+  componentWilUnmount(): void {}
 
   emit(eventName: EventNames, arg?: EmitterArg): void {
     this.emitter.emit(eventName, arg);
@@ -50,12 +41,12 @@ export abstract class ExcelComponent extends DomListener {
     this.wredux.dispatch(actions);
   }
 
-  getState(): IState {
+  getState(): ICombinedState {
     return this.wredux.getState();
   }
 
-  wreduxChanged(changes: { [key: string]: StateValues }): void {
-    console.warn('WRedux: dispatch method in ExcelComponent', changes, this);
+  wreduxChanged(changes: ICombinedState): void {
+    console.warn('WRedux: dispatch method in Component', changes, this);
   }
 
   init(): void {
@@ -65,5 +56,13 @@ export abstract class ExcelComponent extends DomListener {
   destroy(): void {
     this.removeDOMListeners();
     this.unsubscribers.forEach((unsub) => unsub());
+  }
+
+  setComponentState<X extends object>(newState: X): void {
+    throw new Error('Use decorator @stateComponent');
+  }
+
+  getComponentState<X extends object>(): X {
+    throw new Error('Use decorator @stateComponent');
   }
 }
