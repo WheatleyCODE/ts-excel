@@ -38,8 +38,6 @@ export class App {
         }
       };
     });
-
-    console.log(this.routes);
   }
 
   render(): void {

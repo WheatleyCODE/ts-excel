@@ -2,7 +2,7 @@ import { ExcelComponent } from '@components/Excel/ExcelComponent';
 import { Emitter, Parser, WReduxSubscriber } from '@core';
 import { WRedux } from '@redux';
 import { WQuery } from '@wquery';
-import { StateKeys } from './redux';
+import { IStringSub } from './dashboard';
 
 export class IExcelComponent extends ExcelComponent {
   static classNames = ['', ''];
@@ -11,7 +11,6 @@ export class IExcelComponent extends ExcelComponent {
     super($el, {
       name: 'IComponent',
       listeners: [],
-      subscribe: [],
       ...options
     });
   }
@@ -29,7 +28,7 @@ export interface IExcelComOptions {
 export interface IExcelOptions extends IExcelComOptions {
   name: string;
   listeners: string[];
-  subscribe?: StateKeys[];
+  subscribe?: IStringSub;
 }
 
 export interface IExcOptions {

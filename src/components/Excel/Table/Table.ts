@@ -59,8 +59,6 @@ export class Table extends ExcelComponent {
   }
 
   componentDidMount(): void {
-    super.componentDidMount();
-
     const miniEmitter: IFacadeEmitter = {
       on: this.on.bind(this),
       emit: this.emit.bind(this)
@@ -125,6 +123,7 @@ export class Table extends ExcelComponent {
   }
 
   toHTML(): string {
-    return createTable(30, 30, this.getState());
+    const state = this.getState();
+    return createTable(30, 30, state.excelState);
   }
 }

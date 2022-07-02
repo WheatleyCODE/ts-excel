@@ -1,15 +1,15 @@
-import { Actions, IState, IStore, IUnsubscribe, Reducer } from '@types';
+import { Actions, IStore, IUnsubscribe, combinedReducer, ICombinedState } from '@types';
 import { initAC } from './actionCreators';
 
 export class WRedux implements IStore {
-  private state: IState;
-  private subscribers: Array<(state: IState) => void> = [];
+  private state: ICombinedState;
+  private subscribers: Array<(state: ICombinedState) => void> = [];
 
-  constructor(private rootReducer: Reducer, initialState: IState) {
+  constructor(private rootReducer: combinedReducer, initialState: ICombinedState) {
     this.state = rootReducer(initialState, initAC());
   }
 
-  subscribe(callback: (state: IState) => void): IUnsubscribe {
+  subscribe(callback: (state: ICombinedState) => void): IUnsubscribe {
     this.subscribers.push(callback);
 
     return {
@@ -28,7 +28,7 @@ export class WRedux implements IStore {
     this.subscribers.forEach((sub) => sub(this.state));
   }
 
-  getState(): IState {
+  getState(): ICombinedState {
     return JSON.parse(JSON.stringify(this.state));
   }
 }

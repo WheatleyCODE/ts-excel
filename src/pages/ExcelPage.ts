@@ -5,8 +5,6 @@ export class ExcelPage extends Page {
   excel?: Excel;
 
   getRoot() {
-    console.log(this.options, 'this.options');
-
     this.excel = new Excel({
       components: [ExcelHeader, Toolbar, Formula, Table],
       ...this.options

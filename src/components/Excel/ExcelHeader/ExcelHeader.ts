@@ -22,7 +22,6 @@ export class ExcelHeader extends ExcelComponent {
   }
 
   componentDidMount() {
-    super.componentDidMount();
     this.dispatch(changeOpenDate());
     this.setComponentState<IExcelHeaderState>({ openModal: true });
   }
@@ -33,7 +32,6 @@ export class ExcelHeader extends ExcelComponent {
     const $target = $(e.target);
 
     if ($target.data.logo) {
-      console.log('object');
       ActiveRoute.navigation('');
     }
 
@@ -49,7 +47,8 @@ export class ExcelHeader extends ExcelComponent {
   }
 
   toHTML(): string {
-    const { title } = this.getState();
+    const { excelState } = this.getState();
+    const { title } = excelState;
     const state = this.getComponentState<IExcelHeaderState>();
     return createExcelHeader(state, title);
   }

@@ -34,7 +34,8 @@ export class TableViewAPI {
     this.$headers = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
 
     this.select(ID_FIRST_CELL);
-    const { parserData } = this.wredux.getState();
+    const state = this.wredux.getState();
+    const { parserData } = state.excelState;
 
     if (parserData[ID_FIRST_CELL]) {
       this.emitter.emit(EventNames.TABLE_CELECT_CELL, parserData[ID_FIRST_CELL].formula);
@@ -80,9 +81,11 @@ export class TableViewAPI {
 
       if ($newCell.data.id) {
         const state = this.wredux.getState();
-        if (state.parserData[$newCell.data.id]) {
+        const { parserData } = state.excelState;
+
+        if (parserData[$newCell.data.id]) {
           this.wredux.dispatch(
-            changeTextAC($newCell.data.id, state.parserData[$newCell.data.id].formula)
+            changeTextAC($newCell.data.id, parserData[$newCell.data.id].formula)
           );
         } else {
           this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.getTextContent()));
@@ -221,7 +224,8 @@ export class TableViewAPI {
   }
 
   updateAllParserResult() {
-    const { parserData } = this.wredux.getState();
+    const state = this.wredux.getState();
+    const { parserData } = state.excelState;
     const arr = Object.keys(parserData).map((key) => {
       if (parserData[key].formula !== '') {
         return { id: key, formula: parserData[key].formula };
@@ -237,9 +241,11 @@ export class TableViewAPI {
 
       if ($cell && !($cell.data.id === this.$activeCell.data.id)) {
         $cell.setTextContent(this.parser.parse(formula, 'output', $cell.data.id));
-        this.clearFormulaSelect();
       }
     });
+
+    this.clearFormulaSelect();
+    this.printFormulaSelect();
   }
 
   onInputHandler(): void {
@@ -270,8 +276,7 @@ export class TableViewAPI {
       this.$groupCells = [];
     }
 
-    this.$formulaSelectCells.forEach(($cell) => $cell.removeClass(FORMULA_SELECT));
-    this.$formulaSelectCells = [];
+    this.clearFormulaSelect();
   }
 
   onKeydownHandler(e: KeyboardEvent): void {
@@ -406,12 +411,6 @@ export class TableViewAPI {
 
   getText(publicId: string): string | false {
     const $cell = this.$allCells.find(($cell) => $cell.data.idPublic === publicId);
-
-    if ($cell) {
-      $cell.addClass(FORMULA_SELECT);
-      this.$formulaSelectCells.push($cell);
-    }
-
     return $cell ? $cell.getTextContent() : false;
   }
 
@@ -421,11 +420,22 @@ export class TableViewAPI {
   }
 
   printFormulaSelect() {
-    const { parserData } = this.wredux.getState();
+    const state = this.wredux.getState();
+    const { parserData } = state.excelState;
     const id = this.$activeCell.data.id;
     if (!id) return;
     const data = parserData[id];
     if (!data) return;
-    this.$activeCell.setTextContent(this.parser.parse(data.formula, 'output'));
+
+    const ids = this.parser.checkCells(data.formula);
+
+    ids.forEach((id) => {
+      const $cell = this.$allCells.find(($cell) => $cell.data.idPublic === id);
+
+      if ($cell) {
+        $cell.addClass(FORMULA_SELECT);
+        this.$formulaSelectCells.push($cell);
+      }
+    });
   }
 }

@@ -14,6 +14,27 @@ export class Parser {
     });
   }
 
+  checkCells(string: string): string[] {
+    const str = string.replace(/\s/g, '');
+
+    if (!str.startsWith(this.firstSymbol)) {
+      return [];
+    }
+
+    const strFormula = str.slice(1);
+    const arr = strFormula.split(/[+-/*/(/)]/).filter((str) => str !== '');
+    const res: string[] = [];
+
+    arr.forEach((str) => {
+      if (isNaN(Number(str))) {
+        const STR = str.toUpperCase();
+        res.push(STR);
+      }
+    });
+
+    return res;
+  }
+
   parse(string: string, type: TypeParser, cellId?: string): string {
     const str = string.replace(/\s/g, '');
 

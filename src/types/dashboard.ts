@@ -2,7 +2,7 @@ import { Emitter, WReduxSubscriber } from '@core';
 import { Component } from '@core/Component';
 import { WRedux } from '@redux';
 import { WQuery } from '@wquery';
-import { StateKeys } from './redux';
+import { StateKeys, CombinedStateKeys } from './redux';
 
 export class IDashComponent extends Component {
   static classNames = ['', ''];
@@ -11,7 +11,6 @@ export class IDashComponent extends Component {
     super($el, {
       name: 'IComponent',
       listeners: [],
-      subscribe: [],
       ...options
     });
   }
@@ -33,8 +32,13 @@ export interface IDashboardComOptions {
   wredux: WRedux;
 }
 
+export interface IStringSub {
+  state: CombinedStateKeys;
+  value: StateKeys[];
+}
+
 export interface IDashOptions extends IDashboardComOptions {
   name: string;
   listeners: string[];
-  subscribe?: StateKeys[];
+  subscribe?: IStringSub;
 }

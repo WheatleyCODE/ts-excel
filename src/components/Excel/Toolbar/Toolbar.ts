@@ -1,5 +1,11 @@
 import { $, WQuery } from '@wquery';
-import { IExcelComOptions, IToolbarState, IStyle, initialToolbarState, StateValues } from '@types';
+import {
+  IExcelComOptions,
+  IToolbarState,
+  IStyle,
+  initialToolbarState,
+  ICombinedState
+} from '@types';
 import { createToolbar } from './toolbar.template';
 import { EventNames, stateComponent } from '@core';
 import { ExcelComponent } from '@components/Excel/ExcelComponent';
@@ -12,23 +18,27 @@ export class Toolbar extends ExcelComponent {
     super($el, {
       name: 'Toolbar',
       listeners: ['click'],
-      subscribe: ['currentCellStyles'],
+      subscribe: { state: 'excelState', value: ['currentCellStyles'] },
       ...options
     });
   }
 
   componentDidMount() {
-    super.componentDidMount();
     document.onclick = (e) => this.onClickOutside(e);
+
+    this.setComponentState<IToolbarState>({
+      ...initialToolbarState,
+      ...this.getState().excelState.currentCellStyles
+    });
   }
 
   componentWilUnmount() {
-    super.componentWilUnmount();
     document.onclick = null;
   }
 
-  wreduxChanged(changes: { [key: string]: StateValues }): void {
-    const currentCellStyles = changes.currentCellStyles as IToolbarState;
+  wreduxChanged(changes: ICombinedState): void {
+    const currentCellStyles = changes.excelState.currentCellStyles;
+
     this.setComponentState<IToolbarState>({
       ...this.getComponentState(),
       ...currentCellStyles

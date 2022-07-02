@@ -103,7 +103,13 @@ export interface IState {
   openDate: string;
 }
 
+export interface ICombinedState {
+  excelState: IState;
+  dashboardState: IState;
+}
+
 export type StateKeys = keyof IState;
+export type CombinedStateKeys = keyof ICombinedState;
 export type StateValues = IState[StateKeys];
 
 export interface IUnsubscribe {
@@ -114,12 +120,12 @@ export interface IUnsubscribe {
 export interface IStore {
   subscribe: (callback: () => void) => IUnsubscribe;
   dispatch: (action: Actions) => void;
-  getState: () => IState;
+  getState: () => ICombinedState;
 }
 
-export type Reducer = (state: IState, action: Actions) => IState;
+export type combinedReducer = (state: ICombinedState, action: Actions) => ICombinedState;
 
 export interface IFacadeWredux {
   dispatch: (actions: Actions) => void;
-  getState: () => IState;
+  getState: () => ICombinedState;
 }

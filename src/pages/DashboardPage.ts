@@ -5,8 +5,6 @@ export class DashboardPage extends Page {
   dashbpard?: Dashboard;
 
   getRoot() {
-    console.log(this.options, 'this.options');
-
     this.dashbpard = new Dashboard({
       components: [DashHeader, TableCreator, TableList],
       ...this.options
