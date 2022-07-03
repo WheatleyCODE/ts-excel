@@ -1,5 +1,6 @@
-import { IState } from '@types';
+import { ICombinedState } from '@types';
 import { wutils } from '@utils';
+
 function getAllKeys() {
   const keys = [];
 
@@ -23,17 +24,18 @@ function createRecordsTable() {
   return keys
     .map((key) => {
       const [excel, id] = key.split(':');
-      const model: IState = wutils.storage(key);
+      const model: ICombinedState = wutils.storage(key);
+      const { excelState } = model;
 
       return `
         <li class="db-table__li db-li-table">
-          <a href="#${excel}/${id}">
+          <a href="#${excel}/${1020}">
             <div class="db-li-table__content db-li-content">
               <div class="db-li-content__icon"></div>
-              <div class="db-li-content__title">${model.title}</div>
+              <div class="db-li-content__title">${excelState.title}</div>
               <div>
-                ${new Date(model.openDate).toLocaleDateString()}
-                ${new Date(model.openDate).toLocaleTimeString()}
+                ${new Date(excelState.openDate).toLocaleDateString()}
+                ${new Date(excelState.openDate).toLocaleTimeString()}
               </div>
             </div>
           </a>

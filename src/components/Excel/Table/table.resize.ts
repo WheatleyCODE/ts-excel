@@ -3,14 +3,15 @@ import {
   RESIZER_MARGIN,
   MIN_COL_WIDTH,
   MIN_ROW_HEIGHT,
-  IResizeTableACOptions
+  IResizeTableOptions
 } from '@types';
 import { WQuery } from '@wquery';
 
 export function resizeHandler(resizeType: string, $resizer: WQuery, $root: WQuery) {
-  return new Promise<IResizeTableACOptions>((res) => {
+  return new Promise<IResizeTableOptions>((res) => {
     const $parent = $resizer.getParent('[data-type="resizable"]');
     if (!$parent) return;
+
     let delta = 0;
     const coords = $parent.getCoords();
     const sideProp = resizeType === ResizeType.ROW ? 'bottom' : 'right';

@@ -3,15 +3,15 @@ import {
   defaultToolbarStyles,
   DEFAULT_HEGHT,
   DEFAULT_WIDTH,
-  IState,
+  IExcelState,
   IWithWidthFromOptions,
   MAX_LENGTH
 } from '@types';
 import { wutils } from '@utils';
 
-function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOptions) => string {
+function createCell(rowNum: number, state: IExcelState): (optons: IWithWidthFromOptions) => string {
   return ({ letter, index, width }: IWithWidthFromOptions): string => {
-    const id = `${index}:${rowNumber}`;
+    const id = `${index}:${rowNum}`;
     let text = state.cellsDataState[id];
 
     if (state.parserData[id]) {
@@ -19,7 +19,7 @@ function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOp
     }
 
     let styles = { ...defaultToolbarStyles };
-    const storageStyles = state.cellsStylesState[`${index}:${rowNumber}`];
+    const storageStyles = state.cellsStylesState[`${index}:${rowNum}`];
 
     if (storageStyles) {
       styles = { ...styles, ...storageStyles };
@@ -34,9 +34,9 @@ function createCell(rowNumber: number, state: IState): (optons: IWithWidthFromOp
         style="width: ${width}px; ${stylesArr.join(' ')}"
         data-col="${index}"
         data-col-public="${letter}"
-        data-row="${rowNumber}"
-        data-id="${index}:${rowNumber}"
-        data-id-public="${letter}${rowNumber}"
+        data-row="${rowNum}"
+        data-id="${index}:${rowNum}"
+        data-id-public="${letter}${rowNum}"
         class="data__cell">
         ${text || ''}
         <hr class="selection-el" data-selection="true" />
@@ -61,7 +61,7 @@ function createCol({ letter, index, width }: IWithWidthFromOptions): string {
   `;
 }
 
-function createRowWithHeightFrom(state: IState): (cols: string, i?: number) => string {
+function createRowWithHeightFrom(state: IExcelState): (cols: string, i?: number) => string {
   return (cols: string, i?: number): string => {
     if (i) {
       const heigh = getHeight(state, i);
@@ -107,15 +107,15 @@ function toCharCode(): () => string {
   };
 }
 
-function getWidth(state: IState, i: number): number {
+function getWidth(state: IExcelState, i: number): number {
   return state.resizeState.col[i] || DEFAULT_WIDTH;
 }
 
-function getHeight(state: IState, i: number): number {
+function getHeight(state: IExcelState, i: number): number {
   return state.resizeState.row[i] || DEFAULT_HEGHT;
 }
 
-function withWidthFrom(state: IState): (letter: string, index: number) => IWithWidthFromOptions {
+function withWidthFrom(state: IExcelState): (letter: string, i: number) => IWithWidthFromOptions {
   return (letter: string, index: number): IWithWidthFromOptions => {
     index++;
 
@@ -127,7 +127,7 @@ function withWidthFrom(state: IState): (letter: string, index: number) => IWithW
   };
 }
 
-export function createTable(rowsCount = 60, colsCount = 30, state: IState): string {
+export function createTable(rowsCount = 60, colsCount = 30, state: IExcelState): string {
   const rows = [];
   const cols = new Array(colsCount)
     .fill('')
