@@ -2,7 +2,6 @@ import { changeStyleAC, stylesCurrentCellAC } from '@redux';
 import { $, WQuery } from '@wquery';
 import {
   celectKeys,
-  EventKeys,
   ICellId,
   ID_FIRST_CELL,
   ISelectOptions,
@@ -16,6 +15,7 @@ import {
 import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter, Parser } from '@core';
 import { changeTextAC } from '@redux';
+import { calcSizeSelectedArea, changeCellOnKeydown } from './tableViewAPI.functions';
 
 interface IAllHeaders {
   col: { [key: string]: WQuery };
@@ -35,7 +35,7 @@ export class TableViewAPI {
   private $formulaSelectCells: WQuery[] = [];
 
   constructor(
-    private $root: WQuery,
+    $root: WQuery,
     private emitter: IFacadeEmitter,
     private wredux: IFacadeWredux,
     private parser: Parser
@@ -150,67 +150,7 @@ export class TableViewAPI {
   }
 
   private activateVisualSelection($cells: WQuery[]) {
-    const idFirstCell = this.$groupCells[0].data.id;
-    const idLastCell = this.$groupCells[this.$groupCells.length - 1].data.id;
-
-    if (!idFirstCell || !idLastCell) return;
-
-    const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
-    const idsArr: { col: number[]; row: number[] } = { col: [], row: [] };
-
-    [idFirstCell, idLastCell].forEach((id) => {
-      const percedId = wutils.parseCellId(id);
-
-      Object.keys(percedId).forEach((key) => {
-        if (percedId[key]) idsArr[key].push(percedId[key]);
-      });
-    });
-
-    Object.keys(idsArr).forEach((key) => {
-      idsArr[key] = idsArr[key].filter(sortCallBack);
-    });
-
-    const count = Object.keys(idsArr).reduce(
-      (acc, key) => {
-        const [min, max] = idsArr[key];
-        const result = max - min + 1;
-
-        acc[key] = result;
-
-        return acc;
-      },
-      { col: 0, row: 0 }
-    );
-
-    const sum = $cells.reduce(
-      (acc, $cell) => {
-        const widthPx = $cell.getStyles(['width']);
-        const heightPx = $cell.getParent('[data-type="resizable"]')?.getStyles(['height']);
-
-        if (widthPx && heightPx) {
-          const width = wutils.parseStyleValueToInt(widthPx.width);
-          const height = wutils.parseStyleValueToInt(heightPx.height);
-
-          acc.row += height;
-          acc.col += width;
-        }
-
-        return acc;
-      },
-      { col: 0, row: 0 }
-    );
-
-    Object.keys(sum).forEach((key) => {
-      sum[key] = sum[key] / this.$groupCells.length - 1;
-    });
-
-    const { col, row } = Object.keys(sum).reduce(
-      (acc, key) => {
-        acc[key] = sum[key] * count[key] + count[key];
-        return acc;
-      },
-      { col: 0, row: 0 }
-    );
+    const { col, row } = calcSizeSelectedArea($cells);
 
     const $selection = $cells[0].find('[data-selection]');
 
@@ -262,6 +202,7 @@ export class TableViewAPI {
   updateAllParserResult() {
     const state = this.wredux.getState();
     const { parserData } = state.excelState;
+
     const arr = Object.keys(parserData).map((key) => {
       if (parserData[key].formula !== '') {
         return { id: key, formula: parserData[key].formula };
@@ -328,28 +269,8 @@ export class TableViewAPI {
     }
   }
 
-  private keyDownSelectCell(key: string, { col, row }: ICellId, isShiftKey: boolean): void {
-    switch (key) {
-      case EventKeys.ARROW_UP:
-        row--;
-        break;
-      case EventKeys.ARROW_DOWN:
-        row++;
-        break;
-      case EventKeys.ARROW_LEFT:
-        col--;
-        break;
-      case EventKeys.ARROW_RIGHT:
-        col++;
-        break;
-      case EventKeys.TAB:
-        isShiftKey ? col-- : col++;
-        break;
-      case EventKeys.ENTER:
-        isShiftKey ? row-- : row++;
-        break;
-    }
-
+  private keyDownSelectCell(key: string, cellId: ICellId, isShiftKey: boolean): void {
+    const { col, row } = changeCellOnKeydown(key, cellId, isShiftKey);
     this.select(`${col}:${row}`);
   }
 
@@ -376,8 +297,7 @@ export class TableViewAPI {
     const newCellId = $newCell.data.id;
 
     if (activeCellId && newCellId) {
-      const actIds = wutils.parseCellId(activeCellId);
-      const newIds = wutils.parseCellId(newCellId);
+      const [actIds, newIds] = [activeCellId, newCellId].map((id) => wutils.parseCellId(id));
       const $newCells: WQuery[] = [];
 
       const sortCallBack = (a: number, b: number) => (a < b ? 1 : -1);
@@ -417,6 +337,7 @@ export class TableViewAPI {
   private changeType($cell: WQuery, type: string): void {
     const text = $cell.textContent;
     const numbers = Number(text);
+
     if (isNaN(numbers)) {
       if (text[text.length - 1] === '%' || text[text.length - 1] === 'р') {
         const numbers = text.slice(0, -1);
@@ -435,6 +356,7 @@ export class TableViewAPI {
 
   changeDataType(type: IStyle) {
     const dType = type.dataType;
+
     if (!(typeof dType === 'string')) return;
 
     if (this.$groupCells.length) {
