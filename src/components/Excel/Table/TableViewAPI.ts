@@ -73,7 +73,7 @@ export class TableViewAPI {
       return;
     }
 
-    this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.getTextContent());
+    this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.textContent);
   }
 
   private selectHeader(key: string, id: string) {
@@ -128,7 +128,7 @@ export class TableViewAPI {
             changeTextAC($newCell.data.id, parserData[$newCell.data.id].formula)
           );
         } else {
-          this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.getTextContent()));
+          this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.textContent));
         }
       }
     }
@@ -232,9 +232,7 @@ export class TableViewAPI {
       );
 
       if (this.$activeCell.data.id) {
-        this.wredux.dispatch(
-          changeTextAC(this.$activeCell.data.id, this.$activeCell.getTextContent())
-        );
+        this.wredux.dispatch(changeTextAC(this.$activeCell.data.id, this.$activeCell.textContent));
       }
     }
 
@@ -289,7 +287,7 @@ export class TableViewAPI {
   onInputHandler(): void {
     this.updateAllParserResult();
 
-    const string = this.$activeCell.getTextContent();
+    const string = this.$activeCell.textContent;
     const id = this.$activeCell.data.id;
     if (!id) return;
 
@@ -417,7 +415,7 @@ export class TableViewAPI {
   }
 
   private changeType($cell: WQuery, type: string): void {
-    const text = $cell.getTextContent();
+    const text = $cell.textContent;
     const numbers = Number(text);
     if (isNaN(numbers)) {
       if (text[text.length - 1] === '%' || text[text.length - 1] === 'р') {
@@ -449,7 +447,7 @@ export class TableViewAPI {
 
   getText(publicId: string): string | false {
     const $cell = this.$allCells[publicId];
-    return $cell ? $cell.getTextContent() : false;
+    return $cell ? $cell.textContent : false;
   }
 
   clearFormulaSelect() {

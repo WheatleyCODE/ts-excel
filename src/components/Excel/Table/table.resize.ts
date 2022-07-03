@@ -13,7 +13,7 @@ export function resizeHandler(resizeType: string, $resizer: WQuery, $root: WQuer
     if (!$parent) return;
 
     let delta = 0;
-    const coords = $parent.getCoords();
+    const coords = $parent.coords;
     const sideProp = resizeType === ResizeType.ROW ? 'bottom' : 'right';
     $parent.addClass(`${resizeType}-resizing`);
 

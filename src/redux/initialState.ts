@@ -1,5 +1,5 @@
 import { ICombinedState, initialToolbarState, IExcelState, IDashboardState } from '@types';
-import { wutils } from '@utils';
+import { storage } from '@utils';
 
 export const defaultExcelState: IExcelState = {
   resizeState: {
@@ -27,8 +27,6 @@ export const defaultCombinedState: ICombinedState = {
 };
 
 export function getInitialState(key: string): ICombinedState {
-  const initialState: ICombinedState = wutils.storage(key)
-    ? wutils.storage(key)
-    : defaultCombinedState;
+  const initialState: ICombinedState = storage.get(key) ? storage.get(key) : defaultCombinedState;
   return initialState;
 }

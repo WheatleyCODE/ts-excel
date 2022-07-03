@@ -1,11 +1,11 @@
 import { ICombinedState } from '@types';
-import { wutils } from '@utils';
+import { storage } from '@utils';
 
 function getAllKeys() {
   const keys = [];
 
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
+  for (let i = 0; i < storage.length; i++) {
+    const key = storage.key(i);
     if (!key?.includes('excel')) continue;
 
     keys.push(key);
@@ -24,7 +24,7 @@ function createRecordsTable() {
   return keys
     .map((key) => {
       const [excel, id] = key.split(':');
-      const model: ICombinedState = wutils.storage(key);
+      const model: ICombinedState = storage.get(key);
       const { excelState } = model;
 
       return `
