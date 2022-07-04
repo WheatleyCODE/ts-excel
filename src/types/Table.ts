@@ -1,7 +1,4 @@
-export interface ISelectOptions {
-  emit?: boolean;
-  clear?: boolean;
-}
+import { WQuery } from '@wquery';
 
 export enum ResizeType {
   COL = 'col',
@@ -35,3 +32,12 @@ export const celectKeys = [
   EventKeys.ENTER,
   EventKeys.TAB
 ] as string[];
+
+export interface IAllHeaders {
+  col: { [key: string]: WQuery };
+  row: { [key: string]: WQuery };
+}
+
+export interface IAllCells {
+  [key: string]: WQuery;
+}

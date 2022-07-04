@@ -1,6 +1,40 @@
-import { EventKeys, ICellId } from '@types';
+import { EventKeys, IAllCells, IAllHeaders, ICellId } from '@types';
 import { wutils } from '@utils';
 import { WQuery } from '@wquery';
+
+export function findAllCells($root: WQuery): IAllCells {
+  const allCells = $root.findAll('[data-id]');
+  const objCells: IAllCells = {};
+
+  allCells.forEach(($cell) => {
+    const id = $cell.data.id;
+    const idPublic = $cell.data.idPublic;
+
+    if (!id || !idPublic) return;
+
+    objCells[id] = $cell;
+    objCells[idPublic] = $cell;
+  });
+
+  return objCells;
+}
+
+export function findAllHeaders($root: WQuery) {
+  const allHeaders = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
+  const objHeaders: IAllHeaders = { col: {}, row: {} };
+
+  allHeaders.forEach(($header) => {
+    let key: string | null = null;
+
+    if ($header.data.col) key = 'col';
+    if ($header.data.row) key = 'row';
+    if (!key) return;
+
+    objHeaders[key][$header.data[key]] = $header;
+  });
+
+  return objHeaders;
+}
 
 export function changeCellOnKeydown(key: string, cellId: ICellId, isShift: boolean): typeof cellId {
   let { col, row } = cellId;

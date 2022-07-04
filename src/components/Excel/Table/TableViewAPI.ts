@@ -1,38 +1,29 @@
+import { Selector } from './tableViewAPI.selector';
 import { changeStyleAC, stylesCurrentCellAC } from '@redux';
 import { $, WQuery } from '@wquery';
 import {
   celectKeys,
-  ICellId,
   ID_FIRST_CELL,
-  ISelectOptions,
   SELECTED_CELL,
   SELECTED_HEADER,
   IFacadeWredux,
-  IStyle,
-  ACTIVE_SEL_EL,
-  FORMULA_SELECT
+  FORMULA_SELECT,
+  IAllCells,
+  IAllHeaders
 } from '@types';
 import { wutils } from '@utils';
 import { EventNames, IFacadeEmitter, Parser } from '@core';
 import { changeTextAC } from '@redux';
-import { calcSizeSelectedArea, changeCellOnKeydown } from './tableViewAPI.functions';
-
-interface IAllHeaders {
-  col: { [key: string]: WQuery };
-  row: { [key: string]: WQuery };
-}
-
-interface IAllCells {
-  [key: string]: WQuery;
-}
+import { changeCellOnKeydown, findAllCells, findAllHeaders } from './tableViewAPI.functions';
 
 export class TableViewAPI {
-  private $allCells: IAllCells = {};
-  private $allHeaders: IAllHeaders = { col: {}, row: {} };
+  private $allCells: IAllCells;
+  private $allHeaders: IAllHeaders;
   private $activeHeaders: WQuery[] = [];
   private $groupCells: WQuery[] = [];
   private $activeCell: WQuery = $.create('div');
   private $formulaSelectCells: WQuery[] = [];
+  private selector: Selector;
 
   constructor(
     $root: WQuery,
@@ -40,31 +31,12 @@ export class TableViewAPI {
     private wredux: IFacadeWredux,
     private parser: Parser
   ) {
-    const allCels = $root.findAll('[data-id]');
+    this.$allCells = findAllCells($root);
+    this.$allHeaders = findAllHeaders($root);
+    this.selector = new Selector(this.$allCells, this.$allHeaders);
 
-    allCels.forEach(($cell) => {
-      const id = $cell.data.id;
-      const idPublic = $cell.data.idPublic;
+    this.selectCell(ID_FIRST_CELL);
 
-      if (!id || !idPublic) return;
-
-      this.$allCells[id] = $cell;
-      this.$allCells[idPublic] = $cell;
-    });
-
-    const allHeaders = [...$root.findAll('[data-maincoll]'), ...$root.findAll('[data-mainrow]')];
-
-    allHeaders.forEach(($header) => {
-      let key: string | null = null;
-
-      if ($header.data.col) key = 'col';
-      if ($header.data.row) key = 'row';
-      if (!key) return;
-
-      this.$allHeaders[key][$header.data[key]] = $header;
-    });
-
-    this.select(ID_FIRST_CELL);
     const state = this.wredux.getState();
     const { parserData } = state.excelState;
 
@@ -76,222 +48,33 @@ export class TableViewAPI {
     this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.textContent);
   }
 
-  private selectHeader(key: string, id: string) {
-    const $cell: WQuery = this.$allHeaders[key][id];
+  clearSelectCell(): void {
+    this.selector.clearSelectionClassName([this.$activeCell], SELECTED_CELL);
+  }
+
+  selectCell(cell: string | WQuery): WQuery | false {
+    this.clearHeaders();
+    this.clearGroup();
+    this.clearSelectCell();
+    this.clearSelectFormulaCells();
+
+    const [$cell] = this.selector.findAndSelect([cell], SELECTED_CELL);
 
     if ($cell) {
-      $cell.addClass(SELECTED_HEADER);
-      this.$activeHeaders.push($cell);
-    }
-  }
-
-  selectCell(id: string): void {
-    this.select(id);
-  }
-
-  selectAllCells(): void {
-    this.select(this.$allCells[0]);
-    this.selectAll(Object.values(this.$allCells), { clear: false });
-  }
-
-  private select(cell: string | WQuery, options: ISelectOptions = {}): WQuery | undefined {
-    const { emit = true, clear = true } = options;
-    if (clear) this.clearGroup();
-    this.$activeHeaders.forEach(($cell) => $cell.removeClass(SELECTED_HEADER));
-
-    let $newCell: WQuery | undefined;
-
-    if (cell instanceof WQuery) {
-      $newCell = cell;
+      $cell.focus();
+      this.selectHeaders([$cell]);
+      this.emitData($cell);
+      this.$activeCell = $cell;
+      return $cell;
     }
 
-    if (typeof cell === 'string') {
-      $newCell = this.$allCells[cell];
-    }
-
-    if (!$newCell) return;
-
-    this.$activeCell.removeClass(SELECTED_CELL);
-    $newCell.addClass(SELECTED_CELL);
-    $newCell.focus();
-    this.$activeCell = $newCell;
-
-    if (emit) {
-      this.emitter.emit(EventNames.TABLE_EMIT_INFO, $newCell.data.idPublic);
-
-      if ($newCell.data.id) {
-        const state = this.wredux.getState();
-        const { parserData } = state.excelState;
-
-        if (parserData[$newCell.data.id]) {
-          this.wredux.dispatch(
-            changeTextAC($newCell.data.id, parserData[$newCell.data.id].formula)
-          );
-        } else {
-          this.wredux.dispatch(changeTextAC($newCell.data.id, $newCell.textContent));
-        }
-      }
-    }
-
-    if (!$newCell.data.id) return;
-    const parsedId = wutils.parseCellId($newCell.data.id);
-
-    Object.keys(parsedId).forEach((key) => {
-      this.selectHeader(key, parsedId[key]);
-    });
-
-    this.wredux.dispatch(stylesCurrentCellAC($newCell.getStyles()));
-    return $newCell;
+    return false;
   }
 
-  reActivateVisualSelection() {
-    if (!this.$groupCells.length) return;
-    this.activateVisualSelection(this.$groupCells);
-  }
-
-  private activateVisualSelection($cells: WQuery[]) {
-    const { col, row } = calcSizeSelectedArea($cells);
-
-    const $selection = $cells[0].find('[data-selection]');
-
-    if ($selection) {
-      $selection?.addClass(ACTIVE_SEL_EL);
-      $selection.css({ width: `${col}px`, height: `${row}px` });
-    }
-  }
-
-  private selectAll($cells: WQuery[], options: ISelectOptions = {}): void {
-    const { emit = true, clear = true } = options;
-    if (clear) this.clearGroup();
-    this.$groupCells = $cells;
-
-    if (emit) {
-      this.emitter.emit(
-        EventNames.TABLE_EMIT_INFO,
-        `${$cells[0].data.idPublic}:${$cells[$cells.length - 1].data.idPublic}`
-      );
-
-      if (this.$activeCell.data.id) {
-        this.wredux.dispatch(changeTextAC(this.$activeCell.data.id, this.$activeCell.textContent));
-      }
-    }
-
-    this.activateVisualSelection($cells);
-
-    $cells.forEach(($cell) => {
-      if (!$cell.data.id) return;
-      const parsedId = wutils.parseCellId($cell.data.id);
-
-      Object.keys(parsedId).forEach((key) => {
-        this.selectHeader(key, parsedId[key]);
-      });
-    });
-  }
-
-  focusActiveCell(): void {
-    this.$activeCell.focus();
-  }
-
-  changeText(string: string): void {
-    const id = this.$activeCell.data.id;
-    if (!id) return;
-    this.$activeCell.setTextContent(this.parser.parse(string, 'output', id));
-    this.textInStore(this.$activeCell.data.id, string);
-  }
-
-  updateAllParserResult() {
-    const state = this.wredux.getState();
-    const { parserData } = state.excelState;
-
-    const arr = Object.keys(parserData).map((key) => {
-      if (parserData[key].formula !== '') {
-        return { id: key, formula: parserData[key].formula };
-      }
-
-      return false;
-    });
-
-    const data = arr.filter((el) => el !== false) as { id: string; formula: string }[];
-
-    data.forEach(({ id, formula }) => {
-      const $cell = this.$allCells[id];
-
-      if ($cell && !($cell.data.id === this.$activeCell.data.id)) {
-        $cell.setTextContent(this.parser.parse(formula, 'output', $cell.data.id));
-      }
-    });
-
-    this.clearFormulaSelect();
-    this.printFormulaSelect();
-  }
-
-  onInputHandler(): void {
-    this.updateAllParserResult();
-
-    const string = this.$activeCell.textContent;
-    const id = this.$activeCell.data.id;
-    if (!id) return;
-
-    this.textInStore(id, this.parser.parse(string, 'input', id));
-  }
-
-  private textInStore(id: string | undefined, text: string) {
-    if (id) {
-      this.wredux.dispatch(changeTextAC(id, text));
-    }
-  }
-
-  private clearGroup(): void {
-    if (this.$groupCells.length) {
-      const $selection = this.$groupCells[0].find('[data-selection]');
-
-      if ($selection) {
-        $selection.removeClass(ACTIVE_SEL_EL);
-        $selection.css({ width: '0px', height: '0px' });
-      }
-
-      this.$groupCells = [];
-    }
-
-    this.clearFormulaSelect();
-  }
-
-  onKeydownHandler(e: KeyboardEvent): void {
-    const { id } = this.$activeCell.data;
-    if (!id) return;
-
-    const { key, shiftKey } = e;
-    const parsedId = wutils.parseCellId(id);
-
-    if (celectKeys.includes(key)) {
-      e.preventDefault();
-      this.keyDownSelectCell(key, parsedId, shiftKey);
-    }
-  }
-
-  private keyDownSelectCell(key: string, cellId: ICellId, isShiftKey: boolean): void {
-    const { col, row } = changeCellOnKeydown(key, cellId, isShiftKey);
-    this.select(`${col}:${row}`);
-  }
-
-  selectFullColumnOrRow(col: string | undefined, row: string | undefined): void {
-    let $newGroup: WQuery[] = [];
-
-    if (row && !col) {
-      $newGroup = Object.values(this.$allCells).filter(($cell) => $cell.data.row === row);
-    }
-
-    if (col && !row) {
-      $newGroup = Object.values(this.$allCells).filter(($cell) => $cell.data.col === col);
-    }
-
-    this.select($newGroup[0], { emit: false });
-    this.selectAll($newGroup, { clear: false });
-  }
-
-  selectGroup(id: string): void {
+  selectGroup(id: string): WQuery[] | false {
+    this.clearGroup();
     const $newCell = this.$allCells[id];
-    if (!$newCell) return;
+    if (!$newCell) return false;
 
     const activeCellId = this.$activeCell.data.id;
     const newCellId = $newCell.data.id;
@@ -313,87 +96,185 @@ export class TableViewAPI {
       }
 
       this.$activeCell.focus();
-      this.selectAll($newCells);
+      const $cells = this.selector.selectGroup($newCells);
+
+      if ($cells) {
+        this.$groupCells = $cells;
+        this.selectHeaders($cells);
+        return $cells;
+      }
     }
+
+    return false;
+  }
+
+  clearGroup(): void {
+    this.selector.clearSelectGroup(this.$groupCells);
+    this.$groupCells = [];
+  }
+
+  emitData($cell: WQuery): WQuery | false {
+    const id = $cell.data.id;
+    const idPublic = $cell.data.id;
+    if (!id || !idPublic) return false;
+
+    this.emitter.emit(EventNames.TABLE_EMIT_INFO, idPublic);
+
+    const state = this.wredux.getState();
+    const { parserData } = state.excelState;
+
+    if (parserData[id]) {
+      this.wredux.dispatch(changeTextAC(id, parserData[id].formula));
+    } else {
+      this.wredux.dispatch(changeTextAC(id, $cell.textContent));
+    }
+
+    this.wredux.dispatch(stylesCurrentCellAC($cell.getStyles()));
+    return $cell;
+  }
+
+  selectHeaders($cells: WQuery[]): void {
+    const ids: string[] = [];
+
+    $cells.forEach(($cell) => {
+      const id = $cell.data.id;
+      if (id) ids.push(id);
+    });
+
+    const $headers = this.selector.selectHeaders(ids);
+    this.$activeHeaders = $headers;
+  }
+
+  clearHeaders(): void {
+    this.selector.clearSelectionClassName(this.$activeHeaders, SELECTED_HEADER);
+    this.$activeHeaders = [];
+  }
+
+  selectAllCells(): void {
+    const $cells = Object.values(this.$allCells);
+    this.selectCell($cells[0]);
+    this.selector.selectGroup($cells);
+    this.$groupCells = $cells;
+  }
+
+  clearSelectFormulaCells(): void {
+    this.selector.clearSelectionClassName(this.$formulaSelectCells, FORMULA_SELECT);
+    this.$formulaSelectCells = [];
+  }
+
+  selectFormulaCells(): void {
+    const state = this.wredux.getState();
+    const id = this.$activeCell.data.id;
+
+    if (!id) return;
+    const data = state.excelState.parserData[id];
+    if (!data) return;
+    const ids = this.parser.checkCells(data.formula);
+
+    const $cells = this.selector.findAndSelect(ids, FORMULA_SELECT);
+    this.$formulaSelectCells = $cells;
+  }
+
+  focusActiveCell(): void {
+    this.$activeCell.focus();
   }
 
   applyStyle(style: { [key: string]: string }): void {
-    if (this.$groupCells.length) {
-      this.$groupCells.forEach(($cell) => {
-        if (!$cell.data.id) return;
-        $cell.css(style);
-        this.wredux.dispatch(changeStyleAC($cell.data.id, style));
-      });
-      this.$activeCell.focus();
-      return;
-    }
-
     this.$activeCell.css(style);
+
+    this.$groupCells.forEach(($cell) => {
+      if (!$cell.data.id) return;
+      $cell.css(style);
+      this.wredux.dispatch(changeStyleAC($cell.data.id, style));
+    });
+
     this.$activeCell.focus();
-    if (!this.$activeCell.data.id) return;
-    this.wredux.dispatch(changeStyleAC(this.$activeCell.data.id, style));
   }
 
-  private changeType($cell: WQuery, type: string): void {
-    const text = $cell.textContent;
-    const numbers = Number(text);
+  updateSelectGroup(): void {
+    console.log(this.$groupCells);
+    this.selector.selectGroup(this.$groupCells);
+  }
 
-    if (isNaN(numbers)) {
-      if (text[text.length - 1] === '%' || text[text.length - 1] === 'р') {
-        const numbers = text.slice(0, -1);
-        $cell.setHtml(`${numbers}`);
+  textInStore(id: string, text: string): void {
+    this.wredux.dispatch(changeTextAC(id, text));
+  }
+
+  changeText(string: string): void {
+    const id = this.$activeCell.data.id;
+    if (!id) return;
+    this.$activeCell.setTextContent(this.parser.parse(string, 'output', id));
+    this.textInStore(id, string);
+  }
+
+  onInputHandler(): void {
+    this.updateAllParserResult();
+
+    const string = this.$activeCell.textContent;
+    const id = this.$activeCell.data.id;
+    if (!id) return;
+
+    this.textInStore(id, this.parser.parse(string, 'input', id));
+  }
+
+  updateAllParserResult(): void {
+    const state = this.wredux.getState();
+    const { parserData } = state.excelState;
+
+    const arr = Object.keys(parserData).map((key) => {
+      if (parserData[key].formula !== '') {
+        return { id: key, formula: parserData[key].formula };
       }
 
-      return;
-    }
+      return false;
+    });
 
-    let per = '';
-    if (type === 'percent') per = '%';
-    if (type === 'ruble') per = 'р';
+    const data = arr.filter((el) => el !== false) as { id: string; formula: string }[];
 
-    $cell.setHtml(`${numbers} ${per}`);
+    data.forEach(({ id, formula }) => {
+      const $cell = this.$allCells[id];
+
+      if ($cell && !($cell.data.id === this.$activeCell.data.id)) {
+        $cell.setTextContent(this.parser.parse(formula, 'output', $cell.data.id));
+      }
+    });
+
+    this.clearSelectFormulaCells();
+    this.selectFormulaCells();
   }
 
-  changeDataType(type: IStyle) {
-    const dType = type.dataType;
+  onKeydownHandler(e: KeyboardEvent): void {
+    const { id } = this.$activeCell.data;
+    if (!id) return;
 
-    if (!(typeof dType === 'string')) return;
+    const { key, shiftKey } = e;
+    const parsedId = wutils.parseCellId(id);
 
-    if (this.$groupCells.length) {
-      this.$groupCells.forEach(($cell) => this.changeType($cell, dType));
-      return;
+    if (celectKeys.includes(key)) {
+      e.preventDefault();
+      const { col, row } = changeCellOnKeydown(key, parsedId, shiftKey);
+      this.selectCell(`${col}:${row}`);
+    }
+  }
+
+  selectFullColumnOrRow(col: string | undefined, row: string | undefined): void {
+    let $newGroup: WQuery[] = [];
+
+    if (row && !col) {
+      $newGroup = Object.values(this.$allCells).filter(($cell) => $cell.data.row === row);
     }
 
-    this.changeType(this.$activeCell, dType);
+    if (col && !row) {
+      $newGroup = Object.values(this.$allCells).filter(($cell) => $cell.data.col === col);
+    }
+
+    this.selectCell($newGroup[0]);
+    const $cells = this.selector.selectGroup($newGroup);
+    if ($cells) this.$groupCells = $cells;
   }
 
   getText(publicId: string): string | false {
     const $cell = this.$allCells[publicId];
     return $cell ? $cell.textContent : false;
-  }
-
-  clearFormulaSelect() {
-    this.$formulaSelectCells.forEach(($cell) => $cell.removeClass(FORMULA_SELECT));
-    this.$formulaSelectCells = [];
-  }
-
-  printFormulaSelect() {
-    const state = this.wredux.getState();
-    const { parserData } = state.excelState;
-    const id = this.$activeCell.data.id;
-    if (!id) return;
-    const data = parserData[id];
-    if (!data) return;
-
-    const ids = this.parser.checkCells(data.formula);
-
-    ids.forEach((id) => {
-      const $cell = this.$allCells[id];
-
-      if ($cell) {
-        $cell.addClass(FORMULA_SELECT);
-        this.$formulaSelectCells.push($cell);
-      }
-    });
   }
 }
