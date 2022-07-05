@@ -1,5 +1,4 @@
 import { Selector } from './tableViewAPI.selector';
-import { changeStyleAC, stylesCurrentCellAC } from '@redux';
 import { $, WQuery } from '@wquery';
 import {
   celectKeys,
@@ -9,12 +8,14 @@ import {
   IFacadeWredux,
   FORMULA_SELECT,
   IAllCells,
-  IAllHeaders
+  IAllHeaders,
+  IStyle
 } from '@types';
 import { wutils } from '@utils';
-import { EventNames, IFacadeEmitter, Parser } from '@core';
-import { changeTextAC } from '@redux';
+import { IFacadeEmitter, Parser } from '@core';
 import { changeCellOnKeydown, findAllCells, findAllHeaders } from './tableViewAPI.functions';
+import { DataSender } from './tableViewAPI.dataSender';
+import { Typer } from './tableViewAPI.typer';
 
 export class TableViewAPI {
   private $allCells: IAllCells;
@@ -24,28 +25,23 @@ export class TableViewAPI {
   private $activeCell: WQuery = $.create('div');
   private $formulaSelectCells: WQuery[] = [];
   private selector: Selector;
+  private dataSender: DataSender;
+  private typer: Typer;
 
   constructor(
     $root: WQuery,
-    private emitter: IFacadeEmitter,
-    private wredux: IFacadeWredux,
+    emitter: IFacadeEmitter,
+    wredux: IFacadeWredux,
     private parser: Parser
   ) {
     this.$allCells = findAllCells($root);
     this.$allHeaders = findAllHeaders($root);
     this.selector = new Selector(this.$allCells, this.$allHeaders);
+    this.dataSender = new DataSender(emitter, wredux);
+    this.typer = new Typer();
 
     this.selectCell(ID_FIRST_CELL);
-
-    const state = this.wredux.getState();
-    const { parserData } = state.excelState;
-
-    if (parserData[ID_FIRST_CELL]) {
-      this.emitter.emit(EventNames.TABLE_CELECT_CELL, parserData[ID_FIRST_CELL].formula);
-      return;
-    }
-
-    this.emitter.emit(EventNames.TABLE_CELECT_CELL, this.$activeCell.textContent);
+    this.dataSender.sendFirstRenderCell(ID_FIRST_CELL, this.$activeCell.textContent);
   }
 
   clearSelectCell(): void {
@@ -63,7 +59,7 @@ export class TableViewAPI {
     if ($cell) {
       $cell.focus();
       this.selectHeaders([$cell]);
-      this.emitData($cell);
+      this.dataSender.emitData($cell);
       this.$activeCell = $cell;
       return $cell;
     }
@@ -113,26 +109,6 @@ export class TableViewAPI {
     this.$groupCells = [];
   }
 
-  emitData($cell: WQuery): WQuery | false {
-    const id = $cell.data.id;
-    const idPublic = $cell.data.id;
-    if (!id || !idPublic) return false;
-
-    this.emitter.emit(EventNames.TABLE_EMIT_INFO, idPublic);
-
-    const state = this.wredux.getState();
-    const { parserData } = state.excelState;
-
-    if (parserData[id]) {
-      this.wredux.dispatch(changeTextAC(id, parserData[id].formula));
-    } else {
-      this.wredux.dispatch(changeTextAC(id, $cell.textContent));
-    }
-
-    this.wredux.dispatch(stylesCurrentCellAC($cell.getStyles()));
-    return $cell;
-  }
-
   selectHeaders($cells: WQuery[]): void {
     const ids: string[] = [];
 
@@ -163,11 +139,11 @@ export class TableViewAPI {
   }
 
   selectFormulaCells(): void {
-    const state = this.wredux.getState();
+    const { parserData } = this.dataSender.excelState;
     const id = this.$activeCell.data.id;
 
     if (!id) return;
-    const data = state.excelState.parserData[id];
+    const data = parserData[id];
     if (!data) return;
     const ids = this.parser.checkCells(data.formula);
 
@@ -185,7 +161,7 @@ export class TableViewAPI {
     this.$groupCells.forEach(($cell) => {
       if (!$cell.data.id) return;
       $cell.css(style);
-      this.wredux.dispatch(changeStyleAC($cell.data.id, style));
+      this.dataSender.sendStylesChanged($cell.data.id, style);
     });
 
     this.$activeCell.focus();
@@ -196,15 +172,11 @@ export class TableViewAPI {
     this.selector.selectGroup(this.$groupCells);
   }
 
-  textInStore(id: string, text: string): void {
-    this.wredux.dispatch(changeTextAC(id, text));
-  }
-
   changeText(string: string): void {
     const id = this.$activeCell.data.id;
     if (!id) return;
     this.$activeCell.setTextContent(this.parser.parse(string, 'output', id));
-    this.textInStore(id, string);
+    this.dataSender.sendTextInStore(id, string);
   }
 
   onInputHandler(): void {
@@ -214,12 +186,11 @@ export class TableViewAPI {
     const id = this.$activeCell.data.id;
     if (!id) return;
 
-    this.textInStore(id, this.parser.parse(string, 'input', id));
+    this.dataSender.sendTextInStore(id, this.parser.parse(string, 'input', id));
   }
 
   updateAllParserResult(): void {
-    const state = this.wredux.getState();
-    const { parserData } = state.excelState;
+    const { parserData } = this.dataSender.excelState;
 
     const arr = Object.keys(parserData).map((key) => {
       if (parserData[key].formula !== '') {
@@ -276,5 +247,17 @@ export class TableViewAPI {
   getText(publicId: string): string | false {
     const $cell = this.$allCells[publicId];
     return $cell ? $cell.textContent : false;
+  }
+
+  changeType(type: IStyle): void {
+    const dType = type.dataType;
+    if (!(typeof dType === 'string')) return;
+
+    if (this.$groupCells.length) {
+      this.$groupCells.forEach(($cell) => this.typer.changeTypeCell($cell, dType));
+      return;
+    }
+
+    this.typer.changeTypeCell(this.$activeCell, dType);
   }
 }

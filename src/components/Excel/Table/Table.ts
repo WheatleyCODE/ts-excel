@@ -90,7 +90,7 @@ export class Table extends ExcelComponent {
       if (!(typeof style === 'object')) return;
       if (!(typeof Object.values(style)[0] === 'string')) return;
       if (Object.keys(style)[0] === 'dataType') {
-        console.log('// this.tableViewApi.changeDataType(style);');
+        this.tableViewApi.changeType(style);
       }
 
       const styles = style as { [key: string]: string };
