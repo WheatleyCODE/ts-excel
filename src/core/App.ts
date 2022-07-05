@@ -1,7 +1,7 @@
 import { Emitter } from './Emitter';
 import { getInitialState, rootReducer, WRedux } from '@redux';
-import { IAppOtions, IPage, IRoutes, IState, STORAGE_STATE_KEY } from '@types';
-import { wutils } from '@utils';
+import { IAppOtions, IPage, IRoutes, IExcelState, STORAGE_STATE_KEY } from '@types';
+import { storage, wutils } from '@utils';
 import { Router } from './router';
 import { WReduxSubscriber } from './WReduxSubscriber';
 
@@ -19,8 +19,8 @@ export class App {
   constructor(public selector: string, routes: IRoutes[]) {
     this.wredux = new WRedux(rootReducer, getInitialState(STORAGE_STATE_KEY));
 
-    const stateSubscribe = wutils.debounse((state: IState) => {
-      wutils.storage(STORAGE_STATE_KEY, state);
+    const stateSubscribe = wutils.debounse((state: IExcelState) => {
+      storage.set(STORAGE_STATE_KEY, state);
     }, 400);
 
     this.wredux.subscribe(stateSubscribe);

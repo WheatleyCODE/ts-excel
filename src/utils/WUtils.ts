@@ -30,15 +30,6 @@ class WUtils {
     return +str;
   }
 
-  storage(key: string, data?: unknown): any {
-    if (!data) {
-      const storageData = localStorage.getItem(key);
-      return storageData ? JSON.parse(storageData) : null;
-    }
-
-    localStorage.setItem(key, JSON.stringify(data));
-  }
-
   isEqual(a: string | number | object, b: string | number | object): boolean {
     if (typeof a === 'object' && typeof a === 'object') {
       return JSON.stringify(a) === JSON.stringify(b);

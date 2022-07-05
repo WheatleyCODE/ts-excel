@@ -43,7 +43,7 @@ export class Table extends ExcelComponent {
   async resizeTable(resize: string, $resizer: WQuery): Promise<void> {
     try {
       const resizeTableACOptions = await resizeHandler(resize, $resizer, this.$root);
-      this.tableViewApi.reActivateVisualSelection();
+      this.tableViewApi.updateSelectGroup();
       this.dispatch(resizeTableAC(resizeTableACOptions));
     } catch (e) {
       console.warn(e.message);
@@ -90,7 +90,7 @@ export class Table extends ExcelComponent {
       if (!(typeof style === 'object')) return;
       if (!(typeof Object.values(style)[0] === 'string')) return;
       if (Object.keys(style)[0] === 'dataType') {
-        this.tableViewApi.changeDataType(style);
+        this.tableViewApi.changeType(style);
       }
 
       const styles = style as { [key: string]: string };
@@ -114,11 +114,11 @@ export class Table extends ExcelComponent {
     });
 
     this.on(EventNames.PARSER_CLEAR_FORMULA_SELECT, () => {
-      this.tableViewApi.clearFormulaSelect();
+      this.tableViewApi.clearSelectFormulaCells();
     });
 
     this.on(EventNames.FORMULA_PRINT_FORMULA_SELECT, () => {
-      this.tableViewApi.printFormulaSelect();
+      this.tableViewApi.selectFormulaCells();
     });
   }
 

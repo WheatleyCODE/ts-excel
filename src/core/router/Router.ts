@@ -19,19 +19,18 @@ export class Router {
     this.$root.clear();
 
     const pathName = ActiveRoute.pathName;
-    const param = ActiveRoute.firstParam;
 
     if (!this.routes[pathName]) {
-      this.createPage('/', param);
+      this.createPage('/');
       return;
     }
 
-    this.createPage(pathName, param);
+    this.createPage(pathName);
   }
 
-  createPage(pathName: string, param: string) {
+  createPage(pathName: string) {
     const { Page, options } = this.routes[pathName];
-    this.page = new Page(param, options);
+    this.page = new Page(options);
     this.$root.append(this.page.getRoot());
     this.page.initPage();
   }

@@ -1,7 +1,7 @@
-import { ICombinedState, initialToolbarState, IState } from '@types';
-import { wutils } from '@utils';
+import { ICombinedState, initialToolbarState, IExcelState, IDashboardState } from '@types';
+import { storage } from '@utils';
 
-export const defaultState: IState = {
+export const defaultExcelState: IExcelState = {
   resizeState: {
     col: {},
     row: {}
@@ -17,9 +17,16 @@ export const defaultState: IState = {
   openDate: new Date().toJSON()
 };
 
+export const defaultDashboardState: IDashboardState = {
+  isDashboard: true
+};
+
+export const defaultCombinedState: ICombinedState = {
+  excelState: defaultExcelState,
+  dashboardState: defaultDashboardState
+};
+
 export function getInitialState(key: string): ICombinedState {
-  const initialState: ICombinedState = wutils.storage(key)
-    ? wutils.storage(key)
-    : { excelState: defaultState, dashboardState: defaultState };
+  const initialState: ICombinedState = storage.get(key) ? storage.get(key) : defaultCombinedState;
   return initialState;
 }

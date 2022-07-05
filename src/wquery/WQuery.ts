@@ -44,7 +44,7 @@ export class WQuery {
     this.$nativeElement.removeEventListener(eventType, this.listeners[eventType]);
   }
 
-  getNativeElement(): HTMLElement {
+  get nativeElement(): HTMLElement {
     return this.$nativeElement;
   }
 
@@ -60,7 +60,7 @@ export class WQuery {
     return $($node);
   }
 
-  getCoords(): DOMRect {
+  get coords(): DOMRect {
     return this.$nativeElement.getBoundingClientRect();
   }
 
@@ -69,6 +69,7 @@ export class WQuery {
       const value = styles[key];
       this.$nativeElement.style[key] = value;
     });
+
     return this;
   }
 
@@ -125,7 +126,7 @@ export class WQuery {
     return classArr;
   }
 
-  getTextContent(): string {
+  get textContent(): string {
     const text = this.$nativeElement.textContent || '';
     return text.trim();
   }

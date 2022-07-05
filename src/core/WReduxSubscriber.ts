@@ -1,12 +1,11 @@
-import { defaultState, WRedux } from '@redux';
+import { defaultCombinedState, WRedux } from '@redux';
 import { IExcelComponent, IDashComponent, IUnsubscribe, ICombinedState } from '@types';
 import { wutils } from '@utils';
 
 export class WReduxSubscriber {
   private unsabs: IUnsubscribe[] = [];
   private prevState: ICombinedState = {
-    excelState: defaultState,
-    dashboardState: defaultState
+    ...defaultCombinedState
   };
 
   constructor(private wredux: WRedux) {}

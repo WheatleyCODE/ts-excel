@@ -1,7 +1,7 @@
-import { Actions, ActionsType, IState } from '@types';
+import { Actions, ActionsType, IDashboardState } from '@types';
 
-export function dashboardReducer(state: IState, action: Actions): IState {
-  const prevState: IState = JSON.parse(JSON.stringify(state));
+export function dashboardReducer(state: IDashboardState, action: Actions): IDashboardState {
+  const prevState: IDashboardState = JSON.parse(JSON.stringify(state));
 
   switch (action.type) {
     case ActionsType.INIT: {

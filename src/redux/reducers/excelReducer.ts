@@ -1,7 +1,7 @@
-import { Actions, ActionsType, IState } from '@types';
+import { Actions, ActionsType, IExcelState } from '@types';
 
-export function excelReducer(state: IState, action: Actions): IState {
-  const prevState: IState = JSON.parse(JSON.stringify(state));
+export function excelReducer(state: IExcelState, action: Actions): IExcelState {
+  const prevState: IExcelState = JSON.parse(JSON.stringify(state));
 
   switch (action.type) {
     case ActionsType.INIT: {

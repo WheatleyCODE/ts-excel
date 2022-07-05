@@ -1,8 +1,8 @@
-import { Actions, ActionsType, IResizeTableACOptions } from '@types';
+import { Actions, ActionsType, IResizeTableOptions } from '@types';
 
 export const initAC = (): Actions => ({ type: ActionsType.INIT, payload: null });
 
-export const resizeTableAC = (options: IResizeTableACOptions): Actions => ({
+export const resizeTableAC = (options: IResizeTableOptions): Actions => ({
   type: ActionsType.TABLE_RESIZE,
   payload: options
 });

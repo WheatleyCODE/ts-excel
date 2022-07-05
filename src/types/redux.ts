@@ -11,7 +11,7 @@ export enum ActionsType {
   CHANGE_OPEN_DATE = 'CHANGE_OPEN_DATE'
 }
 
-export interface IResizeTableACOptions {
+export interface IResizeTableOptions {
   type: 'col' | 'row';
   id: string;
   value: number;
@@ -53,7 +53,7 @@ interface IActionStylesCurrentCell {
 
 interface IActionResizeTable {
   type: ActionsType.TABLE_RESIZE;
-  payload: IResizeTableACOptions;
+  payload: IResizeTableOptions;
 }
 
 interface IActionChangeText {
@@ -92,7 +92,7 @@ interface ICellStylesState {
   [propName: string]: { [propName: string]: string };
 }
 
-export interface IState {
+export interface IExcelState {
   resizeState: IResizeState;
   cellsDataState: ICellsDataState;
   cellsStylesState: ICellStylesState;
@@ -102,15 +102,18 @@ export interface IState {
   parserData: { [key: string]: IParserData };
   openDate: string;
 }
-
-export interface ICombinedState {
-  excelState: IState;
-  dashboardState: IState;
+export interface IDashboardState {
+  isDashboard: boolean;
 }
 
-export type StateKeys = keyof IState;
+export interface ICombinedState {
+  excelState: IExcelState;
+  dashboardState: IDashboardState;
+}
+
+export type ExcelStateKeys = keyof IExcelState;
 export type CombinedStateKeys = keyof ICombinedState;
-export type StateValues = IState[StateKeys];
+export type ExcelStateValues = IExcelState[ExcelStateKeys];
 
 export interface IUnsubscribe {
   unsubscribe: () => void;
