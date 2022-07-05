@@ -7,3 +7,4 @@ export * from './dashboard';
 export * from './excel';
 export * from './wquery';
 export * from './Table';
+export * from './waxios';

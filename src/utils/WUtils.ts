@@ -2,9 +2,14 @@ import { ICellId } from '@types';
 
 class WUtils {
   private methodPrefix = 'on';
+  private WAxiosMethodPrefix = 'add';
 
   createDOMListenerMethodName(string: string): string {
     return this.methodPrefix + this.capitalize(string);
+  }
+
+  createWAxiosBuilderMethodName(string: string): string {
+    return this.WAxiosMethodPrefix + this.capitalize(string);
   }
 
   capitalize(string: string): string {

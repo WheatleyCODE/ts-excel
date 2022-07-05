@@ -62,7 +62,9 @@ module.exports = {
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@wquery': path.resolve(__dirname, 'src/wquery'),
       '@pages': path.resolve(__dirname, 'src/pages'),
-      '@routes': path.resolve(__dirname, 'src/routes')
+      '@routes': path.resolve(__dirname, 'src/routes'),
+      '@waxios': path.resolve(__dirname, 'src/waxios'),
+      '@services': path.resolve(__dirname, 'src/services')
     }
   },
   optimization: {
