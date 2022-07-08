@@ -164,11 +164,14 @@ export class TableViewAPI {
       this.dataSender.sendStylesChanged($cell.data.id, style);
     });
 
+    if (this.$activeCell.data.id)
+      this.dataSender.sendStylesChanged(this.$activeCell.data.id, style);
+
     this.$activeCell.focus();
   }
 
   updateSelectGroup(): void {
-    console.log(this.$groupCells);
+    if (!this.$groupCells.length) return;
     this.selector.selectGroup(this.$groupCells);
   }
 

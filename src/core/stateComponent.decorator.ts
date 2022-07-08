@@ -1,7 +1,7 @@
-import { IExcelComponent } from '@types';
+import { Component } from './Component';
 
-export function stateComponent<X extends object>(initialState: X) {
-  function Decorator<T extends { new (...args: any[]): IExcelComponent }>(constructor: T) {
+export function StateComponent<X extends object>(initialState: X) {
+  function Decorator<T extends { new (...args: any[]): Component }>(constructor: T) {
     return class extends constructor {
       private state: X = initialState;
 

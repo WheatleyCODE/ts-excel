@@ -1,0 +1,52 @@
+
+.db-li-board {
+  padding-top: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.db-table {
+  width: 100%;
+
+  &__ul {
+    list-style: none;
+  }
+
+  &__li {
+    height: 55px;
+    margin-top: -2px;
+    padding: 0 20px;
+    cursor: pointer;
+
+    border-radius: 50px;
+
+    &:hover {
+      background-color: $colorGreen4;
+
+      .db-li-content {
+        border-bottom: 1px solid rgba(0, 0, 0, 0);
+      }
+    }
+  }
+}
+
+.db-li-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-bottom: 1px solid #dedede;
+
+  &__icon {
+    background: url(../assets/icon.ico) center;
+    background-size: contain;
+    height: 20px;
+    width: 20px;
+    margin-right: 40px;
+  }
+
+  &__title {
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    font-weight: bold;
+  }
+}

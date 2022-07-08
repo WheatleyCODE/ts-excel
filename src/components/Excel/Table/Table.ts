@@ -43,8 +43,8 @@ export class Table extends ExcelComponent {
   async resizeTable(resize: string, $resizer: WQuery): Promise<void> {
     try {
       const resizeTableACOptions = await resizeHandler(resize, $resizer, this.$root);
-      this.tableViewApi.updateSelectGroup();
       this.dispatch(resizeTableAC(resizeTableACOptions));
+      this.tableViewApi.updateSelectGroup();
     } catch (e) {
       console.warn(e.message);
     }

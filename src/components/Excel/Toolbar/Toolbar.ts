@@ -7,10 +7,10 @@ import {
   ICombinedState
 } from '@types';
 import { createToolbar } from './toolbar.template';
-import { EventNames, stateComponent } from '@core';
+import { EventNames, StateComponent } from '@core';
 import { ExcelComponent } from '@components/Excel/ExcelComponent';
 
-@stateComponent<IToolbarState>(initialToolbarState)
+@StateComponent<IToolbarState>(initialToolbarState)
 export class Toolbar extends ExcelComponent {
   static classNames = ['excel__toolbar', 'excel-toolbar'];
 

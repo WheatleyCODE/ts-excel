@@ -1,4 +1,4 @@
-import { ActiveRoute, stateComponent } from '@core';
+import { ActiveRoute, StateComponent } from '@core';
 import { ExcelComponent } from '@components';
 import { $, WQuery } from '@wquery';
 import { changeOpenDate, changeTitleAC } from '@redux';
@@ -9,7 +9,7 @@ export interface IExcelHeaderState {
   openModal: boolean;
 }
 
-@stateComponent<IExcelHeaderState>({ openModal: false })
+@StateComponent<IExcelHeaderState>({ openModal: false })
 export class ExcelHeader extends ExcelComponent {
   static classNames = ['excel__header', 'excel-header'];
 
