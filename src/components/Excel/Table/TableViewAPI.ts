@@ -64,6 +64,7 @@ export class TableViewAPI {
       return $cell;
     }
 
+    this.dataSender.saveCurentExcel();
     return false;
   }
 
@@ -101,6 +102,7 @@ export class TableViewAPI {
       }
     }
 
+    this.dataSender.saveCurentExcel();
     return false;
   }
 
@@ -164,11 +166,15 @@ export class TableViewAPI {
       this.dataSender.sendStylesChanged($cell.data.id, style);
     });
 
+    if (this.$activeCell.data.id)
+      this.dataSender.sendStylesChanged(this.$activeCell.data.id, style);
+
     this.$activeCell.focus();
+    this.dataSender.saveCurentExcel();
   }
 
   updateSelectGroup(): void {
-    console.log(this.$groupCells);
+    if (!this.$groupCells.length) return;
     this.selector.selectGroup(this.$groupCells);
   }
 
@@ -177,6 +183,7 @@ export class TableViewAPI {
     if (!id) return;
     this.$activeCell.setTextContent(this.parser.parse(string, 'output', id));
     this.dataSender.sendTextInStore(id, string);
+    this.dataSender.saveCurentExcel();
   }
 
   onInputHandler(): void {
@@ -187,6 +194,7 @@ export class TableViewAPI {
     if (!id) return;
 
     this.dataSender.sendTextInStore(id, this.parser.parse(string, 'input', id));
+    this.dataSender.saveCurentExcel();
   }
 
   updateAllParserResult(): void {
@@ -212,6 +220,7 @@ export class TableViewAPI {
 
     this.clearSelectFormulaCells();
     this.selectFormulaCells();
+    this.dataSender.saveCurentExcel();
   }
 
   onKeydownHandler(e: KeyboardEvent): void {
@@ -226,6 +235,7 @@ export class TableViewAPI {
       const { col, row } = changeCellOnKeydown(key, parsedId, shiftKey);
       this.selectCell(`${col}:${row}`);
     }
+    this.dataSender.saveCurentExcel();
   }
 
   selectFullColumnOrRow(col: string | undefined, row: string | undefined): void {
@@ -242,6 +252,7 @@ export class TableViewAPI {
     this.selectCell($newGroup[0]);
     const $cells = this.selector.selectGroup($newGroup);
     if ($cells) this.$groupCells = $cells;
+    this.dataSender.saveCurentExcel();
   }
 
   getText(publicId: string): string | false {
@@ -259,5 +270,6 @@ export class TableViewAPI {
     }
 
     this.typer.changeTypeCell(this.$activeCell, dType);
+    this.dataSender.saveCurentExcel();
   }
 }

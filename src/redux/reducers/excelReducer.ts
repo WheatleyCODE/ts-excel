@@ -89,6 +89,14 @@ export function excelReducer(state: IExcelState, action: Actions): IExcelState {
       };
     }
 
+    case ActionsType.SET_CURRENT_EXCEL_STATE: {
+      const newState: IExcelState = JSON.parse(JSON.stringify(action.payload));
+
+      return {
+        ...newState
+      };
+    }
+
     default: {
       return { ...prevState };
     }

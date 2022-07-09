@@ -20,8 +20,7 @@ export function createExcelHeader(state: IExcelHeaderState, title: string) {
       </div>
     </div>
     <div class="excel-header__right-panel h-right-panel">
-      <button data-remove="true" class="h-right-panel__button">Выйти</button>
-      <button data-remove="true" class="h-right-panel__button">Войти</button>
+      <button data-out="true" data-remove="true" class="h-right-panel__button">Выйти</button>
       <button class="h-right-panel__share-button">
         <i class="material-icons">
           add_link

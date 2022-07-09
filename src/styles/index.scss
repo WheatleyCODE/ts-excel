@@ -6,7 +6,11 @@
 @import './formula.scss';
 @import './toolbar.scss';
 @import './table.scss';
-@import './dashboard.scss';
+
+@import './Dashboard/index.scss';
+@import './Dashboard/DashHeader.scss';
+@import './Dashboard/TableCreator.scss';
+@import './Dashboard/TableList.scss';
 
 * {
   margin: 0;

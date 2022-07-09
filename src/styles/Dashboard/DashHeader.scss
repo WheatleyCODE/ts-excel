@@ -1,0 +1,192 @@
+.db-header {
+  display: flex;
+  position: relative;
+  z-index: 100;
+  justify-content: space-between;
+  background-color: $colorWhite;
+  border-bottom: 1px solid $colorLightGrey2;
+
+  &__menu,
+  &__search,
+  &__user {
+    height: 100%;
+  }
+}
+
+.db-menu {
+  display: flex;
+  align-items: center;
+
+  &__burger-menu {
+    @include appsButton();
+  }
+
+  .db-logo {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    cursor: pointer;
+
+    &__img {
+      height: 38px;
+      width: 38px;
+      background: url('../assets/logo.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    &__text {
+      h1 {
+        font-size: 1.2rem;
+        color: $colorBlack;
+      }
+    }
+  }
+}
+
+.db-user {
+  display: flex;
+  align-items: center;
+
+  &__user,
+  &__apps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+
+    i {
+      font-size: 25px;
+    }
+  }
+
+  &__user {
+    position: relative;
+    cursor: pointer;
+
+    i {
+      font-size: 40px;
+      color: $colorLightGrey;
+    }
+  }
+
+  &__apps {
+    @include appsButton();
+    margin-right: 10px;
+  }
+}
+
+.db-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &__input {
+    outline: none;
+    height: 45px;
+    border: none;
+    width: 600px;
+    padding-left: 60px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.2s;
+    background-color: $colorLightBlue;
+
+    &:focus {
+      box-shadow: 0px 1px 4px 0px $colorGrey;
+      background-color: $colorWhite;
+    }
+  }
+
+  &__search-icon {
+    @include appsButton();
+    position: absolute;
+    top: 0;
+    margin-top: 10px;
+    left: 10px;
+    height: 40px;
+    width: 40px;
+
+    i {
+      color: $colorGrey;
+    }
+  }
+}
+
+.a-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 60px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100vh - 60px);
+  width: 200px;
+  background-color:$colorWhite;
+  border-right: 1px solid $colorLightGrey2;
+
+  h2 {
+    font-size: 1rem;
+    display: block;
+    min-width: 500px;
+    text-align: center;
+    -webkit-transform: rotate(-45deg); /* Safari and Chrome */
+    -moz-transform: rotate(-45deg);   /* Firefox */
+    -ms-transform: rotate(-45deg);   /* IE 9 */
+    -o-transform: rotate(-45deg);   /* Opera */
+    transform: rotate(-45deg);
+  }
+}
+
+.a-menu, .db-dropdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  border: 1px solid $colorLightGrey2;
+}
+
+.a-menu {
+  margin-top: 60px;
+  top: 0;
+  left: 0;
+  height: calc(100vh - 60px);
+  width: 300px;
+  background-color:$colorWhite;
+  box-shadow: 0px 6px 8px 0px $colorLightGrey;
+
+  h2 {
+    font-size: 1rem;
+    display: block;
+    min-width: 500px;
+    text-align: center;
+  }
+}
+
+.db-dropdown {
+  right: 70px;
+  top: 60px;
+  width: 300px;
+  height: 400px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0px 0px 8px 0px $colorLightGrey;
+}
+
+.icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  i {
+    font-size: 6rem;
+    color: $colorGrey;
+    margin-bottom: 15px;
+  }
+
+  h4 {
+    font-size: 1rem;
+  }
+}

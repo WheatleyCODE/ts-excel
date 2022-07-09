@@ -2,6 +2,7 @@ import { ICombinedState, initialToolbarState, IExcelState, IDashboardState } fro
 import { storage } from '@utils';
 
 export const defaultExcelState: IExcelState = {
+  id: 0,
   resizeState: {
     col: {},
     row: {}
@@ -18,7 +19,8 @@ export const defaultExcelState: IExcelState = {
 };
 
 export const defaultDashboardState: IDashboardState = {
-  isDashboard: true
+  current: 0,
+  excels: []
 };
 
 export const defaultCombinedState: ICombinedState = {

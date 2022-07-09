@@ -40,6 +40,12 @@
 
       "@routes": ["routes"],
       "@routes/*": ["routes/*"],
+
+      "@waxios": ["waxios"],
+      "@waxios/*": ["waxios/*"],
+
+      "@services": ["services"],
+      "@services/*": ["services/*"],
     }
   }
 }

@@ -1,7 +1,7 @@
-import { ActiveRoute, stateComponent } from '@core';
+import { ActiveRoute, StateComponent } from '@core';
 import { ExcelComponent } from '@components';
 import { $, WQuery } from '@wquery';
-import { changeOpenDate, changeTitleAC } from '@redux';
+import { changeOpenDate, changeTitleAC, saveCurrentExcelStateAC } from '@redux';
 import { IExcelComOptions } from '@types';
 import { createExcelHeader } from './excelHeader.template';
 
@@ -9,7 +9,7 @@ export interface IExcelHeaderState {
   openModal: boolean;
 }
 
-@stateComponent<IExcelHeaderState>({ openModal: false })
+@StateComponent<IExcelHeaderState>({ openModal: false })
 export class ExcelHeader extends ExcelComponent {
   static classNames = ['excel__header', 'excel-header'];
 
@@ -35,8 +35,7 @@ export class ExcelHeader extends ExcelComponent {
       ActiveRoute.navigation('');
     }
 
-    if ($target.data.remove) {
-      localStorage.removeItem(`excel:${ActiveRoute.firstParam}`);
+    if ($target.data.out) {
       ActiveRoute.navigation('');
     }
   }
@@ -44,6 +43,7 @@ export class ExcelHeader extends ExcelComponent {
   onInput(e: InputEvent) {
     if (!(e.target instanceof HTMLInputElement)) return;
     this.dispatch(changeTitleAC(e.target.value));
+    this.dispatch(saveCurrentExcelStateAC(this.getState().excelState));
   }
 
   toHTML(): string {

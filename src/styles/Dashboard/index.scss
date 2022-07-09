@@ -1,0 +1,31 @@
+.db {
+  &__header,
+  &__create,
+  &__list {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__header {
+    position: fixed;
+    padding: 0 25px;
+    top: 0;
+    height: $dbHeaderHeight;
+  }
+
+  &__create {
+    background-color: $colorLightBlue;
+    height: 300px;
+    margin-top: $dbHeaderHeight;
+  }
+}
+
+
+.db-create,
+.db-list {
+  &__board {
+    width: 100%;
+    max-width: 1000px;
+  }
+}
