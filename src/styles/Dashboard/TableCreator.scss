@@ -31,13 +31,14 @@
     transition: all 0.1s;
     background: url(../assets/plus.png);
     background-size: contain;
-  }
 
-  &:hover {
-    .table-link__square {
-      border: 1px solid $colorGreen;
+    &:hover {
+        border: 1px solid $colorGreen;
+        cursor: pointer;
     }
   }
+
+  
 
   &__text {
     padding-top: 13px;

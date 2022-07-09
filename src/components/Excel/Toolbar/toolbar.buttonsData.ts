@@ -100,11 +100,11 @@ export function createButtonsData(state: IToolbarState): IButton[] {
     {
       icon: 'border_all',
       isWall: false,
-      active: state.borderColor === '1px solid black',
+      active: state.border === '1px solid black',
       value:
-        state.borderColor === '1px solid black'
-          ? { borderColor: 'none' }
-          : { borderColor: '1px solid black' }
+        state.border === '1px solid black'
+          ? { border: '1px solid rgb(222, 222, 222)' }
+          : { border: '1px solid black' }
     },
     {
       icon: 'format_align_left',

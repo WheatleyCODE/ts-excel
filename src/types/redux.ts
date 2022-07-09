@@ -8,13 +8,44 @@ export enum ActionsType {
   CHANGE_STYLE = 'CHANGE_STYLE',
   STYLES_CURRENT_CELL = 'STYLES_CURRENT_CELL',
   CHANGE_PARSER_DATA = 'CHANGE_PARSER_DATA',
-  CHANGE_OPEN_DATE = 'CHANGE_OPEN_DATE'
+  CHANGE_OPEN_DATE = 'CHANGE_OPEN_DATE',
+  CREATE_TABLE = 'CREATE_TABLE',
+  CREATE_TABLE_PRESET = 'CREATE_TABLE_PRESET',
+  SET_CURRENT_EXCEL_STATE = 'SET_CURRENT_EXCEL_STATE',
+  SAVE_CURRENT_EXCEL_STATE = 'SAVE_CURRENT_EXCEL_STATE',
+  REMOVE_CURRENT_EXCEL_STATE = 'REMOVE_CURRENT_EXCEL_STATE'
 }
 
 export interface IResizeTableOptions {
   type: 'col' | 'row';
   id: string;
   value: number;
+}
+
+interface IActionRemoveCurrentExcelState {
+  type: ActionsType.REMOVE_CURRENT_EXCEL_STATE;
+  payload: number;
+}
+interface IActionSaveCurrentExcelState {
+  type: ActionsType.SAVE_CURRENT_EXCEL_STATE;
+  payload: IExcelState;
+}
+interface IActionSetCurrentExcelState {
+  type: ActionsType.SET_CURRENT_EXCEL_STATE;
+  payload: IExcelState;
+}
+
+interface IActionCreateTable {
+  type: ActionsType.CREATE_TABLE;
+  payload: number;
+}
+
+interface IActionCreateTablePreset {
+  type: ActionsType.CREATE_TABLE_PRESET;
+  payload: {
+    id: number;
+    excel: IExcelState;
+  };
 }
 
 interface IActionChangeTitle {
@@ -77,7 +108,12 @@ export type Actions =
   | IActionStylesCurrentCell
   | IActionChangeTitle
   | IActionChangeParserData
-  | IActionChangeOpenDate;
+  | IActionChangeOpenDate
+  | IActionCreateTable
+  | IActionSetCurrentExcelState
+  | IActionSaveCurrentExcelState
+  | IActionCreateTablePreset
+  | IActionRemoveCurrentExcelState;
 
 interface IResizeState {
   col: { [propName: string]: number };
@@ -93,6 +129,7 @@ interface ICellStylesState {
 }
 
 export interface IExcelState {
+  id: number;
   resizeState: IResizeState;
   cellsDataState: ICellsDataState;
   cellsStylesState: ICellStylesState;
@@ -103,7 +140,8 @@ export interface IExcelState {
   openDate: string;
 }
 export interface IDashboardState {
-  isDashboard: boolean;
+  current: number;
+  excels: IExcelState[];
 }
 
 export interface ICombinedState {

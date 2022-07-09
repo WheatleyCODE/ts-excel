@@ -1,4 +1,4 @@
-import { Actions, ActionsType, IResizeTableOptions } from '@types';
+import { Actions, ActionsType, IResizeTableOptions, IExcelState } from '@types';
 
 export const initAC = (): Actions => ({ type: ActionsType.INIT, payload: null });
 
@@ -46,4 +46,32 @@ export const changeParserData = (id: string, formula: string, result: string): A
 
 export const changeOpenDate = (): Actions => ({
   type: ActionsType.CHANGE_OPEN_DATE
+});
+
+export const createTableAC = (id: number): Actions => ({
+  type: ActionsType.CREATE_TABLE,
+  payload: id
+});
+
+export const createTablePreserAC = (id: number, excel: IExcelState): Actions => ({
+  type: ActionsType.CREATE_TABLE_PRESET,
+  payload: {
+    id,
+    excel
+  }
+});
+
+export const setCurrentExcelStateAC = (excel: IExcelState): Actions => ({
+  type: ActionsType.SET_CURRENT_EXCEL_STATE,
+  payload: excel
+});
+
+export const saveCurrentExcelStateAC = (excel: IExcelState): Actions => ({
+  type: ActionsType.SAVE_CURRENT_EXCEL_STATE,
+  payload: excel
+});
+
+export const removeCurrentExcelStateAC = (id: number): Actions => ({
+  type: ActionsType.REMOVE_CURRENT_EXCEL_STATE,
+  payload: id
 });

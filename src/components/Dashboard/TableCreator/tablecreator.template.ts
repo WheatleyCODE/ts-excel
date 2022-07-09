@@ -1,28 +1,14 @@
 export function createTableCreator(): string {
-  const id = Date.now().toString();
-
   return `
     <div class="db-create__board db-cr-board">
       <h2 class="db-cr-board__title">Создать таблицу</h2>
-      <a href="#excel/${id}" class="db-cr-board__link table-link">
-        <div class="table-link__square"></div>
-        <div class="table-link__text"><span>Пустой файл</span></div>
+      <a data-create-table="true" class="db-cr-board__link table-link">
+        <div data-create-table="true" class="table-link__square"></div>
+        <div data-create-table="true" class="table-link__text"><span>Пустой файл</span></div>
       </a>
-      <a href="#excel/${id}" class="db-cr-board__link table-link">
-        <div class="table-link__square"></div>
-        <div class="table-link__text"><span>Список дел</span></div>
-      </a>
-      <a href="#excel/${id}" class="db-cr-board__link table-link">
-        <div class="table-link__square"></div>
-        <div class="table-link__text"><span>Трекер инвестиций</span></div>
-      </a>
-      <a href="#excel${id}" class="db-cr-board__link table-link">
-        <div class="table-link__square"></div>
-        <div class="table-link__text"><span>Годовой бюджет</span></div>
-      </a>
-      <a href="#excel/${id}" class="db-cr-board__link table-link">
-        <div class="table-link__square"></div>
-        <div class="table-link__text"><span>Календарь</span></div>
+      <a data-create-ivest="true" class="db-cr-board__link table-link">
+        <div data-create-ivest="true" class="table-link__square"></div>
+        <div data-create-ivest="true" class="table-link__text"><span>Трекер инвестиций</span></div>
       </a>
     </div>
   `;

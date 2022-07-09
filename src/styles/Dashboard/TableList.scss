@@ -31,6 +31,7 @@
 }
 
 .db-li-content {
+  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
@@ -48,5 +49,51 @@
     font-size: 14px;
     letter-spacing: 0.1px;
     font-weight: bold;
+  }
+
+  &__data {
+    position: absolute;
+    display: flex;
+    right: 70px;
+
+    .date, .time {
+      font-size: 0.9rem;
+      border-bottom: 1px solid $colorLightGrey;
+      padding: 4px 6px;
+    }
+
+    .date {
+      margin-right: 40px;
+    }
+
+    .time {
+      font-weight: bold;
+    }
+  }
+
+  &__delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.1s;
+    position: absolute;
+    padding: 8px;
+    border-radius: 50%;
+    right: 0;
+
+    i {
+      font-size: 1.6rem;
+      color: $colorGrey;
+      transition: all 0.1s;
+    }
+
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+
+      i {
+        color: $colorBlack;
+      }
+    }
   }
 }

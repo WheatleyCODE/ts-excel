@@ -1,5 +1,5 @@
 import { EventNames, IFacadeEmitter } from '@core';
-import { changeStyleAC, changeTextAC, stylesCurrentCellAC } from '@redux';
+import { changeStyleAC, changeTextAC, saveCurrentExcelStateAC, stylesCurrentCellAC } from '@redux';
 import { IFacadeWredux, IExcelState } from '@types';
 import { WQuery } from '@wquery';
 
@@ -44,6 +44,11 @@ export class DataSender {
 
   sendStylesChanged(id: string, style: { [key: string]: string }) {
     this.wredux.dispatch(changeStyleAC(id, style));
+  }
+
+  saveCurentExcel() {
+    const excelState = this.wredux.getState().excelState;
+    this.wredux.dispatch(saveCurrentExcelStateAC(excelState));
   }
 
   get excelState(): IExcelState {

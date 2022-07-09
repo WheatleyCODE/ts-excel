@@ -1,7 +1,7 @@
-import { Emitter, Parser, WReduxSubscriber } from '@core';
+import { ActiveRoute, Emitter, Parser, WReduxSubscriber } from '@core';
 import { $, WQuery } from '@wquery';
 import { IExcelComponent, IExcelComOptions, IExcOptions } from '@types';
-import { WRedux } from '@redux';
+import { saveCurrentExcelStateAC, setCurrentExcelStateAC, WRedux } from '@redux';
 
 export class Excel {
   private components: typeof IExcelComponent[];
@@ -19,9 +19,27 @@ export class Excel {
     this.parser = new Parser(this.wredux, this.emitter);
   }
 
-  getRootExcel(): WQuery {
-    const $rootExcel = $.create('div', 'excel');
+  setExcelStateFromId() {
+    const dState = this.wredux.getState().dashboardState;
+    const id = ActiveRoute.firstParam;
+    const current = dState.excels.find((excel) => excel.id === +id);
 
+    if (current) {
+      this.wredux.dispatch(setCurrentExcelStateAC(current));
+      return;
+    }
+
+    ActiveRoute.navigation('');
+  }
+
+  saveExcelStateFromId() {
+    const excelState = this.wredux.getState().excelState;
+    this.wredux.dispatch(saveCurrentExcelStateAC(excelState));
+  }
+
+  getRootExcel(): WQuery {
+    this.setExcelStateFromId();
+    const $rootExcel = $.create('div', 'excel');
     const componentOptions: IExcelComOptions = {
       emitter: this.emitter,
       wredux: this.wredux,
@@ -51,6 +69,7 @@ export class Excel {
   }
 
   destroy(): void {
+    this.saveExcelStateFromId();
     this.instantComponents.forEach((instComponent) => {
       instComponent.componentWilUnmount();
       instComponent.destroy();
