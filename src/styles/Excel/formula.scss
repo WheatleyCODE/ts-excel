@@ -1,11 +1,12 @@
-@import './variables';
-@import './mixins';
+@import '../variables';
+@import '../mixins';
 
 .excel-formula {
   display: flex;
   height: $formulaHeight;
   border-bottom: 1px solid $colorLightGrey;
   position: fixed;
+  z-index: 90;
   background-color: $colorWhite;
   width: 100%;
   top: $headerHeight + $headerPaddingTop + $toolbarHeight + $headerPaddingButtom;

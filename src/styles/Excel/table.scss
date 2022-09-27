@@ -1,14 +1,15 @@
-@import './variables';
-@import './mixins';
+@import '../variables';
+@import '../mixins';
 
 .excel-table {
+  z-index: 80;
   position: absolute;
   width: 100%;
   top: $headerHeight + $headerPaddingTop + $toolbarHeight + $formulaHeight + $headerPaddingButtom;
 
   .row-resize,
   .col-resize {
-    z-index: 100;
+    z-index: 90;
     position: absolute;
     opacity: 0;
     background-color: $colorPrimary;
