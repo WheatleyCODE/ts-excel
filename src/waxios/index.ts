@@ -1,1 +1,0 @@
-export { waxios } from './WAxios';
