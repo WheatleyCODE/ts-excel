@@ -2,10 +2,10 @@
 @import './fonts.scss';
 @import './variables';
 @import './mixins';
-@import './header.scss';
-@import './formula.scss';
-@import './toolbar.scss';
-@import './table.scss';
+@import './Excel/header.scss';
+@import './Excel/formula.scss';
+@import './Excel/toolbar.scss';
+@import './Excel/table.scss';
 
 @import './Dashboard/index.scss';
 @import './Dashboard/DashHeader.scss';
